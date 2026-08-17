@@ -80,12 +80,36 @@ Quais fases cobrem quais requisitos. Preenchido na criação do roadmap.
 
 | Requisito | Fase | Status |
 |-----------|------|--------|
-| (preenchido pelo roadmap) | | |
+| CFG-01 | Phase 1 | Pending |
+| CFG-02 | Phase 1 | Pending |
+| CFG-03 | Phase 1 | Pending |
+| CFG-04 | Phase 1 | Pending |
+| CORE-01 | Phase 1 | Pending |
+| CORE-02 | Phase 1 | Pending |
+| INF-01 | Phase 1 | Pending |
+| INF-02 | Phase 1 | Pending |
+| CORE-03 | Phase 2 | Pending |
+| CORE-04 | Phase 2 | Pending |
+| CORE-05 | Phase 2 | Pending |
+| CORE-06 | Phase 2 | Pending |
+| EX-01 | Phase 3 | Pending |
+| EX-02 | Phase 3 | Pending |
+| EX-03 | Phase 3 | Pending |
+| EX-04 | Phase 3 | Pending |
+| TPL-01 | Phase 4 | Pending |
+| TPL-02 | Phase 4 | Pending |
+| TPL-03 | Phase 4 | Pending |
+| TPL-04 | Phase 4 | Pending |
+| INF-03 | Phase 4 | Pending |
+| INF-04 | Phase 4 | Pending |
+| QA-01 | Phase 5 | Pending |
+| QA-02 | Phase 5 | Pending |
+| DOC-01 | Phase 5 | Pending |
 
 **Cobertura:**
-- Requisitos v1: 21 no total
-- Mapeados em fases: 0
-- Não mapeados: 21 ⚠️
+- Requisitos v1: 25 no total
+- Mapeados em fases: 25
+- Não mapeados: 0 ✓
 
 ---
 *Requisitos definidos em: 2026-08-17*
