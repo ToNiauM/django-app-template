@@ -31,11 +31,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Toda configuração sensível vem do `.env` (django-environ) e o `.env.example` cobre todas as variáveis
   4. Settings de produção aplicam Argon2, django-axes, cookies seguros, HSTS/proxy, `DEBUG=False` e `ALLOWED_HOSTS` restrito; localização pt-br/America/Sao_Paulo ativa
   5. Requisições HTMX passam CSRF via `htmx:configRequest` lendo o token do cookie (com `CSRF_COOKIE_HTTPONLY = False`)
-**Plans**: 2 plans (2 waves)
+**Plans**: 4 plans (4 waves)
 
 Plans:
-- [ ] 01-01-PLAN.md — Fundação executável: settings por ambiente, `Usuario`/migração 0001, kernel (axes/CSRF/htmx), Docker (build + up + migrate + createsuperuser)
-- [ ] 01-02-PLAN.md — Login/logout reais: views + templates + testes de comportamento + checkpoint de verificação via navegador
+- [ ] 01-01-PLAN.md — Settings por ambiente: `config/settings/{base,dev,prod}.py` via django-environ, requirements.txt, .env.example
+- [ ] 01-02-PLAN.md — Core kernel: `Usuario`/`UsuarioManager`, axes callable, middleware HTMX, healthz, base.html com CSRF/htmx
+- [ ] 01-03-PLAN.md — Docker infra + migração 0001 + subida real (build, up, migrate, createsuperuser)
+- [ ] 01-04-PLAN.md — Login/logout reais: views + templates + testes de comportamento + checkpoint de verificação via navegador
 
 ### Phase 2: Shell Visual e Kernel
 **Goal**: O app `core` entrega a experiência visual completa e agnóstica de domínio: layout base com navegação e breadcrumbs, admin com identidade visual, PWA parametrizado e `django-simple-history` pronto para os modelos de domínio.
@@ -94,7 +96,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Fundação Django | 0/2 | Planned | - |
+| 1. Fundação Django | 0/4 | Planned | - |
 | 2. Shell Visual e Kernel | 0/TBD | Not started | - |
 | 3. App Exemplo | 0/TBD | Not started | - |
 | 4. Templatização Copier | 0/TBD | Not started | - |

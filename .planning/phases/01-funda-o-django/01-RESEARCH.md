@@ -664,17 +664,19 @@ class LoginFlowTests(TestCase):
 | A4 | Volume do Postgres **não** `external` nesta fase (diferente da PCA) | Pattern 6 | Médio — decisão deliberada para satisfazer o critério de sucesso 1 (`docker compose up -d` funciona sozinho); se o time preferir replicar o padrão `external` da PCA desde já, precisa documentar o passo extra `docker volume create` no README, o que technically viola "zero passo extra" só para o *primeiro* boot |
 | A5 | `django.contrib.admin` fica com o `AdminSite` **padrão** do Django nesta fase (sem customização de `PcaAdminSite`) | Recommended Project Structure | Baixo — `CORE-03` (admin customizado com identidade visual) é explicitamente Fase 2; manter o admin padrão nesta fase não bloqueia nada e evita acoplar Fase 1 a decisões de UI que ainda não foram tomadas |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **htmx 1.x vs 2.x para o vendor inicial**
    - What we know: a PCA (fonte de extração) roda htmx 1.x; a linha atual do projeto é 2.0.10 (estável) — 4.0 está em beta e não deve ser usado. A API usada nesta fase (`htmx:configRequest`, `hx-post`, `hx-target`, `HX-Redirect`) é idêntica nas duas linhas.
    - What's unclear: se "atualizando patches quando seguro" (CONTEXT.md, Claude's Discretion) deve ser lido como "só patch da mesma major" (ficar em 1.x) ou como liberdade geral de escolher a versão mais nova disponível para um projeto greenfield.
    - Recommendation: usar 1.9.12 por paridade e menor risco nesta fase de fundação; documentar a decisão explicitamente no PLAN para que fique rastreável e revisitável.
+   - RESOLVED: vendorizado htmx 1.9.12 (Assumption A1) em `core/static/vendor/htmx.min.js`, Plan 01-02 Task 1 — decisão registrada e rastreável nesse plan.
 
 2. **Exato ponto de corte da migração 0001 do `core`**
    - What we know: CORE-01 exige `Usuario` desde a 0001; CORE-06 (simple-history) é Fase 2.
    - What's unclear: se a Fase 2 deve criar uma migração `0002_alter_usuario...` (registrando `simple_history.register(Usuario)`, que gera `HistoricalUsuario` numa migração posterior) ou se compensa antecipar campos/estrutura nesta fase para simplificar a Fase 2.
    - Recommendation: não antecipar nada — deixar a 0001 limpa e mínima (só `Usuario`), a Fase 2 adiciona o histórico como migração aditiva, sem risco de dado.
+   - RESOLVED: migração `0001_initial.py` do app `core` limitada a `Usuario` (sem `HistoricalUsuario`), gerada no Plan 01-03 Task 1 (Assumption A2) — Fase 2 adiciona o histórico como migração aditiva posterior.
 
 ## Environment Availability
 
