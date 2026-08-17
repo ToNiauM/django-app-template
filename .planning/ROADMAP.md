@@ -40,7 +40,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — Settings por ambiente: `config/settings/{base,dev,prod}.py` via django-environ, requirements.txt, .env.example
+- [x] 01-01-PLAN.md — Settings por ambiente: `config/settings/{base,dev,prod}.py` via django-environ, requirements.txt, .env.example
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -123,7 +123,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Fundação Django | 0/4 | Planned | - |
+| 1. Fundação Django | 1/4 | In Progress|  |
 | 2. Shell Visual e Kernel | 0/TBD | Not started | - |
 | 3. App Exemplo | 0/TBD | Not started | - |
 | 4. Templatização Copier | 0/TBD | Not started | - |

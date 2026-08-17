@@ -129,3 +129,7 @@ None - nenhuma configuração de serviço externo necessária nesta plan. `.env`
 ---
 *Phase: 01-funda-o-django*
 *Completed: 2026-08-17*
+
+## Self-Check: PASSED
+
+All 10 created files verified present on disk; both task commits (`cd9eb62`, `6b6003b`) verified in `git log`.

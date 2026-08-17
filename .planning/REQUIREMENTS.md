@@ -16,9 +16,9 @@ Requisitos da entrega inicial. Cada um mapeia para fases do roadmap.
 
 ### Configuração (CFG)
 
-- [ ] **CFG-01**: Sistema gerado tem `config/` com settings por ambiente via `django-environ` — toda configuração sensível vem do `.env`
-- [ ] **CFG-02**: Settings de produção aplicam as invariantes de segurança: Argon2 no topo de `PASSWORD_HASHERS`, `django-axes`, cookies `Secure`/`HttpOnly`/`SameSite=Lax`, HSTS e `SECURE_PROXY_SSL_HEADER` atrás do proxy, `DEBUG=False`, `ALLOWED_HOSTS` restrito
-- [ ] **CFG-03**: Settings aplicam a localização padrão: `pt-br`, `America/Sao_Paulo`, `USE_TZ = True`, datas `DD/MM/AAAA`, moeda `R$` pt-BR
+- [x] **CFG-01**: Sistema gerado tem `config/` com settings por ambiente via `django-environ` — toda configuração sensível vem do `.env`
+- [x] **CFG-02**: Settings de produção aplicam as invariantes de segurança: Argon2 no topo de `PASSWORD_HASHERS`, `django-axes`, cookies `Secure`/`HttpOnly`/`SameSite=Lax`, HSTS e `SECURE_PROXY_SSL_HEADER` atrás do proxy, `DEBUG=False`, `ALLOWED_HOSTS` restrito
+- [x] **CFG-03**: Settings aplicam a localização padrão: `pt-br`, `America/Sao_Paulo`, `USE_TZ = True`, datas `DD/MM/AAAA`, moeda `R$` pt-BR
 - [ ] **CFG-04**: `CSRF_COOKIE_HTTPONLY = False` com CSRF do HTMX configurado via `htmx:configRequest` (nunca `hx-headers`)
 
 ### Núcleo (CORE)
@@ -80,9 +80,9 @@ Quais fases cobrem quais requisitos. Preenchido na criação do roadmap.
 
 | Requisito | Fase | Status |
 |-----------|------|--------|
-| CFG-01 | Phase 1 | Pending |
-| CFG-02 | Phase 1 | Pending |
-| CFG-03 | Phase 1 | Pending |
+| CFG-01 | Phase 1 | Complete |
+| CFG-02 | Phase 1 | Complete |
+| CFG-03 | Phase 1 | Complete |
 | CFG-04 | Phase 1 | Pending |
 | CORE-01 | Phase 1 | Pending |
 | CORE-02 | Phase 1 | Pending |
