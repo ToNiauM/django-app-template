@@ -1,0 +1,30 @@
+{% load static %}<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block titulo %}Sistema Base{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'dist/tailwind.css' %}">
+  <script src="{% static 'vendor/htmx.min.js' %}" defer></script>
+  <script src="{% static 'vendor/alpine.min.js' %}" defer></script>
+</head>
+<body class="min-h-screen bg-page text-ink font-sans text-base flex flex-col items-center justify-center">
+  {% block content %}{% endblock %}
+
+  <script>
+    // CSRF lido do cookie A CADA requisição, nunca de um hx-headers estático
+    // no <body> — o Django roda rotate_token() no login e no logout, e
+    // hx-boost não reescreve <html>/<body> (RESEARCH.md, Pattern 4 /
+    // Anti-Patterns). Um token congelado no render ficaria obsoleto assim
+    // que o usuário fizesse login ou logout.
+    function csrfCookie(nome) {
+      const match = document.cookie.match("(^|;)\\s*" + nome + "\\s*=\\s*([^;]+)");
+      return match ? decodeURIComponent(match.pop()) : null;
+    }
+    document.body.addEventListener("htmx:configRequest", (evento) => {
+      evento.detail.headers["X-CSRFToken"] = csrfCookie("csrftoken");
+    });
+  </script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
