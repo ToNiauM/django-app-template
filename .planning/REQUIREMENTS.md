@@ -19,11 +19,11 @@ Requisitos da entrega inicial. Cada um mapeia para fases do roadmap.
 - [x] **CFG-01**: Sistema gerado tem `config/` com settings por ambiente via `django-environ` — toda configuração sensível vem do `.env`
 - [x] **CFG-02**: Settings de produção aplicam as invariantes de segurança: Argon2 no topo de `PASSWORD_HASHERS`, `django-axes`, cookies `Secure`/`HttpOnly`/`SameSite=Lax`, HSTS e `SECURE_PROXY_SSL_HEADER` atrás do proxy, `DEBUG=False`, `ALLOWED_HOSTS` restrito
 - [x] **CFG-03**: Settings aplicam a localização padrão: `pt-br`, `America/Sao_Paulo`, `USE_TZ = True`, datas `DD/MM/AAAA`, moeda `R$` pt-BR
-- [ ] **CFG-04**: `CSRF_COOKIE_HTTPONLY = False` com CSRF do HTMX configurado via `htmx:configRequest` (nunca `hx-headers`)
+- [x] **CFG-04**: `CSRF_COOKIE_HTTPONLY = False` com CSRF do HTMX configurado via `htmx:configRequest` (nunca `hx-headers`)
 
 ### Núcleo (CORE)
 
-- [ ] **CORE-01**: Sistema gerado tem `Usuario` customizado (AbstractUser) com manager próprio, presente desde a primeira migração
+- [x] **CORE-01**: Sistema gerado tem `Usuario` customizado (AbstractUser) com manager próprio, presente desde a primeira migração
 - [ ] **CORE-02**: Usuário pode fazer login e logout pela tela de login com a identidade visual do sistema
 - [ ] **CORE-03**: Administrador acessa admin site customizado com a identidade visual do sistema
 - [ ] **CORE-04**: Sistema gerado tem layout base (`base.html`, `shell.html`) com navegação, breadcrumbs, template tags, context processors e middleware do núcleo
@@ -83,8 +83,8 @@ Quais fases cobrem quais requisitos. Preenchido na criação do roadmap.
 | CFG-01 | Phase 1 | Complete |
 | CFG-02 | Phase 1 | Complete |
 | CFG-03 | Phase 1 | Complete |
-| CFG-04 | Phase 1 | Pending |
-| CORE-01 | Phase 1 | Pending |
+| CFG-04 | Phase 1 | Complete |
+| CORE-01 | Phase 1 | Complete |
 | CORE-02 | Phase 1 | Pending |
 | INF-01 | Phase 1 | Pending |
 | INF-02 | Phase 1 | Pending |
