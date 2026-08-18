@@ -2,19 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 03
-current_phase_name: app-exemplo
+current_phase: 04
+current_phase_name: templatiza-o-copier
 status: executing
 stopped_at: Phase 4 context gathered
-last_updated: "2026-08-18T15:46:48.579Z"
+last_updated: "2026-08-18T16:12:42.950Z"
 last_activity: 2026-08-18
-last_activity_desc: Phase 03 execution started
+last_activity_desc: Phase 04 execution started
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 18
-  completed_plans: 11
-  percent: 60
+  completed_plans: 12
 ---
 
 # Project State
@@ -24,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-17)
 
 **Core value:** Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de exemplo, Docker, backup) em minutos — restando ao time apenas modelar o domínio em `apps/`.
-**Current focus:** Phase 03 — app-exemplo
+**Current focus:** Phase 04 — templatiza-o-copier
 
 ## Current Position
 
-Phase: 03 (app-exemplo) — EXECUTING
-Plan: 1 of 3
+Phase: 04 (templatiza-o-copier) — EXECUTING
+Plan: 2 of 7
 Status: Ready to execute
-Last activity: 2026-08-18 -- Phase 03 execution started
+Last activity: 2026-08-18 — Phase 04 execution started
 
 Progress: [██████████] 100%
 
