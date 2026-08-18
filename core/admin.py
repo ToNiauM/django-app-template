@@ -10,7 +10,18 @@ from core.models import Usuario
 # pelo django-simple-history é registrar via `register()` (D-22). Os modelos de
 # domínio comuns seguem a convenção normal — `history = HistoricalRecords()`
 # declarado no modelo (D-23, ver core/README.md).
-simple_history.register(Usuario)
+#
+# `excluded_fields` (WR-01): sem a exclusão, TODO save snapshotaria o hash
+# Argon2 em `core_historicalusuario` — inclusive o `update_last_login` que o
+# signal `user_logged_in` dispara a cada login. Um dump do banco exporia o
+# histórico completo de hashes do usuário (senhas antigas, possivelmente mais
+# fracas/reutilizadas, atacáveis offline mesmo depois de rotacionadas). O
+# evento "senha trocada" continua auditável pelo próprio registro `~` do
+# save; o que nunca pode existir é o hash em si na tabela histórica.
+# Nota: o simple-history ainda grava um registro por save (o `post_save` não
+# olha `update_fields`), então cada login segue gerando uma linha `~` — mas
+# sem hash nem last_login, ela não retém nenhum dado sensível.
+simple_history.register(Usuario, excluded_fields=["password", "last_login"])
 
 
 @admin.register(Usuario)

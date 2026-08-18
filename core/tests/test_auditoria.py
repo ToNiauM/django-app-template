@@ -20,6 +20,19 @@ class HistoricoDeUsuarioTests(TestCase):
         # "+" = criação no vocabulário do simple-history.
         self.assertEqual(usuario.history.first().history_type, "+")
 
+    def test_historico_nunca_snapshota_password_nem_last_login(self):
+        # WR-01: `excluded_fields` em core/admin.py. Sem a exclusão, todo
+        # save (inclusive o `update_last_login` de cada login) copiaria o
+        # hash Argon2 para core_historicalusuario — um dump do banco
+        # exporia o histórico completo de hashes (senhas antigas, atacáveis
+        # offline mesmo após rotação). Este teste trava a ausência das duas
+        # colunas no modelo histórico.
+        campos = {
+            campo.name for campo in Usuario.history.model._meta.get_fields()
+        }
+        self.assertNotIn("password", campos)
+        self.assertNotIn("last_login", campos)
+
 
 @override_settings(SESSION_COOKIE_SECURE=False, CSRF_COOKIE_SECURE=False)
 class HistoryRequestMiddlewareTests(TestCase):
