@@ -130,7 +130,36 @@ Plans:
   4. O código gerado não contém nenhuma menção a "PCA" ou a qualquer domínio de negócio
   5. `ops/` inclui backup do banco e exemplo de vhost nginx; o app escuta só em `127.0.0.1` e a migração completa é dump + `.env` + `docker compose up -d` + `migrate` + proxy/DNS
 
-**Plans**: TBD
+**Plans**: 7 plans (7 waves)
+
+Plans:
+**Wave 1**
+
+- [ ] 04-01-PLAN.md — Gate humano obrigatório de procedência de `copier==9.17.1`
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 04-02-PLAN.md — Tracer `copier copy`: perguntas, answers, exclusões, `.env.example` e READMEs
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 04-03-PLAN.md — Identidade `.env`-first: settings, Tailwind, entrypoint, seed, ícones e auditoria do gerado
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 04-04-PLAN.md — App exemplo condicional nos quatro destinos exatos, sem `_skip_if_exists`
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 04-05-PLAN.md — Compose isolado e backup/retencão containerizados, configurados por `.env`
+
+**Wave 6** *(blocked on Wave 5 completion)*
+
+- [ ] 04-06-PLAN.md — Restore confinado, Nginx TLS e runbook portátil de migração
+
+**Wave 7** *(blocked on Wave 6 completion)*
+
+- [ ] 04-07-PLAN.md — Matrizes de copy e prova Git/Copier A→B→C sem ressuscitar o app exemplo
 
 ### Phase 5: Verificação e Documentação
 
@@ -156,5 +185,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Fundação Django | 4/4 | Complete    | 2026-08-18 |
 | 2. Shell Visual e Kernel | 4/4 | Complete    | 2026-08-18 |
 | 3. App Exemplo | 3/3 | Complete    | 2026-08-18 |
-| 4. Templatização Copier | 0/TBD | Not started | - |
+| 4. Templatização Copier | 0/7 | Not started | - |
 | 5. Verificação e Documentação | 0/TBD | Not started | - |
