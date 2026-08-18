@@ -6,6 +6,8 @@ Fonte: adaptado de /opt/web/pca/core/tests/test_login_flow.py — mesmas
 convenções, sem nada de domínio.
 """
 
+import re
+
 from django.test import Client, TestCase, override_settings
 
 from core.models import Usuario
@@ -103,11 +105,62 @@ class LoginFlowTests(TestCase):
         )
         self.assertEqual(response["HX-Redirect"], "/")
 
-    def test_next_open_redirect_nunca_aponta_para_host_externo(self):
+    @staticmethod
+    def _extrair_next_do_form(conteudo_html):
+        """Extrai o valor do campo oculto `next` renderizado pelo form.
+
+        Simula o que o navegador faz de verdade: lê o valor já presente no
+        HTML devolvido pelo GET, em vez de montar a querystring do POST na
+        mão (o que mascararia o bug do CR-01, em que o form nunca propagava
+        `next`).
+        """
+        casado = re.search(r'name="next" value="([^"]*)"', conteudo_html)
+        return casado.group(1) if casado else ""
+
+    def test_next_legitimo_sobrevive_ao_ciclo_completo_get_form_post(self):
+        # GET com `?next=` — como o `LoginRequiredMiddleware` produziria ao
+        # redirecionar um acesso não autenticado a uma página protegida.
         client = Client()
+        pagina_protegida = "/pagina-protegida/"
+        resposta_get = client.get(f"/login/?next={pagina_protegida}")
+        conteudo = resposta_get.content.decode("utf-8")
+
+        # O campo oculto do form precisa carregar o `next` recebido no GET —
+        # é o que prova que o valor realmente atravessa o template.
+        next_no_form = self._extrair_next_do_form(conteudo)
+        self.assertEqual(next_no_form, pagina_protegida)
+
+        # POST real: só os campos que o form efetivamente envia, incluindo o
+        # campo oculto extraído do HTML (não a querystring da URL).
+        resposta_post = client.post(
+            "/login/",
+            {
+                "email": self.email,
+                "password": self.password,
+                "next": next_no_form,
+            },
+            headers={"HX-Request": "true"},
+        )
+        self.assertEqual(resposta_post["HX-Redirect"], pagina_protegida)
+
+    def test_next_open_redirect_nunca_aponta_para_host_externo(self):
+        # Mesmo ciclo real GET→form→POST, mas com um `next` malicioso —
+        # prova que a proteção contra open redirect também vale para o
+        # caminho que a interface de fato produz, não só para um POST
+        # direto forjado.
+        client = Client()
+        alvo_malicioso = "https://evil.example.com/"
+        resposta_get = client.get(f"/login/?next={alvo_malicioso}")
+        next_no_form = self._extrair_next_do_form(resposta_get.content.decode("utf-8"))
+        self.assertEqual(next_no_form, alvo_malicioso)
+
         response = client.post(
-            "/login/?next=https://evil.example.com/",
-            {"email": self.email, "password": self.password},
+            "/login/",
+            {
+                "email": self.email,
+                "password": self.password,
+                "next": next_no_form,
+            },
             headers={"HX-Request": "true"},
         )
         self.assertEqual(response["HX-Redirect"], "/")

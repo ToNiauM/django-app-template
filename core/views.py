@@ -39,10 +39,18 @@ def login_view(request):
     silenciosa do dispatcher) — ver Pitfall 3/4 do 01-RESEARCH.md.
     """
     if request.method != "POST":
-        return TemplateResponse(request, "core/login.html", {})
+        # `next` chega via querystring no GET (posto lá pelo
+        # `LoginRequiredMiddleware`) e precisa ser propagado para o template
+        # como campo oculto do form — sem isto, o POST subsequente nunca
+        # carrega o destino e o redirect pós-login sempre cai em "/"
+        # (CR-01).
+        return TemplateResponse(
+            request, "core/login.html", {"next": request.GET.get("next", "")}
+        )
 
     email = request.POST.get("email", "")
     senha = request.POST.get("password", "")
+    next_bruto = request.POST.get("next", "")
 
     user = authenticate(request, username=email, password=senha)
 
@@ -53,6 +61,9 @@ def login_view(request):
             "core/_login_form.html",
             {
                 "email": email,
+                # Preserva `next` também no branch de erro/bloqueio — senão
+                # se perde já na segunda tentativa após uma senha errada.
+                "next": next_bruto,
                 "bloqueado": bloqueado,
                 "erro": not bloqueado,
             },
@@ -63,8 +74,11 @@ def login_view(request):
 
     # Proteção contra open redirect (T-04-03): `?next=` é entrada controlada
     # pelo cliente. `url_has_allowed_host_and_scheme` garante que só um
-    # caminho relativo ao próprio host é aceito como destino.
-    destino_bruto = request.GET.get("next") or request.POST.get("next")
+    # caminho relativo ao próprio host é aceito como destino. O campo oculto
+    # do form é a fonte primária (é o que o ciclo GET→POST real usa); o
+    # fallback em `request.GET` cobre o caso raro de um POST direto para
+    # `/login/?next=...` (ex.: chamada programática/teste).
+    destino_bruto = next_bruto or request.GET.get("next")
     if destino_bruto and url_has_allowed_host_and_scheme(
         destino_bruto,
         allowed_hosts={request.get_host()},
