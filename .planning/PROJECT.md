@@ -25,13 +25,13 @@ Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de ex
 - ✓ `apps/exemplo/` — CRUD de referência: tabela paginada server-side, ordenação com whitelist, filtros multi-seleção, criação e edição via modal HTMX com HTTP 422 e `HX-Trigger` — Fase 3
 - ✓ `apps/exemplo/` — dashboard ECharts com agregações 100% via ORM no PostgreSQL (`annotate`/`aggregate`), serialização `json_script` e drill-down — Fase 3
 - ✓ `apps/exemplo/` — app 100% autocontido e descartável com protocolo de remoção em 4 passos no `README.md` e testes de isolamento — Fase 3
+- ✓ Template Copier in-place com variáveis validadas, defaults não secretos, `copier copy` e `copier update` provados em ensaio A→B→C — Fase 4
+- ✓ Infra operacional portátil: Compose isolado, backup/retenção containerizados, ensaio de restore confinado, vhost TLS e runbook de migração — Fase 4
 
 ### Ativos
 
 <!-- Escopo atual. Construindo em direção a estes. -->
 
-- [ ] Estrutura de template Copier com variáveis (nome do sistema, slug, subdomínio, porta interna, nome do banco, cor primária) — nada hard-coded
-- [ ] Infra restante: `ops/` (backup do banco, exemplo de vhost nginx)
 - [ ] Suíte de testes do core e do app exemplo, que passa no sistema gerado
 - [ ] `README` do template: documentação de nascimento de sistema, do `copier copy` ao proxy/DNS
 - [ ] `copier copy` + `.env` + `docker compose up -d` + `migrate` + `createsuperuser` produz sistema navegável sem editar código
@@ -72,7 +72,7 @@ Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de ex
 
 | Decisão | Justificativa | Resultado |
 |---------|---------------|-----------|
-| Template clonável via Copier (não pacote pip, não monorepo) | `copier copy` gera o sistema; `copier update` permite puxar evoluções do núcleo; cada sistema fica autocontido e portátil | — Pendente |
+| Template clonável via Copier (não pacote pip, não monorepo) | `copier copy` gera o sistema; `copier update` permite puxar evoluções do núcleo; cada sistema fica autocontido e portátil | Validado na Fase 4 |
 | PCA não será alterada | É a fonte da extração, provada em produção; segue em `/opt/web/pca`; migração é decisão futura | — Pendente |
 | Autenticação independente por sistema | Cada sistema tem seus usuários e login; SSO é evolução futura; usuário customizado desde a primeira migração evita acoplamento que inviabilize SSO | — Pendente |
 | Stack fechada idêntica à da PCA | Mesma cara, mesma stack, mesma operação em toda a família de sistemas | — Pendente |
@@ -95,4 +95,4 @@ Este documento evolui nas transições de fase e nos marcos do projeto.
 4. Atualizar Contexto com o estado atual
 
 ---
-*Última atualização: 2026-08-18 após conclusão da Fase 3 (App Exemplo)*
+*Última atualização: 2026-08-18 após conclusão da Fase 4 (Templatização Copier)*
