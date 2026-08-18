@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 
-{% block titulo %}Entrar · Sistema Base{% endblock %}
+{% block titulo %}Entrar · {{ sistema_nome }}{% endblock %}
 
 {% block content %}
-<div class="w-full max-w-sm p-6 bg-surface rounded shadow">
-  <h1 class="text-xl font-semibold mb-4">Entrar</h1>
-  {% include "core/_login_form.html" %}
+{# O centering migrou do <body> para este wrapper (Pitfall 11) — o body ficou neutro para não espremer a aside fixa do shell. #}
+<div class="min-h-screen flex flex-col items-center justify-center px-4">
+  <div class="w-full max-w-sm p-6 bg-surface rounded shadow">
+    <h1 class="text-xl font-semibold mb-4">Entrar</h1>
+    {% include "core/_login_form.html" %}
+  </div>
 </div>
 {% endblock %}

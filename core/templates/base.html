@@ -3,20 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block titulo %}Sistema Base{% endblock %}</title>
+  {# Default do título via context processor (D-16) — zero nome hard-coded. #}
+  <title>{% block titulo %}{{ sistema_nome }}{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'dist/tailwind.css' %}">
   <script src="{% static 'vendor/htmx.min.js' %}" defer></script>
   <script src="{% static 'vendor/alpine.min.js' %}" defer></script>
 </head>
-<body class="min-h-screen bg-page text-ink font-sans text-base flex flex-col items-center justify-center">
+{% comment %}
+  O body NÃO centraliza mais o conteúdo (Pitfall 11): o centering era da
+  tela de login e espremeria a aside fixa do shell no meio da página. O
+  wrapper de centering agora vive em core/login.html.
+{% endcomment %}
+<body class="min-h-screen bg-page text-ink font-sans text-base">
   {% block content %}{% endblock %}
 
   <script>
     // CSRF lido do cookie A CADA requisição, nunca de um hx-headers estático
-    // no <body> — o Django roda rotate_token() no login e no logout, e
-    // hx-boost não reescreve <html>/<body> (RESEARCH.md, Pattern 4 /
-    // Anti-Patterns). Um token congelado no render ficaria obsoleto assim
-    // que o usuário fizesse login ou logout.
+    // no <body> — o Django roda rotate_token() no login e no logout, e o
+    // htmx não reescreve <html>/<body> nas trocas parciais (RESEARCH.md,
+    // Pattern 4 / Anti-Patterns). Um token congelado no render ficaria
+    // obsoleto assim que o usuário fizesse login ou logout.
     function csrfCookie(nome) {
       const match = document.cookie.match("(^|;)\\s*" + nome + "\\s*=\\s*([^;]+)");
       return match ? decodeURIComponent(match.pop()) : null;
