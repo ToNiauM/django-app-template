@@ -1,0 +1,46 @@
+{% extends "core/shell.html" %}
+{% load static %}
+
+{% block titulo %}Itens de Exemplo · {{ sistema_sigla }}{% endblock %}
+{% block titulo_pagina %}Itens de Exemplo{% endblock %}
+
+{% block cabecalho_pagina %}
+<div class="mb-6">
+  {% include "core/_breadcrumbs.html" with trilha=trilha %}
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-2">
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight text-ink">Itens de Exemplo</h1>
+      <p class="text-sm font-normal text-ink-2 mt-1">CRUD de referência com paginação server-side e modais HTMX.</p>
+    </div>
+    <div>
+      <button type="button"
+              hx-get="{% url 'exemplo:item_criar' %}"
+              hx-target="#modal-container"
+              hx-swap="innerHTML"
+              class="inline-flex items-center justify-center gap-2 rounded-sm bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover transition-colors shadow-xs">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M5 12h14"/><path d="M12 5v14"/>
+        </svg>
+        <span>Novo item</span>
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block conteudo_pagina %}
+<div class="flex flex-col gap-4">
+  <!-- Container de Filtros -->
+  {% include "exemplo/_filtros.html" %}
+
+  <!-- Container da Tabela com escuta de eventos HTMX -->
+  <div id="tabela-container">
+    {% include "exemplo/_tabela_resultado.html" %}
+  </div>
+</div>
+
+<!-- Container do Modal Global com listener para atualizar tabela -->
+<div id="modal-container"
+     @item-salvo.window="htmx.trigger('#form-filtros', 'submit')">
+</div>
+{% endblock %}

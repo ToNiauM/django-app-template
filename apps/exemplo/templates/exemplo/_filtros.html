@@ -1,0 +1,77 @@
+<!-- apps/exemplo/templates/exemplo/_filtros.html -->
+<div class="rounded-sm border border-grid bg-surface p-4">
+  <form id="form-filtros"
+        hx-get="{% url 'exemplo:item_listar' %}"
+        hx-target="#tabela-container"
+        hx-swap="innerHTML"
+        hx-push-url="true"
+        class="flex flex-col gap-4">
+
+    <!-- Preserva ordenação ativa -->
+    <input type="hidden" name="ordem" value="{{ ordem_atual }}">
+
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+      <!-- Busca Textual -->
+      <div class="md:col-span-5">
+        <label for="filtro-q" class="sr-only">Buscar itens</label>
+        <div class="relative">
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+            </svg>
+          </span>
+          <input type="text"
+                 id="filtro-q"
+                 name="q"
+                 value="{{ q }}"
+                 placeholder="Buscar por título ou descrição..."
+                 hx-trigger="input changed delay:300ms, search"
+                 class="w-full rounded-sm border border-grid bg-surface pl-9 pr-3 py-2 text-sm text-ink placeholder:text-muted focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand">
+        </div>
+      </div>
+
+      <!-- Filtro de Categoria -->
+      <div class="md:col-span-3">
+        <label for="filtro-categoria" class="sr-only">Categoria</label>
+        <select id="filtro-categoria"
+                name="categoria"
+                hx-trigger="change"
+                class="w-full rounded-sm border border-grid bg-surface px-3 py-2 text-sm text-ink focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand">
+          <option value="">Todas as categorias</option>
+          {% for val, rotulo in opcoes_categoria %}
+            <option value="{{ val }}" {% if val in categorias_selecionadas %}selected{% endif %}>{{ rotulo }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Filtro de Status -->
+      <div class="md:col-span-3">
+        <label for="filtro-status" class="sr-only">Status</label>
+        <select id="filtro-status"
+                name="status"
+                hx-trigger="change"
+                class="w-full rounded-sm border border-grid bg-surface px-3 py-2 text-sm text-ink focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand">
+          <option value="">Todos os status</option>
+          {% for val, rotulo in opcoes_status %}
+            <option value="{{ val }}" {% if val in status_selecionados %}selected{% endif %}>{{ rotulo }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Botão Limpar Filtros -->
+      <div class="md:col-span-1 flex justify-end">
+        {% if q or categorias_selecionadas or status_selecionados %}
+          <a href="{% url 'exemplo:item_listar' %}"
+             hx-get="{% url 'exemplo:item_listar' %}"
+             hx-target="#tabela-container"
+             hx-swap="innerHTML"
+             hx-push-url="true"
+             title="Limpar todos os filtros"
+             class="inline-flex items-center justify-center p-2 rounded-sm border border-grid text-ink-2 hover:bg-surface-2 transition-colors text-xs font-semibold">
+            Limpar
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </form>
+</div>
