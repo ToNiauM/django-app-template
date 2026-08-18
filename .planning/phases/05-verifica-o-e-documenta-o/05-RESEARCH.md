@@ -203,14 +203,14 @@ O `<porta>` é uma variável da resposta Copier, não um literal a fixar no test
 
 | # | Premissa | Seção | Risco se estiver errada |
 |---|---|---|---|
-| A1 | [ASSUMED] A inspeção visual manual no navegador é evidência complementar suficiente; a regressão obrigatória não requer instalar automação de navegador. | Stack padrão | Média: o critério “navegável” poderia passar a exigir automação de browser explícita. |
+| A1 | [RESOLVED] A Fase 5 não adiciona automação de navegador nem nova dependência frontend/browser; a inspeção manual é evidência complementar após o tracer determinístico. | Stack padrão; `05-UI-SPEC.md` | Resolvida pelo contrato UI verificado: a regressão obrigatória combina Copier, Compose, Django e HTTP antes do checkpoint manual. |
 
-## Questões em Aberto
+## Questões em Aberto (RESOLVED)
 
-1. **A prova de navegação deve incluir automação de navegador?**
-   - O que sabemos: a suíte Django verifica os fluxos funcionais e o ensaio isolado provou serviço HTTP para saúde/login. [VERIFIED: execução local de 2026-08-18; core/tests/test_login_flow.py:22-214]
-   - O que falta decidir: se a validação final exige clique/JavaScript automatizado, além da inspeção manual recomendada.
-   - Recomendação: não adicionar pacote agora; registrar um checkpoint manual de navegador após o ensaio. Se a aceitação exigir evidência automatizada de UI, abrir uma fase específica para escolher e auditar essa dependência.
+1. **[RESOLVED] A prova de navegação não inclui automação de navegador na Fase 5.**
+   - Decisão: não adicionar automação de navegador nem qualquer dependência frontend/browser nesta fase.
+   - Evidência determinística obrigatória: executar o tracer completo na cópia gerada — Copier, `.env`, Compose, migração, criação de superusuário, suíte Django e smoke HTTP de `/healthz` e `/login/`. [VERIFIED: execução local de 2026-08-18; core/tests/test_login_flow.py:22-214]
+   - Evidência complementar: somente depois de o tracer passar, realizar o checkpoint manual no navegador para login, shell, CRUD e dashboard. [VERIFIED: `05-UI-SPEC.md`, Escopo visual da fase e Interação e evidência visual obrigatória]
 
 ## Disponibilidade do Ambiente
 
@@ -267,6 +267,6 @@ As categorias são uma seleção de verificação, não uma declaração de conf
 
 - Stack padrão: HIGH — versões, ferramentas e fluxo observados na árvore e no ambiente; documentação oficial consultada.
 - Arquitetura: HIGH — o ensaio real da cópia passou nesta sessão e os contratos da Fase 4 já estão automatizados.
-- Armadilhas: HIGH — derivadas dos limites explícitos dos testes e do Compose atuais; a necessidade de browser automation permanece assinalada como premissa.
+- Armadilhas: HIGH — derivadas dos limites explícitos dos testes e do Compose atuais; A1 foi resolvida pelo contrato UI verificado sem automação de navegador ou nova dependência frontend/browser na Fase 5.
 
 **Válido até:** 2026-09-17, salvo alteração de Django, Copier, Docker Compose ou do contrato do template.
