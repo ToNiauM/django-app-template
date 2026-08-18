@@ -29,7 +29,6 @@ INSTALLED_APPS = [
     "django.contrib.admin",
     "django_htmx",
     "axes",
-    "core",
 ]
 
 # A ordem do MIDDLEWARE é normativa — não reordenar sem entender o motivo
