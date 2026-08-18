@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Phase 2 context gathered
-last_updated: "2026-08-18T03:58:46.261Z"
+last_updated: "2026-08-18T04:06:56.830Z"
 last_activity: 2026-08-18
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 8
-  completed_plans: 6
+  completed_plans: 7
   percent: 20
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-17)
 ## Current Position
 
 Phase: 2 (Shell Visual e Kernel) — EXECUTING
-Plan: 3 of 4
+Plan: 4 of 4
 Status: Ready to execute
 Last activity: 2026-08-18
 
-Progress: [████████░░] 75%
+Progress: [█████████░] 88%
 
 ## Performance Metrics
 
@@ -58,6 +58,7 @@ Progress: [████████░░] 75%
 | Phase 01-funda-o-django P04 | 10min | 3 tasks | 9 files |
 | Phase 02 P01 | 4min | 2 tasks | 6 files |
 | Phase 02 P02 | 5min | 3 tasks | 7 files |
+| Phase 02 P03 | 6min | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -81,6 +82,8 @@ Recent decisions affecting current work:
 - [Phase 02-01]: Tokens de marca derivados por misturar() em JS puro no tailwind.config.js — um unico hex literal de identidade (D-17), sem CSS vars (sem dark mode nesta fase)
 - [Phase 02-02]: Kernel da fase entrega zero template tags customizadas — D-12 veta templatetag com ORM e a trilha vem pronta da view (item 'template tags' de CORE-04 atendido deliberadamente sem tags)
 - [Phase 02-02]: Botão Sair do shell como <form hx-post> com csrf_token de fallback no-JS (padrão IN-02), não botão solto
+- [Phase 02-03]: Gate do admin mantido no padrão do Django (is_active and is_staff) — decisão A1 travada por teste; gate superuser é política de domínio, não do template
+- [Phase 02-03]: Auditoria padrão: HistoricalRecords() nos modelos de domínio; user model é exceção via simple_history.register() em core/admin.py (dependência circular em model swappable)
 
 ### Pending Todos
 
@@ -100,6 +103,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-18T03:58:13.562Z
+Last session: 2026-08-18T04:06:26.850Z
 Stopped at: Phase 2 context gathered
 Resume file: None

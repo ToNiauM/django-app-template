@@ -25,10 +25,10 @@ Requisitos da entrega inicial. Cada um mapeia para fases do roadmap.
 
 - [x] **CORE-01**: Sistema gerado tem `Usuario` customizado (AbstractUser) com manager próprio, presente desde a primeira migração
 - [x] **CORE-02**: Usuário pode fazer login e logout pela tela de login com a identidade visual do sistema
-- [ ] **CORE-03**: Administrador acessa admin site customizado com a identidade visual do sistema
+- [x] **CORE-03**: Administrador acessa admin site customizado com a identidade visual do sistema
 - [x] **CORE-04**: Sistema gerado tem layout base (`base.html`, `shell.html`) com navegação, breadcrumbs, template tags, context processors e middleware do núcleo
 - [ ] **CORE-05**: Sistema gerado funciona como PWA (manifest, ícones, service worker) parametrizado pelo nome do sistema
-- [ ] **CORE-06**: `django-simple-history` está disponível e configurado como padrão de auditoria para modelos de domínio
+- [x] **CORE-06**: `django-simple-history` está disponível e configurado como padrão de auditoria para modelos de domínio
 
 ### App Exemplo (EX)
 
@@ -88,10 +88,10 @@ Quais fases cobrem quais requisitos. Preenchido na criação do roadmap.
 | CORE-02 | Phase 1 | Complete |
 | INF-01 | Phase 1 | Complete |
 | INF-02 | Phase 1 | Complete |
-| CORE-03 | Phase 2 | Pending |
+| CORE-03 | Phase 2 | Complete |
 | CORE-04 | Phase 2 | Complete |
 | CORE-05 | Phase 2 | Pending |
-| CORE-06 | Phase 2 | Pending |
+| CORE-06 | Phase 2 | Complete |
 | EX-01 | Phase 3 | Pending |
 | EX-02 | Phase 3 | Pending |
 | EX-03 | Phase 3 | Pending |
