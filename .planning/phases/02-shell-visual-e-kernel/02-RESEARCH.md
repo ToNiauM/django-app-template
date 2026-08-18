@@ -516,14 +516,17 @@ class UsuarioAdmin(UserAdmin):
 | A4 | Dark mode/controle de tema da PCA fica fora desta fase (não aparece em CORE-03..06 nem nas decisões D-09..D-23) | Pattern 1 | Médio se o usuário esperava tema escuro — reintroduzir depois exige voltar a CSS vars (mudança na estratégia de tokens) [ASSUMED] |
 | A5 | Nomes de blocos da Fase 1 (`titulo`, `content`, `scripts` no base.html) são mantidos; o contrato D-11 (`cabecalho_pagina`/`titulo_pagina`/`conteudo_pagina`) vale só para os blocos internos do shell.html | Pattern 4 | Baixo — renomear tocaria login.html sem ganho [ASSUMED] |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **`healthz` entra nesta fase?** (item de discretion do CONTEXT.md)
+   - **RESOLVED:** já entregue na Fase 1 (`core.views.healthz` + rota em `config/urls.py`) — nada a fazer; adotado no plano 02-04 (nota na verification).
    - O que sabemos: **já existe** — a Fase 1 implementou `core.views.healthz` e o roteou em `config/urls.py` (`path("healthz", ...)`), com `@login_not_required` e SELECT 1 no banco.
    - Recomendação: nada a fazer nesta fase — discretion resolvida por fato consumado; registrar no plano como "já entregue na Fase 1".
 2. **Cor primária default do placeholder "Sistema Base".**
+   - **RESOLVED:** `#1e40af` adotado como default nos settings e como único literal do `tailwind.config.js` (plano 02-01).
    - Recomendação: `#1e40af` (azul neutro, contraste ~8.7:1 sobre branco — AA para texto). Qualquer hex serve; vira variável Copier na Fase 4. Decisão de discretion do planner.
 3. **Onde exercitar `HistoricalRecords()` de domínio (D-23)?**
+   - **RESOLVED:** nesta fase o padrão é documentado em `core/README.md` e exemplificado via `simple_history.register(Usuario)` + testes de auditoria (plano 02-03); o exercício em modelo de domínio fica para o `apps/exemplo` da Fase 3.
    - O que sabemos: nenhum modelo de domínio existe até a Fase 3; nesta fase o padrão só pode ser documentado (`core/README.md`) + exemplificado pelo `Usuario` via `register()`.
    - Recomendação: critério de sucesso 4 se verifica por: pacote instalado, middleware ativo, `HistoricalUsuario` migrando e gravando, README documentando a convenção.
 
