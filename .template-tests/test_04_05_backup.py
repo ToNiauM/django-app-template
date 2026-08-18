@@ -163,7 +163,7 @@ class BackupComposeTemplateTests(unittest.TestCase):
         self.assertIn("sort -r", retention_source)
         self.assertIn("tail -n", retention_source)
         self.assertIn("rclone delete", retention_source)
-        self.assertIn("trap limpar EXIT", test_source)
+        self.assertIn("trap limpar 0", test_source)
         self.assertIn("${SISTEMA_SLUG}_retencao_$$", test_source)
         self.assertIn("daily|weekly", test_source)
         self.assertIn("rclone purge", test_source)
