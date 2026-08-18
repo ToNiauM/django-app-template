@@ -1,9 +1,12 @@
 # Template Django com Copier
 
-Este repositório é o **template-fonte** de uma família de sistemas Django. Ele
-não deve ser executado diretamente: use o Copier para criar um repositório
-derivado, autocontido e versionado. O `README.md` que aparece no sistema
-gerado é outro arquivo, renderizado a partir de `README.md.jinja`.
+Este repositório é o **template-fonte** de uma família de sistemas Django. A
+árvore contém arquivos Jinja e não é executável: nunca rode Django ou Docker
+Compose diretamente neste checkout. Use o Copier para criar um repositório
+derivado, autocontido e versionado, e execute todos os comandos de runtime
+somente no sistema gerado. O `README.md` que aparece no sistema gerado é outro
+arquivo, renderizado a partir de `README.md.jinja`, e é o guia da operação
+cotidiana daquele sistema específico.
 
 ## Ferramenta isolada e versão aprovada
 
@@ -35,48 +38,123 @@ sequência de caracteres dentro de outro valor neutro; o único metadado
 desconsiderado é `_src_path` em `.copier-answers.yml`, campo que o próprio
 Copier precisa para atualizar um projeto derivado.
 
-## Nascimento de um sistema
+## Nascimento local de um sistema
 
-1. Parta de uma tag estável do template, por exemplo `v0.1.0`.
-2. Execute a cópia a partir de um diretório de trabalho fora do destino:
+A sequência abaixo leva do template a um sistema navegável sem editar código.
+Todos os comandos Django e Docker acontecem dentro do diretório gerado, nunca
+na raiz do template. Não há `_tasks`, migrations Copier ou qualquer automação
+oculta após a cópia: cada passo é consciente e auditável.
+
+1. **Pré-requisitos.** Docker Engine com o plugin Docker Compose, Python 3,
+   Git e curl instalados no host; o Copier aprovado instalado na
+   `.venv-template` (seção anterior).
+
+2. **Escolha uma tag estável do template**, por exemplo `v0.1.0`. Sistemas
+   nascem de releases revisadas, não de commits arbitrários.
+
+3. **Gere a cópia a partir de um diretório de trabalho fora do destino:**
 
    ```bash
    /caminho/para/template/.venv-template/bin/copier copy /caminho/para/template /caminho/para/novo-sistema
    ```
 
-   Responda as oito perguntas: nome, slug, hostname, porta, banco, sigla, cor
-   e inclusão do app exemplo. Os validators recusam valores fora do contrato
-   antes de renderizar arquivos.
-3. Entre no diretório gerado, copie `.env.example` para `.env` e preencha os
-   segredos. As respostas Copier ficam em `.copier-answers.yml` e não contêm
-   segredos.
-4. Inicie o repositório do sistema e faça o primeiro commit, preservando o
-   arquivo de respostas necessário para updates:
+4. **Responda as oito perguntas:** nome, slug, hostname, porta, banco, sigla,
+   cor primária e inclusão do app exemplo. Os validators recusam valores fora
+   do contrato antes de renderizar arquivos. Segredos nunca são respostas
+   Copier: as respostas ficam em `.copier-answers.yml`, arquivo sem
+   credenciais que será versionado no repositório do sistema.
+
+5. **Entre no projeto gerado e crie o ambiente local:**
 
    ```bash
    cd /caminho/para/novo-sistema
    cp .env.example .env
+   ```
+
+   O `.env.example` já vem pré-preenchido com slug, porta e identidade
+   respondidos no Copier; falta essencialmente preencher os segredos, que são
+   valores locais do `.env` e nunca entram no Git.
+
+6. **Gere a `SECRET_KEY` localmente** e cole o resultado no `.env`:
+
+   ```bash
+   python3 -c "import secrets; print(secrets.token_urlsafe(50))"
+   ```
+
+7. **Preencha `POSTGRES_PASSWORD` e `DATABASE_URL` de forma coerente:** a
+   mesma senha deve aparecer nos dois valores. O `DATABASE_URL` já traz
+   usuário e banco derivados do slug; troque apenas o placeholder de senha
+   pelos mesmos caracteres usados em `POSTGRES_PASSWORD`.
+
+8. **Credenciais R2** (`R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`,
+   `R2_ENDPOINT`, `R2_BUCKET`) pertencem ao serviço `backup` e podem
+   permanecer com os placeholders durante a prova inicial local. Quando o
+   backup entrar em operação, preencha-as diretamente no `.env`; nunca crie
+   perguntas Copier, valores padrão reais ou commits para essas credenciais.
+
+9. **Inicie o repositório do sistema e faça o primeiro commit**, preservando o
+   `.copier-answers.yml` (sem credenciais) exigido pelos updates futuros:
+
+   ```bash
    git init
    git add .
    git commit -m "chore: inicia sistema gerado pelo Copier"
    ```
 
-5. Siga o README renderizado para configurar Docker Compose, migrações, proxy
-   e DNS. Não há `_tasks`, migrations Copier ou qualquer automação oculta após
-   a cópia: cada passo é consciente e auditável.
+10. **Valide a configuração resolvida do Compose:**
 
-### Segredos locais
+    ```bash
+    docker compose --env-file .env config -q
+    ```
 
-Gere a chave Django sem a colocar em respostas Copier:
+11. **Suba banco e aplicação.** O serviço `backup` fica de fora até existirem
+    credenciais R2 reais:
 
-```bash
-python -c "import secrets; print(secrets.token_urlsafe(50))"
-```
+    ```bash
+    docker compose up -d --build db web
+    ```
 
-Cole o resultado diretamente em `SECRET_KEY` no `.env`. Preencha também
-`POSTGRES_PASSWORD`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` e `R2_BUCKET`
-diretamente no `.env`; nunca crie perguntas Copier, valores padrão reais ou
-commits para essas credenciais.
+12. **Acompanhe a inicialização pelos logs:**
+
+    ```bash
+    docker compose logs -f web
+    ```
+
+13. **Aplique as migrações** (comando não interativo com `-T`, adequado a
+    scripts e automação):
+
+    ```bash
+    docker compose exec -T web python manage.py migrate --noinput
+    ```
+
+14. **Crie o administrador.** Este comando é interativo: o operador digita
+    e-mail e senha no terminal, por isso ele usa `exec` sem `-T`:
+
+    ```bash
+    docker compose exec web python manage.py createsuperuser
+    ```
+
+15. **Confirme a saúde do processo web**, usando a porta respondida no Copier:
+
+    ```bash
+    curl -fsS http://127.0.0.1:<porta>/healthz
+    ```
+
+### Telas navegáveis da cópia com app exemplo
+
+Com o sistema no ar e o administrador criado, abra no navegador (substitua
+`<porta>` pela resposta Copier):
+
+| URL | Tela |
+| --- | --- |
+| `http://127.0.0.1:<porta>/login/` | Login por e-mail e senha com o CTA `Entrar`. |
+| `http://127.0.0.1:<porta>/` | Shell autenticado: aside de navegação no desktop, gaveta no móvel e breadcrumbs. |
+| `http://127.0.0.1:<porta>/exemplo/` | CRUD de referência: tabela paginada, ordenação, filtros e criação/edição em modal HTMX (`Novo item`). |
+| `http://127.0.0.1:<porta>/exemplo/dashboard/` | Dashboard de exemplo: KPIs e dois gráficos ECharts com drill-down para a lista filtrada. |
+
+As duas últimas URLs existem apenas quando `incluir_app_exemplo=true`. A
+operação cotidiana — logs, ícones PWA, remoção do app exemplo, atualizações do
+template — é descrita no README renderizado dentro do próprio sistema gerado.
 
 ### Convenção de portas da família
 
