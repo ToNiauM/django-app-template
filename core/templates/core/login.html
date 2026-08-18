@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block titulo %}Entrar · Sistema Base{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-sm p-6 bg-surface rounded shadow">
+  <h1 class="text-xl font-semibold mb-4">Entrar</h1>
+  {% include "core/_login_form.html" %}
+</div>
+{% endblock %}
