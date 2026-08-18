@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Phase 2 context gathered
-last_updated: "2026-08-18T03:52:24.888Z"
+last_updated: "2026-08-18T03:58:46.261Z"
 last_activity: 2026-08-18
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 8
-  completed_plans: 4
+  completed_plans: 6
   percent: 20
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-17)
 ## Current Position
 
 Phase: 2 (Shell Visual e Kernel) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 Status: Ready to execute
 Last activity: 2026-08-18
 
-Progress: [█████░░░░░] 50%
+Progress: [████████░░] 75%
 
 ## Performance Metrics
 
@@ -57,6 +57,7 @@ Progress: [█████░░░░░] 50%
 | Phase 01-funda-o-django P03 | 15min | 1 tasks | 6 files |
 | Phase 01-funda-o-django P04 | 10min | 3 tasks | 9 files |
 | Phase 02 P01 | 4min | 2 tasks | 6 files |
+| Phase 02 P02 | 5min | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -78,6 +79,8 @@ Recent decisions affecting current work:
 - [Phase 01-04]: login_view/logout_view/shell_view reproduzidos verbatim do padrão da PCA, com validação explícita de open redirect em ?next= via url_has_allowed_host_and_scheme
 - [Phase 02-01]: COR_PRIMARIA validada com re.fullmatch(#RRGGBB) no boot — ImproperlyConfigured como barreira contra CSS injection via .env (T-02-01)
 - [Phase 02-01]: Tokens de marca derivados por misturar() em JS puro no tailwind.config.js — um unico hex literal de identidade (D-17), sem CSS vars (sem dark mode nesta fase)
+- [Phase 02-02]: Kernel da fase entrega zero template tags customizadas — D-12 veta templatetag com ORM e a trilha vem pronta da view (item 'template tags' de CORE-04 atendido deliberadamente sem tags)
+- [Phase 02-02]: Botão Sair do shell como <form hx-post> com csrf_token de fallback no-JS (padrão IN-02), não botão solto
 
 ### Pending Todos
 
@@ -97,6 +100,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-18T03:51:46.330Z
+Last session: 2026-08-18T03:58:13.562Z
 Stopped at: Phase 2 context gathered
 Resume file: None

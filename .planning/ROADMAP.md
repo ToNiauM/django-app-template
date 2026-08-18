@@ -77,7 +77,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 02-02-PLAN.md — Shell completo: aside + gaveta Alpine, `_nav.html` (ponto de extensão), `_breadcrumbs.html` (contrato trilha), blocos de página, login ajustado
+- [x] 02-02-PLAN.md — Shell completo: aside + gaveta Alpine, `_nav.html` (ponto de extensão), `_breadcrumbs.html` (contrato trilha), blocos de página, login ajustado
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -141,7 +141,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Fundação Django | 4/4 | Complete    | 2026-08-18 |
-| 2. Shell Visual e Kernel | 1/4 | In Progress|  |
+| 2. Shell Visual e Kernel | 2/4 | In Progress|  |
 | 3. App Exemplo | 0/TBD | Not started | - |
 | 4. Templatização Copier | 0/TBD | Not started | - |
 | 5. Verificação e Documentação | 0/TBD | Not started | - |
