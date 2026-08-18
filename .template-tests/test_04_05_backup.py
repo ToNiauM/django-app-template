@@ -139,6 +139,35 @@ class BackupComposeTemplateTests(unittest.TestCase):
             )
             self.assertNotEqual(result.returncode, 0, invalid_environment)
 
+    def test_dump_retention_and_operational_test_are_confined(self) -> None:
+        backup = ROOT / "ops/backup/backup.sh"
+        retention = ROOT / "ops/backup/retencao.sh"
+        operational_test = ROOT / "ops/backup/testar_retencao.sh"
+        for script in (backup, retention, operational_test):
+            self.assertTrue(script.is_file(), script)
+            subprocess.run(["sh", "-n", str(script)], check=True)
+            self.assertIn("set -eu", script.read_text(encoding="utf-8"))
+
+        backup_source = backup.read_text(encoding="utf-8")
+        retention_source = retention.read_text(encoding="utf-8")
+        test_source = operational_test.read_text(encoding="utf-8")
+        self.assertIn('pg_dump --format=custom', backup_source)
+        self.assertIn('"/tmp/${SISTEMA_SLUG}_${DATA}.dump"', backup_source)
+        self.assertIn('"r2:${R2_BUCKET}/daily/"', backup_source)
+        self.assertIn('"r2:${R2_BUCKET}/weekly/"', backup_source)
+        self.assertIn('"${BACKUP_DIA_SEMANAL}"', backup_source)
+        self.assertIn('manter_ultimos "daily" "${BACKUP_RETENCAO_DIARIA}"', backup_source)
+        self.assertIn('manter_ultimos "weekly" "${BACKUP_RETENCAO_SEMANAL}"', backup_source)
+        self.assertEqual(retention_source.count("manter_ultimos()"), 1)
+        self.assertIn("--format tp", retention_source)
+        self.assertIn("sort -r", retention_source)
+        self.assertIn("tail -n", retention_source)
+        self.assertIn("rclone delete", retention_source)
+        self.assertIn("trap limpar EXIT", test_source)
+        self.assertIn("${SISTEMA_SLUG}_retencao_$$", test_source)
+        self.assertIn("daily|weekly", test_source)
+        self.assertIn("rclone purge", test_source)
+
 
 if __name__ == "__main__":
     unittest.main()
