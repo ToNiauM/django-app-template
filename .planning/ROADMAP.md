@@ -182,7 +182,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 05-02-PLAN.md — README canônico: nascimento local, navegação, regressão e publicação por proxy/TLS/DNS
+- [x] 05-02-PLAN.md — README canônico: nascimento local, navegação, regressão e publicação por proxy/TLS/DNS
 
 **Wave 3** *(blocked on Waves 1–2 completion)*
 
@@ -199,4 +199,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Shell Visual e Kernel | 4/4 | Complete    | 2026-08-18 |
 | 3. App Exemplo | 3/3 | Complete    | 2026-08-18 |
 | 4. Templatização Copier | 7/7 | Complete    | 2026-08-18 |
-| 5. Verificação e Documentação | 1/3 | In Progress|  |
+| 5. Verificação e Documentação | 2/3 | In Progress|  |
