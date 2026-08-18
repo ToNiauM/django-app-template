@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+import re
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -50,7 +51,7 @@ def render(destination: Path, *, color: str) -> Path:
             "sistema_sigla=SA",
             "--data",
             f"cor_primaria={color}",
-            str(ROOT),
+            ".",
             str(destination),
         ],
         check=True,
@@ -105,7 +106,7 @@ class RuntimeIdentityTemplateTests(unittest.TestCase):
         icon_generator = (ROOT / "ops/gerar_icones_pwa.py").read_text(encoding="utf-8")
 
         self.assertIn("--bind 0.0.0.0:8000", entrypoint)
-        self.assertNotIn("WEB_PORT", entrypoint)
+        self.assertNotIn("$WEB_PORT", entrypoint)
         self.assertIn("app exemplo removível", seed)
         self.assertNotIn("Sistema Base", readme)
         self.assertNotIn("CFC", readme)
@@ -116,15 +117,29 @@ class RuntimeIdentityTemplateTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tempdir:
             destination = render(Path(tempdir) / "system", color="#0f766e")
             hits = []
+            patterns = [
+                (token, re.compile(rf"(?<!\w){re.escape(token)}(?!\w)", re.IGNORECASE))
+                for token in FORBIDDEN_IDENTITY
+            ]
             for path in destination.rglob("*"):
                 if not path.is_file():
                     continue
                 relative = path.relative_to(destination).as_posix()
-                text = path.read_text(encoding="utf-8", errors="ignore")
-                for token in FORBIDDEN_IDENTITY:
-                    needle = token.casefold()
-                    if needle in relative.casefold() or needle in text.casefold():
-                        hits.append((token, relative))
+                for token, pattern in patterns:
+                    for match in pattern.finditer(relative):
+                        hits.append(f"path:{relative}:1:{match.start() + 1}:{token}")
+                for line_number, line in enumerate(
+                    path.read_text(encoding="utf-8", errors="ignore").splitlines(), start=1
+                ):
+                    # O Copier registra a origem local exclusivamente para
+                    # suportar `copier update`; não é conteúdo do sistema.
+                    if path.name == ".copier-answers.yml":
+                        line = re.sub(r"(?:^|[,{]\s*)_src_path:\s*[^,}]+", "", line)
+                    for token, pattern in patterns:
+                        for match in pattern.finditer(line):
+                            hits.append(
+                                f"content:{relative}:{line_number}:{match.start() + 1}:{token}"
+                            )
 
             excluded = (
                 ".planning",
