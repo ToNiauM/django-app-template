@@ -1,9 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 
-// ÚNICO valor de identidade deste arquivo — a Fase 4 (Copier) parametriza
-// exatamente esta linha + o .env (D-17). Nenhum outro hex de marca pode
-// existir aqui: brand-hover/brand-ink/brand-tint são DERIVADOS abaixo.
-const COR_PRIMARIA = "#1e40af";
+// ÚNICO touchpoint Jinja de identidade: Tailwind resolve esta cor durante o
+// build. Todo valor consumido em runtime vem obrigatoriamente do `.env`
+// (D-47/D-50); brand-hover/brand-ink/brand-tint são DERIVADOS abaixo.
+const COR_PRIMARIA = "{{ cor_primaria }}";
 
 // Derivações em JS puro (sem dependência): mistura o hex com um alvo
 // (255 = branco, 0 = preto) na proporção `fator`. Assim a Fase 4 troca um
