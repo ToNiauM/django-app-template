@@ -20,6 +20,21 @@ O diretório `.venv-template/` é ignorado pelo Git. Não substitua a versão
 pinada sem uma nova avaliação de procedência e uma atualização explícita deste
 contrato.
 
+## Regressão do template
+
+Antes de uma release, rode a matriz de cópia no checkout do template:
+
+```bash
+.template-tests/test_copier_copy.sh
+```
+
+Ela cria somente destinos temporários, exercita as variantes com e sem o app
+exemplo, rejeita respostas inválidas e audita a árvore renderizada. A auditoria
+procura identificadores legados como unidades lexicais, sem confundir uma
+sequência de caracteres dentro de outro valor neutro; o único metadado
+desconsiderado é `_src_path` em `.copier-answers.yml`, campo que o próprio
+Copier precisa para atualizar um projeto derivado.
+
 ## Nascimento de um sistema
 
 1. Parta de uma tag estável do template, por exemplo `v0.1.0`.

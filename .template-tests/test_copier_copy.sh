@@ -48,6 +48,7 @@ copiar() {
 auditar_neutralidade() {
     python3 - "$1" <<'PY'
 from pathlib import Path
+import re
 import sys
 
 root = Path(sys.argv[1])
@@ -71,15 +72,10 @@ tokens = (
 
 
 def occurrences(text: str, token: str):
-    needle = token.casefold()
-    haystack = text.casefold()
-    start = 0
-    while True:
-        position = haystack.find(needle, start)
-        if position < 0:
-            return
-        yield position
-        start = position + 1
+    """Encontra o identificador como unidade lexical, sem falsos positivos."""
+    return (match.start() for match in re.finditer(
+        rf"(?<!\w){re.escape(token)}(?!\w)", text, flags=re.IGNORECASE
+    ))
 
 
 hits = []
@@ -91,6 +87,11 @@ for path in sorted(root.rglob("*")):
     if not path.is_file():
         continue
     text = path.read_bytes().decode("utf-8", errors="replace")
+    if relative == ".copier-answers.yml":
+        # `_src_path` é metadado obrigatório do Copier para viabilizar update.
+        # Ele aponta para o checkout local do template, não é identidade do
+        # sistema gerado; só este valor de metadado é neutralizado na auditoria.
+        text = re.sub(r"(_src_path:\s*)[^,}\n]+", r"\1<origem-copier>", text)
     for token in tokens:
         for position in occurrences(text, token):
             line = text.count("\n", 0, position) + 1
