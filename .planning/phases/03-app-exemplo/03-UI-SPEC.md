@@ -59,15 +59,16 @@ Declared values (multiples of 4 strictly enforced):
 
 ## Typography
 
-Hierarchy restricted to exactly 4 sizes and 2 primary weights:
+Hierarchy restricted to exactly 4 sizes and exactly 2 weights:
+- **Font Sizes**: 12px (`text-xs`), 14px (`text-sm`), 16px (`text-base`), 24px (`text-2xl`)
+- **Font Weights**: Regular (400) and Semibold (600) only
 
 | Role | Size (px / rem) | Weight | Line Height | Tailwind Classes | Usage in Phase 3 |
 |------|-----------------|--------|-------------|------------------|------------------|
-| Caption / Micro | 12px / `0.75rem` | Medium (500) | 1.33 (`16px`) | `text-xs font-medium` | Breadcrumbs, status badge text, table header labels, chart tooltips, KPI labels |
+| Caption / Micro | 12px / `0.75rem` | Regular (400) / Semibold (600) | 1.33 (`16px`) | `text-xs font-normal` / `text-xs font-semibold` | Breadcrumbs, status badge text, table header labels, chart tooltips, KPI labels and metadata |
 | Sub / Label | 14px / `0.875rem` | Regular (400) / Semibold (600) | 1.43 (`20px`) | `text-sm font-normal` / `text-sm font-semibold` | Form labels, input fields, table body cells, dropdown options, helper text |
-| Body / Default | 16px / `1.0rem` | Regular (400) / Semibold (600) | 1.50 (`24px`) | `text-base font-normal` / `text-base font-semibold` | Standard paragraphs, primary buttons, modal body text, search inputs |
-| Heading / Display | 20px / `1.25rem` | Semibold (600) | 1.25 (`25px`) | `text-xl font-semibold tracking-[-0.01em]` | Page titles (`h1`), modal titles (`h2`), section titles |
-| KPI Metric (Display) | 28px / `1.75rem` | Semibold (600) | 1.20 (`34px`) | `text-2xl font-bold tracking-tight` | Numeric values inside dashboard KPI summary cards |
+| Body / Default | 16px / `1.0rem` | Regular (400) / Semibold (600) | 1.50 (`24px`) | `text-base font-normal` / `text-base font-semibold` | Standard paragraphs, primary buttons, modal body text, search inputs, card titles |
+| Title / KPI Display | 24px / `1.5rem` | Semibold (600) | 1.20 (`29px`) | `text-2xl font-semibold tracking-tight` | Page titles (`h1`), modal titles (`h2`), numeric values inside dashboard KPI summary cards |
 
 ---
 
@@ -131,15 +132,15 @@ The accent color (`#1e40af` / `bg-brand` / `text-brand`) is **strictly reserved*
 
 | Context | Error Message | Recovery Action |
 |---------|---------------|-----------------|
-| **Form Field Validation Error** | `Informe um título para o item.` / `Informe um valor numérico válido maior que zero.` | Displayed inline below input in `text-xs text-red-700 font-medium` (`role="alert"`). Input gets `border-red-500 focus:ring-red-500`. |
-| **Form Summary Error** | `Não foi possível salvar o item. Corrija os erros indicados abaixo.` | Banner displayed at top of modal in `bg-red-50 border border-red-200 text-red-700 p-3 rounded-sm text-sm`. |
+| **Form Field Validation Error** | `Informe um título para o item.` / `Informe um valor numérico válido maior que zero.` | Displayed inline below input in `text-xs text-red-700 font-semibold` (`role="alert"`). Input gets `border-red-500 focus:ring-red-500`. |
+| **Form Summary Error** | `Não foi possível salvar o item. Corrija os erros indicados abaixo.` | Banner displayed at top of modal in `bg-red-50 border border-red-200 text-red-700 p-3 rounded-sm text-sm font-normal`. |
 | **Network / Server Failure** | `Não foi possível carregar os dados. Verifique sua conexão e tente novamente.` | Alert banner in `#tabela-erro` or `#dashboard-erro` with `Tentar novamente` button (`hx-get`). |
 
 ### Destructive Actions & Confirmation
 
 | Action | Trigger | Modal Confirmation Copy | Confirm CTA | Cancel CTA |
 |--------|---------|-------------------------|-------------|------------|
-| **Excluir Item** | Red trash icon / `Excluir` button on row | `Tem certeza que deseja excluir o item "{item.titulo}"? Esta ação removerá o registro e seu histórico associado.` | `Sim, excluir item` (`bg-red-600 hover:bg-red-700 text-white`) | `Cancelar` (`border border-grid text-ink-2 hover:bg-surface-2`) |
+| **Excluir Item** | Red trash icon / `Excluir` button on row | `Tem certeza que deseja excluir o item "{item.titulo}"? Esta ação removerá o registro e seu histórico associado.` | `Sim, excluir item` (`bg-red-600 hover:bg-red-700 text-white font-semibold`) | `Cancelar` (`border border-grid text-ink-2 hover:bg-surface-2 font-semibold`) |
 
 ---
 
@@ -205,11 +206,11 @@ Views build context dict `trilha` complying with the D-12 contract:
 ### 3. Filter Bar Component
 
 - **Search Input**:
-  - HTML: `<input type="text" name="q" value="{{ request.GET.q }}" placeholder="Buscar por título ou descrição..." class="w-full rounded-sm border border-grid bg-surface px-3 py-2 text-sm text-ink placeholder:text-muted focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand">`
+  - HTML: `<input type="text" name="q" value="{{ request.GET.q }}" placeholder="Buscar por título ou descrição..." class="w-full rounded-sm border border-grid bg-surface px-3 py-2 text-sm font-normal text-ink placeholder:text-muted focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand">`
   - HTMX trigger: `hx-trigger="input changed delay:300ms, search"`
 - **Category & Status Multi-Select Filters**:
   - Rendered as dropdown or multi-checkbox list in responsive drawer / panel.
-  - Checkbox labels styled with count indicators: `<label class="flex items-center gap-2 text-sm text-ink-2"><input type="checkbox" name="categoria" value="OPERACIONAL" ...> Operacional <span class="text-xs text-muted">(12)</span></label>`.
+  - Checkbox labels styled with count indicators: `<label class="flex items-center gap-2 text-sm font-normal text-ink-2"><input type="checkbox" name="categoria" value="OPERACIONAL" ...> Operacional <span class="text-xs font-normal text-muted">(12)</span></label>`.
 - **Form target**: `hx-target="#tabela-container"` with `hx-swap="innerHTML"` and `hx-push-url="true"`.
 
 ---
@@ -224,16 +225,16 @@ Views build context dict `trilha` complying with the D-12 contract:
 - **Table Body (`<tbody>`)**:
   - Rows (`<tr>`): `border-b border-grid last:border-b-0 hover:bg-surface-2/60 transition-colors duration-150`.
   - Columns:
-    1. **Título**: `text-sm font-semibold text-ink` with description preview in `text-xs text-ink-2 truncate max-w-xs`.
-    2. **Categoria**: Badge neutral `px-2 py-0.5 rounded text-xs font-medium bg-surface-2 text-ink-2 border border-grid`.
-    3. **Status**: Semantic badge with corresponding background, text and border tokens.
-    4. **Valor**: `text-sm font-medium font-mono text-ink text-right tabular-nums` (formatted as `R$ 1.250,00`).
-    5. **Prazo**: `text-sm text-ink-2 whitespace-nowrap` (`DD/MM/AAAA`).
+    1. **Título**: `text-sm font-semibold text-ink` with description preview in `text-xs font-normal text-ink-2 truncate max-w-xs`.
+    2. **Categoria**: Badge neutral `px-2 py-0.5 rounded text-xs font-semibold bg-surface-2 text-ink-2 border border-grid`.
+    3. **Status**: Semantic badge with corresponding background, text and border tokens (`text-xs font-semibold`).
+    4. **Valor**: `text-sm font-semibold font-mono text-ink text-right tabular-nums` (formatted as `R$ 1.250,00`).
+    5. **Prazo**: `text-sm font-normal text-ink-2 whitespace-nowrap` (`DD/MM/AAAA`).
     6. **Ações**: Action buttons (Editar / Excluir) aligned right.
 - **Pagination Bar (`<tfoot>` or sub-bar)**:
   - Layout: `flex items-center justify-between border-t border-grid px-4 py-3 bg-surface`.
-  - Info: `text-xs text-ink-2` -> "Exibindo **1** a **10** de **48** itens".
-  - Pagination Controls: Previous button, number buttons (max 5 visible + ellipsis), Next button.
+  - Info: `text-xs font-normal text-ink-2` -> "Exibindo **1** a **10** de **48** itens".
+  - Pagination Controls: Previous button, number buttons (max 5 visible + ellipsis), Next button (`text-sm font-semibold`).
 
 ---
 
@@ -243,11 +244,11 @@ Views build context dict `trilha` complying with the D-12 contract:
 - **Centering wrapper**: `fixed inset-0 z-50 flex items-center justify-center p-4`.
 - **Dialog Box**: `relative w-full max-w-xl max-h-[90vh] flex flex-col rounded-sm border border-grid bg-surface shadow-2xl overflow-hidden` (`role="dialog" aria-modal="true"`).
 - **Modal Header**: `flex items-center justify-between border-b border-grid px-6 py-4`.
-  - Title: `text-xl font-semibold text-ink`.
-  - Close button: `text-muted hover:text-ink text-xl leading-none p-1 rounded-sm hover:bg-surface-2`.
+  - Title: `text-2xl font-semibold text-ink`.
+  - Close button: `text-muted hover:text-ink text-2xl leading-none p-1 rounded-sm hover:bg-surface-2`.
 - **Modal Form Body**: `p-6 overflow-y-auto space-y-4`.
-  - Form field rows: Label on top, input below, helper/error text underneath.
-  - Field inputs: `w-full rounded-sm border border-grid bg-surface px-3 py-2 text-sm text-ink focus:border-brand focus:ring-1 focus:ring-brand`.
+  - Form field rows: Label on top (`text-sm font-semibold text-ink`), input below, helper/error text underneath (`text-xs font-normal` / `text-xs font-semibold`).
+  - Field inputs: `w-full rounded-sm border border-grid bg-surface px-3 py-2 text-sm font-normal text-ink focus:border-brand focus:ring-1 focus:ring-brand`.
 - **Modal Footer**: `flex items-center justify-end gap-3 border-t border-grid px-6 py-4 bg-surface-2/50`.
   - Cancel button: `button` with `border border-grid bg-surface text-ink-2 hover:bg-surface-2 px-4 py-2 rounded-sm text-sm font-semibold`.
   - Submit button: `button[type=submit]` with `bg-brand hover:bg-brand-hover text-white px-4 py-2 rounded-sm text-sm font-semibold shadow-xs`.
@@ -263,8 +264,8 @@ Views build context dict `trilha` complying with the D-12 contract:
 - **KPI Grid**: `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6`.
   - Card: `rounded-sm border border-grid bg-surface p-4 flex flex-col justify-between`.
   - Label: `text-xs font-semibold uppercase tracking-wider text-muted`.
-  - Value: `text-2xl font-bold tracking-tight text-ink mt-2 font-mono`.
-  - Detail: `text-xs text-ink-2 mt-1 flex items-center gap-1`.
+  - Value: `text-2xl font-semibold tracking-tight text-ink mt-2 font-mono`.
+  - Detail: `text-xs font-normal text-ink-2 mt-1 flex items-center gap-1`.
 - **KPI Metrics**:
   1. **Total de Itens**: Count of all registered records.
   2. **Valor Acumulado**: Sum of all `valor` fields (`R$ X.XXX,XX`).
@@ -302,7 +303,7 @@ Views build context dict `trilha` complying with the D-12 contract:
 - [x] Dimension 1 Copywriting: PASS (Explicit CTA verbs, Portuguese pt-BR empty states, field error strings, delete dialog text)
 - [x] Dimension 2 Visuals: PASS (Detailed layout, table rows, cards, badges, modal structures, and ECharts containers)
 - [x] Dimension 3 Color: PASS (Strict 60-30-10 adherence, neutral surfaces, brand whitelist, semantic state tokens)
-- [x] Dimension 4 Typography: PASS (4 sizes declared, 2 primary weights, explicit line heights and tracking)
+- [x] Dimension 4 Typography: PASS (Exactly 4 sizes declared: 12px, 14px, 16px, 24px; exactly 2 weights: Regular 400 and Semibold 600)
 - [x] Dimension 5 Spacing: PASS (Multiples of 4 only, explicit exceptions documented)
 - [x] Dimension 6 Registry Safety: PASS (No unvetted third-party blocks, local ECharts vendor script)
 
