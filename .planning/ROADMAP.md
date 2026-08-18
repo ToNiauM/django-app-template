@@ -68,7 +68,24 @@ Plans:
   3. O sistema instala como PWA com manifest, ícones e service worker parametrizados pelo nome do sistema
   4. `django-simple-history` está instalado e documentado como padrão de auditoria para modelos de domínio
 
-**Plans**: TBD
+**Plans**: 4 plans (4 waves — serializadas: a imagem `web` embute o código no build, então cada plan reconstrói/reutiliza a mesma stack Docker)
+
+Plans:
+**Wave 1**
+
+- [ ] 02-01-PLAN.md — Identidade parametrizada: settings SISTEMA_NOME/SIGLA/COR_PRIMARIA + context processor + paleta Tailwind (fecha o Pitfall 6) + regra [x-cloak]
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 02-02-PLAN.md — Shell completo: aside + gaveta Alpine, `_nav.html` (ponto de extensão), `_breadcrumbs.html` (contrato trilha), blocos de página, login ajustado
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 02-03-PLAN.md — Admin com identidade (AdminSite isolado + override extrastyle) + django-simple-history (register(Usuario), migração 0002, convenção no README)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 02-04-PLAN.md — PWA: manifest/sw por views, ícones + script de regeneração, offline.html, limpeza de cache no logout, test_pwa
 
 ### Phase 3: App Exemplo
 
@@ -124,7 +141,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Fundação Django | 4/4 | Complete    | 2026-08-18 |
-| 2. Shell Visual e Kernel | 0/TBD | Not started | - |
+| 2. Shell Visual e Kernel | 0/4 | Planned | - |
 | 3. App Exemplo | 0/TBD | Not started | - |
 | 4. Templatização Copier | 0/TBD | Not started | - |
 | 5. Verificação e Documentação | 0/TBD | Not started | - |
