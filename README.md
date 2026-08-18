@@ -23,21 +23,6 @@ O diretório `.venv-template/` é ignorado pelo Git. Não substitua a versão
 pinada sem uma nova avaliação de procedência e uma atualização explícita deste
 contrato.
 
-## Regressão do template
-
-Antes de uma release, rode a matriz de cópia no checkout do template:
-
-```bash
-.template-tests/test_copier_copy.sh
-```
-
-Ela cria somente destinos temporários, exercita as variantes com e sem o app
-exemplo, rejeita respostas inválidas e audita a árvore renderizada. A auditoria
-procura identificadores legados como unidades lexicais, sem confundir uma
-sequência de caracteres dentro de outro valor neutro; o único metadado
-desconsiderado é `_src_path` em `.copier-answers.yml`, campo que o próprio
-Copier precisa para atualizar um projeto derivado.
-
 ## Nascimento local de um sistema
 
 A sequência abaixo leva do template a um sistema navegável sem editar código.
@@ -171,6 +156,107 @@ Mantenha uma alocação documentada para evitar colisões no host:
 O Compose continua ligado a `127.0.0.1`; o proxy do host é a única fronteira
 de exposição externa.
 
+## Publicação com proxy, TLS e DNS
+
+O sistema gerado permanece escutando apenas em loopback:
+`WEB_BIND_ADDRESS=127.0.0.1` é invariante e o Compose publica a porta somente
+em `127.0.0.1:<porta>`. Quem termina TLS e publica o sistema é exclusivamente
+o Nginx do host; a aplicação nunca é exposta diretamente. A ordem de
+publicação é:
+
+1. **Prepare a VM** com Docker Engine, plugin Docker Compose, Nginx e Certbot
+   pelos repositórios oficiais da distribuição, e repita nela o nascimento
+   local acima com um `.env` de produção
+   (`DJANGO_SETTINGS_MODULE=config.settings.prod`, `DEBUG=false`, segredos
+   novos gerados na própria VM).
+
+2. **Mantenha `WEB_BIND_ADDRESS=127.0.0.1`** no `.env` de produção. A porta
+   da aplicação continua acessível somente em `127.0.0.1:<porta>` dentro da
+   VM.
+
+3. **Crie o registro DNS** do hostname respondido no Copier apontando para o
+   IP público da VM e aguarde a propagação.
+
+4. **Libere somente as portas 80 e 443** no firewall do host; nenhuma outra
+   porta do sistema é pública.
+
+5. **Obtenha o certificado com Certbot** antes de ativar o vhost TLS:
+
+   ```bash
+   sudo systemctl stop nginx
+   sudo certbot certonly --standalone -d <hostname>
+   ```
+
+6. **Instale o vhost já gerado** — o Copier renderiza `ops/nginx/<slug>.conf`
+   com `server_name` e `proxy_pass` preenchidos — e habilite-o:
+
+   ```bash
+   sudo install -m 0644 ops/nginx/<slug>.conf /etc/nginx/sites-available/<slug>.conf
+   sudo ln -sf /etc/nginx/sites-available/<slug>.conf /etc/nginx/sites-enabled/<slug>.conf
+   ```
+
+7. **Valide a configuração e reinicie o Nginx:**
+
+   ```bash
+   sudo nginx -t
+   sudo systemctl restart nginx
+   ```
+
+8. **Valide externamente:** de fora da VM, `https://<hostname>/healthz` deve
+   responder com sucesso. O vhost termina TLS, redireciona HTTP para HTTPS e
+   encaminha as requisições ao serviço em loopback.
+
+Os detalhes de migração para uma VM limpa — transferência, restauração de dump
+customizado, recuperação e ensaio periódico de restore — vivem no runbook
+renderizado [`ops/MIGRACAO.md`](ops/MIGRACAO.md.jinja) dentro do sistema
+gerado. Um primeiro nascimento não envolve restore: o banco nasce vazio e é
+construído pelas migrações; não repita os comandos destrutivos de restauração
+fora do cenário de migração descrito naquele runbook.
+
+## Regressão do template
+
+Execute a regressão no checkout do template antes de cada release. Ela tem
+três camadas: contratos da fonte, ensaio real de nascimento e inspeção manual
+complementar.
+
+```bash
+# Contratos da fonte: renderização, update e auditoria estática
+.template-tests/test_copier_copy.sh
+.template-tests/test_copier_update.sh
+python3 -m unittest discover -s .template-tests -p 'test_04_*.py'
+
+# Ensaio real de nascimento: cópia descartável, boot e suíte Django
+.template-tests/test_05_nascimento.sh
+```
+
+- `.template-tests/test_copier_copy.sh` cria somente destinos temporários,
+  exercita as variantes com e sem o app exemplo, rejeita respostas inválidas e
+  audita a árvore renderizada. A auditoria procura identificadores legados
+  como unidades lexicais, sem confundir uma sequência de caracteres dentro de
+  outro valor neutro; o único metadado desconsiderado é `_src_path` em
+  `.copier-answers.yml`, campo que o próprio Copier precisa para atualizar um
+  projeto derivado.
+- `.template-tests/test_copier_update.sh` ensaia o ciclo A → B → C de
+  `copier update` usando somente repositórios e tags temporários.
+- Os contratos Python `test_04_*.py` fixam identidade, app exemplo opcional,
+  backup, scripts de operação e o ambiente de `collectstatic` nas variantes
+  renderizadas.
+- `.template-tests/test_05_nascimento.sh` é o ensaio real de nascimento: gera
+  uma cópia descartável com o app exemplo, preenche um `.env` apenas com
+  segredos efêmeros, valida a configuração do Compose, sobe somente os
+  serviços `db` e `web`, migra, cria um administrador de ensaio não
+  interativo, executa a suíte Django de `core` e `apps.exemplo`, faz smoke
+  HTTP das rotas de saúde e de login e remove exclusivamente os recursos que
+  criou. Com `--keep`, ele retém a cópia aprovada e informa destino, projeto
+  Compose e URL para inspeção posterior.
+
+Nenhum desses comandos automatiza cliques nem regressão visual: o ensaio de
+nascimento prova comportamento via suíte Django e alcance HTTP. A inspeção
+breve das telas no navegador (login, shell, CRUD e dashboard) na cópia retida
+com `--keep` é um checkpoint manual complementar do operador, não uma etapa
+automatizada. Os ensaios usam somente recursos temporários e não substituem
+revisão, testes e commit em cada sistema derivado.
+
 ## Releases e atualização do núcleo
 
 Publique mudanças conscientes do template em tags semver (`v0.1.0`, `v0.2.0`
@@ -209,12 +295,5 @@ marcadores inline se existirem, teste e faça um commit antes de tentar outro
 update. Essa recuperação é auditável pelo histórico Git; não edite o arquivo
 de respostas manualmente nem reinicie o update sobre uma árvore suja.
 
-Execute os dois ensaios de regressão no checkout do template:
-
-```bash
-.template-tests/test_copier_copy.sh
-.template-tests/test_copier_update.sh
-```
-
-Eles usam somente repositórios e tags temporários; não substituem revisão,
-testes e commit em cada sistema derivado.
+Antes de criar a tag, execute a regressão completa descrita em
+`## Regressão do template`, incluindo o ensaio de nascimento.
