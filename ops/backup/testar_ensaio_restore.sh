@@ -3,6 +3,7 @@
 set -eu
 
 NOME=$(basename "$0")
+SELF_PATH=$(CDPATH= cd -- "$(dirname "$0")" && pwd)/${NOME}
 
 if [ "${NOME}" = "docker" ]; then
     : "${SHIM_LOG:?SHIM_LOG é obrigatório no shim}"
@@ -19,19 +20,20 @@ if [ "${NOME}" = "docker" ]; then
             if [ "${FAIL_AT:-}" = "run" ] && [ "${2:-}" = "-d" ]; then
                 exit 91
             fi
-            if [ "${FAIL_AT:-}" = "interrupt" ] && [ "${2:-}" = "-d" ]; then
-                kill -TERM "${REHEARSAL_TARGET_PID:?pid do ensaio ausente}"
-                exit 0
-            fi
             case " $* " in
-                *" rclone lsf "*)
+                *" lsf "*)
                     printf '2026-08-18 03:00:00;anterior.dump\n2026-08-19 03:00:00;mais-recente.dump\n'
                     ;;
-                *" rclone cat "*) printf 'dump-customizado-simulado' ;;
+                *" cat "*) printf 'dump-customizado-simulado' ;;
             esac
             exit 0
             ;;
-        exec) exit 0 ;;
+        exec)
+            if [ "${FAIL_AT:-}" = "interrupt" ]; then
+                kill -TERM "${REHEARSAL_TARGET_PID:?pid do ensaio ausente}"
+            fi
+            exit 0
+            ;;
     esac
     exit 0
 fi
@@ -53,13 +55,13 @@ TMP=$(mktemp -d)
 BIN="${TMP}/bin"
 LOG="${TMP}/comandos.log"
 mkdir -p "${BIN}"
-ln -s "$0" "${BIN}/docker"
-ln -s "$0" "${BIN}/rclone"
-ln -s "$0" "${BIN}/rehearsal-runner"
+ln -s "${SELF_PATH}" "${BIN}/docker"
+ln -s "${SELF_PATH}" "${BIN}/rclone"
+ln -s "${SELF_PATH}" "${BIN}/rehearsal-runner"
 printf 'segredo-simulado\n' > "${TMP}/.env"
 
 limpar() {
-    rm -rf "${TMP}"
+    [ "${KEEP_TEST_TMP:-0}" = "1" ] || rm -rf "${TMP}"
 }
 trap limpar EXIT HUP INT TERM
 
@@ -74,7 +76,7 @@ validar_remocoes() {
 
     volume=$(awk '/^docker volume create / { print $4; exit }' "${LOG}")
     rede=$(awk '/^docker network create / { print $4; exit }' "${LOG}")
-    container=$(awk '/^docker run -d --name / { print $6; exit }' "${LOG}")
+    container=$(awk '/^docker run -d --name / { print $5; exit }' "${LOG}")
     [ -n "${volume}" ] || falhar "${caso}: volume efêmero não foi criado"
     [ -n "${rede}" ] || falhar "${caso}: rede efêmera não foi criada"
 
@@ -97,7 +99,7 @@ executar_caso() {
     : > "${LOG}"
 
     set +e
-    PATH="${BIN}:${PATH}" \
+    env PATH="${BIN}:${PATH}" \
     SHIM_LOG="${LOG}" \
     FAIL_AT="${falha}" \
     REHEARSAL_SCRIPT="${ALVO}" \
@@ -106,7 +108,7 @@ executar_caso() {
     REHEARSAL_BACKUP_IMAGE=backup-simulado \
     REHEARSAL_WEB_IMAGE=web-simulada \
     REHEARSAL_ENV_FILE="${TMP}/.env" \
-    rehearsal-runner >"${TMP}/${caso}.out" 2>"${TMP}/${caso}.err"
+    sh "${BIN}/rehearsal-runner" >"${TMP}/${caso}.out" 2>"${TMP}/${caso}.err"
     status=$?
     set -e
 
