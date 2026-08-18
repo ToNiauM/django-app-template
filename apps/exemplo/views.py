@@ -1,8 +1,10 @@
 """Views do app exemplo demonstrando CRUD com paginação server-side, filtros HTMX e modais."""
 
+from decimal import Decimal
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Avg, Count, Q, Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -159,3 +161,80 @@ def item_excluir_view(request, pk):
         "exemplo/_confirmar_exclusao_modal.html",
         {"item": item},
     )
+
+
+@login_required
+def dashboard_view(request):
+    """Dashboard analítico com agregações 100% no PostgreSQL via ORM e gráficos ECharts."""
+    qs = ItemExemplo.objects.filter(ativo=True)
+
+    # 1. KPIs executivos via .aggregate() no banco
+    kpis = qs.aggregate(
+        total_itens=Count("id"),
+        valor_total=Sum("valor"),
+        valor_medio=Avg("valor"),
+        concluidos=Count("id", filter=Q(status=StatusChoices.CONCLUIDO)),
+        em_andamento=Count("id", filter=Q(status=StatusChoices.EM_ANDAMENTO)),
+        rascunho=Count("id", filter=Q(status=StatusChoices.RASCUNHO)),
+        cancelados=Count("id", filter=Q(status=StatusChoices.CANCELADO)),
+    )
+
+    total_itens = kpis["total_itens"] or 0
+    valor_total = kpis["valor_total"] or Decimal("0.00")
+    valor_medio = kpis["valor_medio"] or Decimal("0.00")
+    concluidos = kpis["concluidos"] or 0
+
+    taxa_conclusao = (
+        (Decimal(concluidos) / Decimal(total_itens) * Decimal("100"))
+        if total_itens > 0
+        else Decimal("0.0")
+    )
+
+    # 2. Agrupamento por Categoria (Barras)
+    dados_categoria = list(
+        qs.values("categoria")
+        .annotate(total_valor=Sum("valor"), qtd=Count("id"))
+        .order_by("-total_valor")
+    )
+
+    # 3. Agrupamento por Status (Donut)
+    dados_status = list(
+        qs.values("status")
+        .annotate(qtd=Count("id"), total_valor=Sum("valor"))
+        .order_by("status")
+    )
+
+    contexto = {
+        "kpis": {
+            "total_itens": total_itens,
+            "valor_total": valor_total,
+            "valor_medio": valor_medio,
+            "concluidos": concluidos,
+            "taxa_conclusao": taxa_conclusao,
+        },
+        "dados_categoria": [
+            {
+                "categoria": dict(CategoriaChoices.choices).get(item["categoria"], item["categoria"]),
+                "categoria_raw": item["categoria"],
+                "total_valor": float(item["total_valor"] or 0),
+                "qtd": item["qtd"],
+            }
+            for item in dados_categoria
+        ],
+        "dados_status": [
+            {
+                "status": item["status"],
+                "rotulo": dict(StatusChoices.choices).get(item["status"], item["status"]),
+                "qtd": item["qtd"],
+                "total_valor": float(item["total_valor"] or 0),
+            }
+            for item in dados_status
+        ],
+        "trilha": [
+            {"rotulo": "Início", "url": reverse("core:shell")},
+            {"rotulo": "Exemplo", "url": None},
+            {"rotulo": "Dashboard", "url": None},
+        ],
+    }
+    return render(request, "exemplo/dashboard.html", contexto)
+
