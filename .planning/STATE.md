@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-08-17)
 Phase: 5 (Verificação e Documentação) — EXECUTING
 Plan: 2 of 3
 Status: Ready to execute
-Last activity: 2026-08-18 — Phase 5 execution started
+Last activity: 2026-08-18 — Completed quick task 260818-n9k: corrigir vazamento de comentários de template Django
 
 Progress: [█████████░] 90%
 
@@ -112,6 +112,7 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260818-2og | Auditoria integral de negócio, produto, operação e escalabilidade; sobrescrever REVIEW.md sem alterar código-fonte | 2026-08-18 | docs-only | [260818-2og-auditar-integralmente-o-sistema-base-com](./quick/260818-2og-auditar-integralmente-o-sistema-base-com/) |
+| 260818-n9k | Corrigir vazamento de comentários `{# #}` de template Django exibidos como texto (login e topo da página); causa raiz + teste de regressão | 2026-08-18 | ba86084 | [260818-n9k-corrija-o-vazamento-de-coment-rios-de-te](./quick/260818-n9k-corrija-o-vazamento-de-coment-rios-de-te/) |
 
 ## Deferred Items
 
