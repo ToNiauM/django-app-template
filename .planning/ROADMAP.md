@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Shell Visual e Kernel** - Layout base, admin customizado, PWA e auditoria no app `core` (completed 2026-08-18)
 - [x] **Phase 3: App Exemplo** - CRUD de referência e dashboard ECharts como documentação viva (completed 2026-08-18)
 - [x] **Phase 4: Templatização Copier** - Sistema-modelo vira template parametrizado com `copier copy`/`copier update` e ops de produção (completed 2026-08-18)
-- [ ] **Phase 5: Verificação e Documentação** - Fluxo de nascimento validado ponta a ponta e README completo
+- [x] **Phase 5: Verificação e Documentação** - Fluxo de nascimento validado ponta a ponta e README completo (completed 2026-08-18)
 
 ## Phase Details
 
@@ -186,7 +186,7 @@ Plans:
 
 **Wave 3** *(blocked on Waves 1–2 completion)*
 
-- [ ] 05-03-PLAN.md — Ambiente retido, checkpoint visual 32/32 e cleanup confinado
+- [x] 05-03-PLAN.md — Ambiente retido, checkpoint visual 32/32 e cleanup confinado
 
 ## Progress
 
@@ -199,4 +199,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Shell Visual e Kernel | 4/4 | Complete    | 2026-08-18 |
 | 3. App Exemplo | 3/3 | Complete    | 2026-08-18 |
 | 4. Templatização Copier | 7/7 | Complete    | 2026-08-18 |
-| 5. Verificação e Documentação | 2/3 | In Progress|  |
+| 5. Verificação e Documentação | 3/3 | Complete   | 2026-08-18 |
