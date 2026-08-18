@@ -8,6 +8,41 @@ somente no sistema gerado. O `README.md` que aparece no sistema gerado é outro
 arquivo, renderizado a partir de `README.md.jinja`, e é o guia da operação
 cotidiana daquele sistema específico.
 
+## Os três ciclos de trabalho
+
+Todo comando deste README pertence a exatamente um de três ciclos, com
+frequências muito diferentes entre si. Identifique o ciclo antes de digitar
+qualquer comando: isso evita rodar um script de release dentro de um sistema
+gerado ou um comando de runtime na raiz do template.
+
+- **Evoluir o template** — raro, apenas quando o core muda. Rode a regressão
+  completa de `.template-tests/` e só então crie a tag semver. Os scripts
+  `.sh` do template rodam uma vez por release, nunca por sistema. Veja
+  [Regressão do template](#regressão-do-template) e
+  [Releases e atualização do núcleo](#releases-e-atualização-do-núcleo).
+
+- **Nascer um sistema** — uma vez por sistema: `copier copy` da tag estável,
+  depois `.env`, Compose, migrate e createsuperuser e, quando for publicar,
+  proxy/TLS. Nenhum script do template é executado no nascimento — a tag já
+  foi validada pela regressão. Veja
+  [Nascimento local de um sistema](#nascimento-local-de-um-sistema) e
+  [Publicação com proxy, TLS e DNS](#publicação-com-proxy-tls-e-dns).
+
+- **Operar um sistema** — dia a dia: `docker compose logs/exec/restart` e a
+  suíte Django do próprio sistema (`manage.py test`), guiado pelo README
+  renderizado dentro do sistema gerado. Os `.template-tests/` nem existem no
+  sistema gerado.
+
+| Ciclo | Quando | Comandos-chave | Seção de referência |
+| --- | --- | --- | --- |
+| Evoluir o template | Antes de cada release do core | `.template-tests/*.sh` + tag semver | [Regressão do template](#regressão-do-template) e [Releases e atualização do núcleo](#releases-e-atualização-do-núcleo) |
+| Nascer um sistema | Uma vez por sistema | `copier copy` + `.env` + `docker compose up` | [Nascimento local de um sistema](#nascimento-local-de-um-sistema) e [Publicação com proxy, TLS e DNS](#publicação-com-proxy-tls-e-dns) |
+| Operar um sistema | Cotidiano do sistema gerado | `docker compose logs/exec` + `manage.py test` | README renderizado dentro do próprio sistema gerado |
+
+> **Regra-resumo:** `.sh` = só antes de tag; `copier copy` = só no
+> nascimento; `copier update` = só ao puxar uma versão nova do template para
+> um sistema existente.
+
 ## Ferramenta isolada e versão aprovada
 
 Instale o CLI somente no ambiente local do template; ele não pertence a
