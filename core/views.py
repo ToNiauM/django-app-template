@@ -1,8 +1,10 @@
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_not_required
 from django.db import connection
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.template.response import TemplateResponse
+from django.templatetags.static import static
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 from django_htmx.http import HttpResponseClientRedirect
@@ -112,3 +114,123 @@ def shell_view(request):
     """
     trilha = [{"rotulo": "Início", "url": None}]
     return TemplateResponse(request, "core/shell.html", {"trilha": trilha})
+
+
+@login_not_required
+def manifest_view(request):
+    """`manifest.json` servido por view, não arquivo estático puro (D-18).
+
+    Sem `@login_not_required` o `LoginRequiredMiddleware` devolveria 302 para
+    `/login/` e a PWA nunca instalaria (Pitfall 5).
+
+    Em produção o `CompressedManifestStaticFilesStorage` do WhiteNoise hasheia
+    o nome de cada ícone (`icon-192.abcd1234.png`); um `.json` estático com
+    `"/static/img/icon-192.png"` literal 404aria depois do primeiro
+    `collectstatic` — e só em produção, mascarando o bug em dev (Pitfall 3).
+    Resolvendo via `static()` aqui, o corpo do manifest sempre aponta para o
+    nome real do arquivo, hasheado ou não.
+    """
+    dados = {
+        # Identidade 100% via settings (D-16/D-17): o manifest muda de nome e
+        # cor junto com o `.env` do sistema gerado, sem tocar em código.
+        "name": settings.SISTEMA_NOME,
+        "short_name": settings.SISTEMA_SIGLA,
+        "start_url": "/",
+        "scope": "/",
+        "display": "standalone",
+        # Mesmo hex do token `page` do Tailwind — neutro de template, não
+        # identidade (A3): não entra na regra dos dois touchpoints de D-17.
+        "background_color": "#f9f9f7",
+        "theme_color": settings.COR_PRIMARIA,
+        "icons": [
+            {
+                "src": static("img/icon-192.png"),
+                "sizes": "192x192",
+                "type": "image/png",
+                "purpose": "any",
+            },
+            {
+                "src": static("img/icon-512.png"),
+                "sizes": "512x512",
+                "type": "image/png",
+                "purpose": "any",
+            },
+            {
+                "src": static("img/icon-512-maskable.png"),
+                "sizes": "512x512",
+                "type": "image/png",
+                "purpose": "maskable",
+            },
+        ],
+    }
+    return JsonResponse(dados, content_type="application/manifest+json")
+
+
+@login_not_required
+def service_worker_view(request):
+    """`sw.js` hand-rolled (D-19, sem Workbox) — só cacheia `/static/`.
+
+    Servido por rota de raiz (nunca `/static/sw.js` — isso limitaria o escopo
+    do SW a `/static/` e a PWA não instalaria, Pitfall 4) com o header
+    `Service-Worker-Allowed: /` explícito. Estratégia mínima e auditável:
+    precache da página offline no `install` e fallback de navegação quando a
+    rede falha. HTML, fragmentos HTMX e JSON nunca são interceptados — só GET
+    de mesma origem sob `/static/`. Cachear HTML autenticado deixaria
+    conteúdo de sessão legível no Cache Storage após o logout (T-02-10).
+    """
+    offline_url = static("offline.html")
+    texto = (
+        "// CACHE_NAME versionado manualmente — faça bump do sufixo sempre que\n"
+        "// o formato do conjunto de estáticos cacheados mudar; o `activate`\n"
+        "// abaixo apaga qualquer cache com nome diferente. O Cache Storage é\n"
+        "// escopado por origem, então o nome neutro não colide entre sistemas.\n"
+        'const CACHE_NAME = "static-v1";\n'
+        f'const OFFLINE_URL = "{offline_url}";\n'
+        "\n"
+        'self.addEventListener("install", (event) => {\n'
+        "  self.skipWaiting();\n"
+        "  event.waitUntil(\n"
+        "    caches.open(CACHE_NAME).then((cache) => cache.addAll([OFFLINE_URL]))\n"
+        "  );\n"
+        "});\n"
+        "\n"
+        'self.addEventListener("fetch", (event) => {\n'
+        "  const url = new URL(event.request.url);\n"
+        "\n"
+        "  // Navegação (troca de página): sempre tenta a rede primeiro; só cai\n"
+        "  // para a página offline quando a rede falha de fato — NUNCA serve\n"
+        "  // nem grava HTML em cache (o respondWith abaixo não tem cache.put:\n"
+        "  // HTML autenticado no Cache Storage vazaria conteúdo após logout).\n"
+        '  if (event.request.mode === "navigate") {\n'
+        "    event.respondWith(\n"
+        "      fetch(event.request).catch(() => caches.match(OFFLINE_URL))\n"
+        "    );\n"
+        "    return;\n"
+        "  }\n"
+        "\n"
+        "  // 1) só GET, 2) só mesma origem, 3) SÓ /static/. Todo o resto passa\n"
+        "  // direto (sem respondWith nenhum) — HTML, fragmentos HTMX e JSON\n"
+        "  // nunca entram no Cache Storage.\n"
+        '  if (event.request.method !== "GET") return;\n'
+        "  if (url.origin !== location.origin) return;\n"
+        '  if (!url.pathname.startsWith("/static/")) return;\n'
+        "  event.respondWith(\n"
+        "    caches.match(event.request).then((r) => r || fetch(event.request).then((resp) => {\n"
+        '      if (resp.ok && resp.type === "basic") {\n'
+        "        const c = resp.clone();\n"
+        "        caches.open(CACHE_NAME).then((k) => k.put(event.request, c));\n"
+        "      }\n"
+        "      return resp;\n"
+        "    }))\n"
+        "  );\n"
+        "});\n"
+        "\n"
+        'self.addEventListener("activate", (event) => event.waitUntil(\n'
+        "  caches.keys().then((ks) => Promise.all(\n"
+        "    ks.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))\n"
+        "  )).then(() => self.clients.claim())\n"
+        "));\n"
+    )
+    resposta = HttpResponse(texto, content_type="application/javascript")
+    resposta["Service-Worker-Allowed"] = "/"
+    return resposta
