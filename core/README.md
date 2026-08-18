@@ -1,6 +1,6 @@
 # `core/` — convenções não-óbvias
 
-Este documento registra 3 convenções do kernel `core/` que não são óbvias a
+Este documento registra 4 convenções do kernel `core/` que não são óbvias a
 partir da leitura do código sozinho — quebrá-las produz bugs silenciosos.
 
 ## 1. "Hoje" sempre via `timezone.localdate()`
@@ -43,3 +43,39 @@ in-place para outro modelo de usuário num banco com dados reais.
 Essa é justamente a razão de o `Usuario` customizado existir desde o
 primeiro momento do template: preserva a viabilidade de SSO futuro entre os
 sistemas da família sem exigir uma reescrita de banco mais adiante.
+
+## 4. Auditoria de modelos com django-simple-history
+
+Modelos de domínio (em `apps/`) que precisam de auditoria optam por ela
+declarando o histórico **no próprio modelo**:
+
+```python
+from simple_history.models import HistoricalRecords
+
+
+class MeuModelo(models.Model):
+    ...
+    history = HistoricalRecords()
+```
+
+Depois, `makemigrations` gera a tabela `Historical<Modelo>` automaticamente.
+Toda mudança feita através de uma request registra o autor (`history_user`)
+sem código extra — o `HistoryRequestMiddleware` (posicionado depois do
+`AuthenticationMiddleware` em `config/settings/base.py`) captura
+`request.user` em cada escrita. O `apps/exemplo` da Fase 3 exercita esse
+padrão.
+
+**Exceção documentada — o user model:** `core.Usuario` é auditado via
+`simple_history.register(Usuario)` em `core/admin.py`, **não** com
+`HistoricalRecords()` no modelo. Num user model swappable, a FK de
+`history_user` da tabela histórica aponta para o próprio user model, criando
+dependência circular na carga — `register()` é a forma oficial do
+django-simple-history para esse caso. Não "padronizar" movendo o histórico
+para dentro de `core/models.py`.
+
+**Armadilha:** `queryset.update()` (e qualquer escrita em massa que não passe
+por `save()`) **não gera histórico** — o simple-history só intercepta os
+sinais de save/delete por instância. Para operações em massa auditadas, usar
+`simple_history.utils.bulk_update_with_history(objetos, Modelo, campos,
+default_user=..., default_change_reason=...)`, que grava uma linha de
+histórico por objeto.
