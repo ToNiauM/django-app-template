@@ -1,0 +1,68 @@
+# {{ sistema_nome }}
+
+Sistema Django **{{ sistema_sigla }}**. A implantação de produção usa o
+hostname `{{ sistema_hostname }}` e a porta interna `{{ sistema_porta }}`.
+
+## Operação diária
+
+1. Crie o ambiente local a partir dos defaults gerados:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Preencha no `.env` a `SECRET_KEY`, a senha PostgreSQL e as credenciais R2.
+   Gere a chave com:
+
+   ```bash
+   python -c "import secrets; print(secrets.token_urlsafe(50))"
+   ```
+
+3. Suba os serviços e acompanhe a inicialização:
+
+   ```bash
+   docker compose up -d --build
+   docker compose logs -f web
+   docker compose exec web python manage.py migrate
+   docker compose exec web python manage.py createsuperuser
+   ```
+
+4. Confirme a saúde em `http://127.0.0.1:{{ sistema_porta }}/healthz`. Em
+   produção, mantenha o bind em loopback e configure o proxy/TLS para
+   `https://{{ sistema_hostname }}`.
+
+## Convenções para apps
+
+O núcleo fica em `core/`; o domínio do sistema deve nascer em `apps/`. Use o
+app exemplo como documentação viva para CRUD, dashboards, auditoria, HTMX e
+testes. Ele não é requisito para criar novos apps de domínio.
+
+Quando o app exemplo deixar de ser útil, remova-o pelo fluxo versionado do
+Copier, com a árvore Git limpa:
+
+```bash
+copier update --data incluir_app_exemplo=false
+```
+
+Depois, revise o diff, execute as verificações do sistema e faça um commit. O
+update remove o diretório e seus pontos de integração sem exigir edição manual
+das configurações do núcleo.
+
+## Ícones PWA (opcional)
+
+Após preencher `SISTEMA_SIGLA` e `COR_PRIMARIA` no `.env`, regenere os ícones
+placeholder quando desejar uma identidade visual própria:
+
+```bash
+python3 ops/gerar_icones_pwa.py
+```
+
+Os PNGs resultantes em `core/static/img/` são artefatos versionáveis. A
+regeneração é opcional e nunca acontece automaticamente durante `copier copy`.
+
+## Atualizações do template
+
+Mantenha `.copier-answers.yml` no Git. Antes de qualquer `copier update`,
+confirme `git status --short` sem saída, aplique a atualização, resolva
+marcadores de conflito se existirem, execute os testes e registre o resultado
+em um commit. Nunca coloque segredos no arquivo de respostas.

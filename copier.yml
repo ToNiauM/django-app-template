@@ -33,7 +33,9 @@ _exclude:
   - CLAUDE.md
   - IDEIA.md
   - REVIEW.md
-  - README.md
+  # README.md.jinja gera README.md e substitui o README do template durante a cópia.
+  # O Copier aplica _exclude ao caminho de destino, portanto excluir README.md aqui
+  # excluiria também o README renderizado.
 
 sistema_nome:
   type: str
