@@ -180,31 +180,88 @@ publicação é:
 4. **Libere somente as portas 80 e 443** no firewall do host; nenhuma outra
    porta do sistema é pública.
 
-5. **Obtenha o certificado com Certbot** antes de ativar o vhost TLS:
+5. **Publique o vhost e emita o certificado** por um dos dois caminhos
+   abaixo. A diferença estrutural entre eles: no Caminho A o Certbot gera os
+   blocos TLS a partir do bloco `:80` já ativo; no Caminho B o vhost
+   renderizado já nasce com os blocos 443 e o redirect 301, e por isso o
+   certificado precisa ser emitido antes, com o Nginx parado.
 
-   ```bash
-   sudo systemctl stop nginx
-   sudo certbot certonly --standalone -d <hostname>
-   ```
+### Caminho A — vhost em `conf.d` com `certbot --nginx` (padrão operacional da família CFC)
 
-6. **Instale o vhost já gerado** — o Copier renderiza `ops/nginx/<slug>.conf`
-   com `server_name` e `proxy_pass` preenchidos — e habilite-o:
+É o fluxo usado nas VMs da família CFC. Crie
+`/etc/nginx/conf.d/<hostname>.conf` contendo apenas o bloco `:80` com o proxy
+reverso para o serviço em loopback:
 
-   ```bash
-   sudo install -m 0644 ops/nginx/<slug>.conf /etc/nginx/sites-available/<slug>.conf
-   sudo ln -sf /etc/nginx/sites-available/<slug>.conf /etc/nginx/sites-enabled/<slug>.conf
-   ```
+```nginx
+server {
+    server_name <hostname>;
 
-7. **Valide a configuração e reinicie o Nginx:**
+    location / {
+        proxy_pass http://127.0.0.1:<porta>;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 60s;
+    }
+}
+```
 
-   ```bash
-   sudo nginx -t
-   sudo systemctl restart nginx
-   ```
+Valide e recarregue sem interromper o serviço:
 
-8. **Valide externamente:** de fora da VM, `https://<hostname>/healthz` deve
-   responder com sucesso. O vhost termina TLS, redireciona HTTP para HTTPS e
-   encaminha as requisições ao serviço em loopback.
+```bash
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+Em seguida, emita o certificado sem parar o Nginx:
+
+```bash
+sudo certbot --nginx -d <hostname>
+```
+
+O Certbot reescreve o próprio `/etc/nginx/conf.d/<hostname>.conf`,
+adicionando o bloco 443 com TLS (`ssl_certificate`,
+`options-ssl-nginx.conf`, `ssl-dhparams.pem`) e o redirect 301 de HTTP para
+HTTPS — trechos marcados com "managed by Certbot".
+
+### Caminho B — vhost renderizado com certificado standalone
+
+Alternativa válida que usa o vhost completo renderizado pelo Copier. Como
+`ops/nginx/<slug>.conf` já traz os blocos 443 e o redirect 301 prontos,
+referenciando os arquivos em `/etc/letsencrypt`, o certificado precisa
+existir antes de o vhost ser ativado:
+
+```bash
+sudo systemctl stop nginx
+sudo certbot certonly --standalone -d <hostname>
+```
+
+Instale o vhost já gerado — o Copier renderiza `ops/nginx/<slug>.conf` com
+`server_name` e `proxy_pass` preenchidos — e habilite-o:
+
+```bash
+sudo install -m 0644 ops/nginx/<slug>.conf /etc/nginx/sites-available/<slug>.conf
+sudo ln -sf /etc/nginx/sites-available/<slug>.conf /etc/nginx/sites-enabled/<slug>.conf
+```
+
+Valide a configuração e reinicie o Nginx:
+
+```bash
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+Mesmo quem adota o Caminho A pode consultar `ops/nginx/<slug>.conf` como
+referência do formato final do vhost com TLS.
+
+6. **Valide externamente**, qualquer que seja o caminho escolhido: de fora
+   da VM, `https://<hostname>/healthz` deve responder com sucesso. O vhost
+   termina TLS, redireciona HTTP para HTTPS e encaminha as requisições ao
+   serviço em loopback. As invariantes permanecem: aplicação escutando
+   somente em loopback, Nginx do host como única fronteira de exposição e
+   apenas as portas 80 e 443 públicas.
 
 Os detalhes de migração para uma VM limpa — transferência, restauração de dump
 customizado, recuperação e ensaio periódico de restore — vivem no runbook
