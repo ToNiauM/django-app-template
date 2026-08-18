@@ -415,3 +415,100 @@ de respostas manualmente nem reinicie o update sobre uma árvore suja.
 
 Antes de criar a tag, execute a regressão completa descrita em
 `## Regressão do template`, incluindo o ensaio de nascimento.
+
+## Resumo: nascimento completo em comandos
+
+Conclusão executável para quem já conhece (ou não precisa conhecer) os
+detalhes acima: a jornada inteira, da tag ao HTTPS, apenas em comandos. O
+exemplo cria o sistema **financeiro** em `financeiro.sistemascfc.org`, porta
+`12010` — troque nome, hostname e porta para o seu caso.
+
+```bash
+# criar a tag da release (uma vez, no template, com árvore limpa e regressão verde)
+cd /opt/sistema_base
+git tag -a v0.1.0 -m "primeira release do template"
+
+# gerar a cópia a partir da última tag
+/opt/sistema_base/.venv-template/bin/copier copy /opt/sistema_base /opt/web/financeiro
+```
+
+```text
+# responder as oito perguntas
+nome:                Financeiro
+slug:                financeiro
+hostname:            financeiro.sistemascfc.org
+porta:               12010
+banco:               financeiro
+sigla:               FIN
+cor primária:        #0F5132
+incluir_app_exemplo: true
+```
+
+```bash
+# entrar no sistema gerado e criar o .env local
+cd /opt/web/financeiro
+cp .env.example .env
+
+# gerar a SECRET_KEY e a senha do PostgreSQL
+python3 -c "import secrets; print(secrets.token_urlsafe(50))"
+python3 -c "import secrets; print(secrets.token_urlsafe(32))"
+
+# colar os segredos no .env (SECRET_KEY, POSTGRES_PASSWORD e a mesma senha no DATABASE_URL)
+nano .env
+
+# iniciar o repositório do sistema
+git init
+git add .
+git commit -m "chore: inicia sistema gerado pelo Copier"
+
+# validar a configuração resolvida do Compose
+docker compose --env-file .env config -q
+
+# subir banco e aplicação
+docker compose up -d --build db web
+
+# acompanhar a inicialização
+docker compose logs -f web
+
+# aplicar as migrações
+docker compose exec -T web python manage.py migrate --noinput
+
+# criar o administrador (interativo)
+docker compose exec web python manage.py createsuperuser
+
+# confirmar a saúde local
+curl -fsS http://127.0.0.1:12010/healthz
+```
+
+```text
+# criar o registro DNS: A financeiro.sistemascfc.org -> IP público da VM
+```
+
+```nginx
+# criar /etc/nginx/conf.d/financeiro.sistemascfc.org.conf com o bloco :80
+server {
+    server_name financeiro.sistemascfc.org;
+
+    location / {
+        proxy_pass http://127.0.0.1:12010;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 60s;
+    }
+}
+```
+
+```bash
+# validar e recarregar o Nginx sem interromper o serviço
+sudo nginx -t
+sudo systemctl reload nginx
+
+# emitir o certificado e ativar TLS (o Certbot reescreve o vhost)
+sudo certbot --nginx -d financeiro.sistemascfc.org
+
+# validar externamente
+curl -fsS https://financeiro.sistemascfc.org/healthz
+```
