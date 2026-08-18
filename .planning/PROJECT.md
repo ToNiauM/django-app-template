@@ -22,14 +22,15 @@ Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de ex
 - ✓ `core/` — layout base completo: `base.html`, `shell.html` (aside + gaveta Alpine), `_nav.html`, `_breadcrumbs.html` (contrato `trilha`), context processors de identidade, zero template tags custom por decisão (D-12) — Fase 2
 - ✓ `core/` — PWA (manifest e `sw.js` por views, ícones regeneráveis) parametrizada pelos settings — Fase 2
 - ✓ `django-simple-history` instalado (`Usuario` registrado com `excluded_fields`) e convenção `HistoricalRecords()` documentada no `core/README.md` — Fase 2
+- ✓ `apps/exemplo/` — CRUD de referência: tabela paginada server-side, ordenação com whitelist, filtros multi-seleção, criação e edição via modal HTMX com HTTP 422 e `HX-Trigger` — Fase 3
+- ✓ `apps/exemplo/` — dashboard ECharts com agregações 100% via ORM no PostgreSQL (`annotate`/`aggregate`), serialização `json_script` e drill-down — Fase 3
+- ✓ `apps/exemplo/` — app 100% autocontido e descartável com protocolo de remoção em 4 passos no `README.md` e testes de isolamento — Fase 3
 
 ### Ativos
 
 <!-- Escopo atual. Construindo em direção a estes. -->
 
 - [ ] Estrutura de template Copier com variáveis (nome do sistema, slug, subdomínio, porta interna, nome do banco, cor primária) — nada hard-coded
-- [ ] `apps/exemplo/` — CRUD de referência: tabela paginada server-side, ordenação, filtros multi-seleção, edição via modal HTMX
-- [ ] `apps/exemplo/` — dashboard ECharts com agregações via ORM (`annotate`/`aggregate`)
 - [ ] Infra restante: `ops/` (backup do banco, exemplo de vhost nginx)
 - [ ] Suíte de testes do core e do app exemplo, que passa no sistema gerado
 - [ ] `README` do template: documentação de nascimento de sistema, do `copier copy` ao proxy/DNS
@@ -94,4 +95,4 @@ Este documento evolui nas transições de fase e nos marcos do projeto.
 4. Atualizar Contexto com o estado atual
 
 ---
-*Última atualização: 2026-08-18 após conclusão da Fase 2 (Shell Visual e Kernel)*
+*Última atualização: 2026-08-18 após conclusão da Fase 3 (App Exemplo)*

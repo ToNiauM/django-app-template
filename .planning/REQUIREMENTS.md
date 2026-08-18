@@ -32,10 +32,10 @@ Requisitos da entrega inicial. Cada um mapeia para fases do roadmap.
 
 ### App Exemplo (EX)
 
-- [ ] **EX-01**: Usuário pode operar um CRUD completo de exemplo: tabela paginada server-side, ordenação e filtros multi-seleção
-- [ ] **EX-02**: Usuário pode criar/editar registros do exemplo via modal HTMX
-- [ ] **EX-03**: Usuário pode ver dashboard ECharts de exemplo com agregações feitas via ORM (`annotate`/`aggregate`), nunca em Python
-- [ ] **EX-04**: App `exemplo` é autocontido e removível — apagá-lo (e suas referências documentadas) não quebra o sistema
+- [x] **EX-01**: Usuário pode operar um CRUD completo de exemplo: tabela paginada server-side, ordenação e filtros multi-seleção
+- [x] **EX-02**: Usuário pode criar/editar registros do exemplo via modal HTMX
+- [x] **EX-03**: Usuário pode ver dashboard ECharts de exemplo com agregações feitas via ORM (`annotate`/`aggregate`), nunca em Python
+- [x] **EX-04**: App `exemplo` é autocontido e removível — apagá-lo (e suas referências documentadas) não quebra o sistema
 
 ### Infraestrutura (INF)
 
@@ -92,10 +92,10 @@ Quais fases cobrem quais requisitos. Preenchido na criação do roadmap.
 | CORE-04 | Phase 2 | Complete |
 | CORE-05 | Phase 2 | Complete |
 | CORE-06 | Phase 2 | Complete |
-| EX-01 | Phase 3 | Pending |
-| EX-02 | Phase 3 | Pending |
-| EX-03 | Phase 3 | Pending |
-| EX-04 | Phase 3 | Pending |
+| EX-01 | Phase 3 | Complete |
+| EX-02 | Phase 3 | Complete |
+| EX-03 | Phase 3 | Complete |
+| EX-04 | Phase 3 | Complete |
 | TPL-01 | Phase 4 | Pending |
 | TPL-02 | Phase 4 | Pending |
 | TPL-03 | Phase 4 | Pending |

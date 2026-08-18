@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Fundação Django** - Projeto Django em Docker com auth, usuário customizado e settings seguros por ambiente (completed 2026-08-18)
 - [x] **Phase 2: Shell Visual e Kernel** - Layout base, admin customizado, PWA e auditoria no app `core` (completed 2026-08-18)
-- [ ] **Phase 3: App Exemplo** - CRUD de referência e dashboard ECharts como documentação viva
+- [x] **Phase 3: App Exemplo** - CRUD de referência e dashboard ECharts como documentação viva (completed 2026-08-18)
 - [ ] **Phase 4: Templatização Copier** - Sistema-modelo vira template parametrizado com `copier copy`/`copier update` e ops de produção
 - [ ] **Phase 5: Verificação e Documentação** - Fluxo de nascimento validado ponta a ponta e README completo
 
@@ -106,15 +106,15 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 03-01-PLAN.md — Fundação: assets vendor ECharts, tags de formatação pt-BR, modelo `ItemExemplo` com auditoria simple-history, migrações e comando `seed_exemplo`
+- [x] 03-01-PLAN.md — Fundação: assets vendor ECharts, tags de formatação pt-BR, modelo `ItemExemplo` com auditoria simple-history, migrações e comando `seed_exemplo`
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 03-02-PLAN.md — CRUD de Referência: tabela paginada server-side, busca textual, filtros multi-seleção, ordenação com whitelist, modais HTMX (criar/editar/excluir com HTTP 422 e HX-Trigger)
+- [x] 03-02-PLAN.md — CRUD de Referência: tabela paginada server-side, busca textual, filtros multi-seleção, ordenação com whitelist, modais HTMX (criar/editar/excluir com HTTP 422 e HX-Trigger)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 03-03-PLAN.md — Dashboard Analítico: KPIs agregados via ORM no PostgreSQL, gráficos ECharts (barras e donut), documentação de isolamento/remoção no README e testes de desacoplamento
+- [x] 03-03-PLAN.md — Dashboard Analítico: KPIs agregados via ORM no PostgreSQL, gráficos ECharts (barras e donut), documentação de isolamento/remoção no README e testes de desacoplamento
 
 ### Phase 4: Templatização Copier
 
@@ -155,6 +155,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Fundação Django | 4/4 | Complete    | 2026-08-18 |
 | 2. Shell Visual e Kernel | 4/4 | Complete    | 2026-08-18 |
-| 3. App Exemplo | 0/TBD | Not started | - |
+| 3. App Exemplo | 3/3 | Complete    | 2026-08-18 |
 | 4. Templatização Copier | 0/TBD | Not started | - |
 | 5. Verificação e Documentação | 0/TBD | Not started | - |
