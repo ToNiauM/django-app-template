@@ -1,0 +1,73 @@
+name: {{ sistema_slug }}
+
+services:
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_INITDB_ARGS: "--locale-provider=icu --icu-locale=pt-BR --encoding=UTF8"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    ports:
+      # O fallback loopback evita exposição acidental se o .env estiver incompleto.
+      - "${WEB_BIND_ADDRESS:-127.0.0.1}:${WEB_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 120s
+
+  backup:
+    build:
+      context: ./ops/backup
+    restart: unless-stopped
+    init: true
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_USER: ${POSTGRES_USER}
+      DB_NAME: ${POSTGRES_DB}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID}
+      R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY}
+      R2_ENDPOINT: ${R2_ENDPOINT}
+      R2_BUCKET: ${R2_BUCKET}
+      RCLONE_CONFIG_R2_TYPE: s3
+      RCLONE_CONFIG_R2_PROVIDER: Cloudflare
+      RCLONE_CONFIG_R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID}
+      RCLONE_CONFIG_R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY}
+      RCLONE_CONFIG_R2_ENDPOINT: ${R2_ENDPOINT}
+      RCLONE_CONFIG_R2_NO_CHECK_BUCKET: "true"
+      SISTEMA_SLUG: {{ sistema_slug }}
+      BACKUP_HORA: ${BACKUP_HORA}
+      BACKUP_MINUTO: ${BACKUP_MINUTO}
+      BACKUP_RETENCAO_DIARIA: ${BACKUP_RETENCAO_DIARIA}
+      BACKUP_RETENCAO_SEMANAL: ${BACKUP_RETENCAO_SEMANAL}
+      BACKUP_DIA_SEMANAL: ${BACKUP_DIA_SEMANAL}
+
+volumes:
+  # Gerenciado pelo Compose: um sistema gerado sobe sem criar volume no host.
+  pgdata:
