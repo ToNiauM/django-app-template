@@ -11,6 +11,7 @@ COPY core/static/src/input.css ./core/static/src/input.css
 # imagem final. O diretório `apps/` ainda não existe nesta fase (só nasce na
 # Fase 3/4), por isso não há instrução de cópia referenciando esse caminho.
 COPY core/templates ./core/templates
+COPY apps ./apps
 RUN npx --yes tailwindcss@3.4.17 \
     -i ./core/static/src/input.css \
     -o ./core/static/dist/tailwind.css \

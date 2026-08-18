@@ -20,7 +20,7 @@ function misturar(hex, alvo, fator) {
 }
 
 module.exports = {
-  content: ["./core/templates/**/*.html"],
+  content: ["./core/templates/**/*.html", "./apps/**/*.html"],
   theme: {
     extend: {
       colors: {
