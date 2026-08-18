@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-08-17)
 Phase: 05
 Plan: Not started
 Status: Milestone complete
-Last activity: 2026-08-18
+Last activity: 2026-08-18 - Completed quick task 260818-qc7: documentar padrão nginx conf.d + certbot --nginx no README
 
 Progress: [█████████░] 90%
 
@@ -112,6 +112,7 @@ None yet.
 |---|-------------|------|--------|-----------|
 | 260818-2og | Auditoria integral de negócio, produto, operação e escalabilidade; sobrescrever REVIEW.md sem alterar código-fonte | 2026-08-18 | docs-only | [260818-2og-auditar-integralmente-o-sistema-base-com](./quick/260818-2og-auditar-integralmente-o-sistema-base-com/) |
 | 260818-n9k | Corrigir vazamento de comentários `{# #}` de template Django exibidos como texto (login e topo da página); causa raiz + teste de regressão | 2026-08-18 | ba86084 | [260818-n9k-corrija-o-vazamento-de-coment-rios-de-te](./quick/260818-n9k-corrija-o-vazamento-de-coment-rios-de-te/) |
+| 260818-qc7 | Documentar padrão nginx conf.d + certbot --nginx na seção de publicação do README | 2026-08-18 | 8a52155 | [260818-qc7-documentar-padr-o-nginx-conf-d-certbot-n](./quick/260818-qc7-documentar-padr-o-nginx-conf-d-certbot-n/) |
 
 ## Deferred Items
 
