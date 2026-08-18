@@ -18,15 +18,16 @@ Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de ex
 - ✓ `core/` — `Usuario` customizado (AbstractUser, login por e-mail) com manager próprio, desde a migração 0001 — Fase 1
 - ✓ Login/logout funcionais com convenções HTMX/CSRF/axes provadas por testes (13/13) — Fase 1
 - ✓ Infra base: `Dockerfile` multi-stage (Tailwind + runtime não-root), `compose.yml` (app + PostgreSQL 17), `entrypoint.sh`, `.env.example` — Fase 1
+- ✓ `core/` — admin site customizado (`SistemaAdminSite` isolado) com identidade visual via settings (`SISTEMA_NOME`/`COR_PRIMARIA`) — Fase 2
+- ✓ `core/` — layout base completo: `base.html`, `shell.html` (aside + gaveta Alpine), `_nav.html`, `_breadcrumbs.html` (contrato `trilha`), context processors de identidade, zero template tags custom por decisão (D-12) — Fase 2
+- ✓ `core/` — PWA (manifest e `sw.js` por views, ícones regeneráveis) parametrizada pelos settings — Fase 2
+- ✓ `django-simple-history` instalado (`Usuario` registrado com `excluded_fields`) e convenção `HistoricalRecords()` documentada no `core/README.md` — Fase 2
 
 ### Ativos
 
 <!-- Escopo atual. Construindo em direção a estes. -->
 
 - [ ] Estrutura de template Copier com variáveis (nome do sistema, slug, subdomínio, porta interna, nome do banco, cor primária) — nada hard-coded
-- [ ] `core/` — admin site customizado com identidade visual do sistema
-- [ ] `core/` — layout base: `base.html`, `shell.html`, login, navegação, breadcrumbs, template tags, context processors, middleware
-- [ ] `core/` — PWA (manifest, ícones, service worker) parametrizado pelo nome do sistema
 - [ ] `apps/exemplo/` — CRUD de referência: tabela paginada server-side, ordenação, filtros multi-seleção, edição via modal HTMX
 - [ ] `apps/exemplo/` — dashboard ECharts com agregações via ORM (`annotate`/`aggregate`)
 - [ ] Infra restante: `ops/` (backup do banco, exemplo de vhost nginx)
@@ -93,4 +94,4 @@ Este documento evolui nas transições de fase e nos marcos do projeto.
 4. Atualizar Contexto com o estado atual
 
 ---
-*Última atualização: 2026-08-18 após conclusão da Fase 1 (Fundação Django)*
+*Última atualização: 2026-08-18 após conclusão da Fase 2 (Shell Visual e Kernel)*
