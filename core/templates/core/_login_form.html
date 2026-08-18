@@ -1,5 +1,10 @@
 <form id="login-form" hx-post="{% url 'core:login' %}" hx-target="#login-form" hx-swap="outerHTML"
       class="flex flex-col gap-3">
+  {# Campo oculto csrfmiddlewaretoken: redundante com o header X-CSRFToken
+     injetado pelo listener htmx:configRequest (base.html), mas é o
+     fallback deliberado que faz o form funcionar em um POST tradicional
+     sem JS/htmx (IN-02) — o CsrfViewMiddleware aceita token via header OU
+     corpo. #}
   {% csrf_token %}
   <input type="hidden" name="next" value="{{ next|default:'' }}">
   <div class="flex flex-col gap-1">
