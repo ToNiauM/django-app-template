@@ -5,10 +5,12 @@ Toda configuração sensível (SECRET_KEY, credenciais de banco, etc.) vem do
 `.env` via django-environ — nunca hard-coded aqui (CFG-01).
 """
 
+import re
 from datetime import timedelta
 from pathlib import Path
 
 import environ
+from django.core.exceptions import ImproperlyConfigured
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -104,6 +106,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "core.context_processors.usuario_atual",
+                "core.context_processors.identidade",
             ],
         },
     },
@@ -131,6 +134,24 @@ LANGUAGE_CODE = "pt-br"
 TIME_ZONE = "America/Sao_Paulo"
 USE_I18N = True
 USE_TZ = True
+
+# Identidade do sistema (CORE-04 / D-16). Estes 3 settings + o único literal
+# de cor do tailwind.config.js são os DOIS únicos touchpoints de identidade
+# que a Fase 4 (Copier) parametrizará (D-17) — nenhum outro arquivo deve
+# carregar nome/sigla/cor hard-coded.
+SISTEMA_NOME = env("SISTEMA_NOME", default="Sistema Base")
+SISTEMA_SIGLA = env("SISTEMA_SIGLA", default="SB")
+COR_PRIMARIA = env("COR_PRIMARIA", default="#1e40af")
+
+# COR_PRIMARIA é interpolada diretamente em CSS (`admin_tema_css` usa |safe
+# no template do admin). Validar o formato #RRGGBB no boot é a barreira
+# contra CSS injection via `.env` (T-02-01): qualquer valor fora do formato
+# derruba o processo com erro explícito em vez de chegar ao navegador.
+if not re.fullmatch(r"#[0-9a-fA-F]{6}", COR_PRIMARIA):
+    raise ImproperlyConfigured(
+        "COR_PRIMARIA deve estar no formato #RRGGBB (ex.: #1e40af); "
+        f"valor recebido: {COR_PRIMARIA!r}. Corrija o .env antes de subir."
+    )
 
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "core" / "static"]
