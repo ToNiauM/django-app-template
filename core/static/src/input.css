@@ -5,7 +5,15 @@
 /* `x-cloak` é só um atributo — sem esta regra escrita à mão ele é inerte
    (não é classe utilitária, o JIT não a gera). Sem ela, a gaveta mobile do
    shell (wave 2) pisca aberta no primeiro paint, antes de o Alpine iniciar
-   (Pitfall 7; o primeiro uso de x-cloak entra na plan 02-02). */
-[x-cloak] {
-  display: none !important;
+   (Pitfall 7; o primeiro uso de x-cloak entra na plan 02-02).
+
+   Escopada a <768px (WR-02): a visibilidade desktop da aside é do CSS
+   (`md:!flex` no shell.html), nunca do Alpine — um cloak global esconderia
+   a aside até o Alpine (deferido) iniciar, piscando a cada full page load
+   e sumindo de vez com JS indisponível. No mobile o cloak continua
+   necessário: gaveta e overlay nascem fechados antes de o Alpine assumir. */
+@media (max-width: 767px) {
+  [x-cloak] {
+    display: none !important;
+  }
 }

@@ -70,6 +70,19 @@ class ShellTests(TestCase):
         # como texto puro dentro do include de breadcrumbs.
         self.assertIn('<span aria-current="page">Início</span>', conteudo)
 
+    def test_aside_desktop_visivel_por_css_sem_depender_de_js(self):
+        # WR-02: a visibilidade desktop da aside é do CSS (md:!flex), nunca
+        # estado Alpine — sem isso, cada full page load piscava a aside e
+        # uma falha de JS escondia navegação, identidade e logout no
+        # desktop. O Alpine fica só com a gaveta mobile (sidebarAberta).
+        client = Client()
+        client.force_login(self.user)
+        conteudo = client.get("/").content.decode("utf-8")
+        self.assertIn("md:!flex", conteudo)
+        self.assertIn('x-show="sidebarAberta"', conteudo)
+        # Nenhum x-show pode voltar a depender de um estado `desktop` de JS.
+        self.assertNotIn('x-show="sidebarAberta || desktop"', conteudo)
+
     def test_login_continua_centrado_apos_body_perder_o_centering(self):
         # Regressão do Pitfall 11: o wrapper do login.html carrega o
         # centering que antes vivia no <body> do base.html.

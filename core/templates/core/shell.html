@@ -8,11 +8,17 @@
   Alpine no mobile, blocos de página nomeados que as telas de domínio
   estendem (o `apps/exemplo` da Fase 3 é o consumidor de referência).
 
-  `desktop` é estado reativo, não leitura direta da largura da janela: o
-  Alpine só reavalia um `x-show` quando uma dependência REATIVA muda, e uma
-  propriedade lida do objeto `window` não é uma (Pitfall 8). Sem o listener
-  de `change` do MediaQueryList abaixo, girar o aparelho ou redimensionar
-  deixaria gaveta e overlay congelados no estado do breakpoint do load.
+  A visibilidade desktop da aside é 100% CSS (`md:!flex`), nunca estado
+  Alpine (WR-02): como D-09 proíbe boost, toda navegação é full page load —
+  se a aside dependesse do Alpine (carregado com defer) para aparecer, ela
+  piscaria a cada clique e, com JS indisponível, sumiria de vez levando
+  navegação, identidade e logout junto. O Alpine controla SÓ a gaveta
+  mobile (`sidebarAberta`); overlay e botão de fechar são mobile-only por
+  classe (`md:hidden`). O `!` de `md:!flex` é necessário porque um x-show
+  falso escreve `display: none` inline, e só um `!important` de classe
+  vence estilo inline. Pelo mesmo motivo, a regra `[x-cloak]` do input.css
+  é escopada a <768px — no desktop a aside nasce visível no primeiro
+  paint, sem esperar JS.
 
   Empilhamento (z-30 header < z-40 overlay < z-50 aside): a <aside> é
   `fixed inset-y-0`, ou seja, começa em top:0. Com a aside no topo da
@@ -20,17 +26,7 @@
   dela assume o papel do hambúrguer — e o overlay escurece o header junto,
   em vez de deixá-lo aceso por cima do véu.
 {% endcomment %}
-<div class="flex min-h-screen"
-     x-data="{
-       desktop: window.matchMedia('(min-width: 768px)').matches,
-       sidebarAberta: false
-     }"
-     x-init="
-       const consulta = window.matchMedia('(min-width: 768px)');
-       consulta.addEventListener('change', (evento) => {
-         desktop = evento.matches;
-       });
-     ">
+<div class="flex min-h-screen" x-data="{ sidebarAberta: false }">
 
   <div class="fixed inset-x-0 top-0 z-30 flex h-14 items-center gap-3 border-b border-grid bg-surface px-3 md:hidden">
     <button type="button" aria-label="Abrir menu" :aria-expanded="sidebarAberta.toString()"
@@ -43,12 +39,12 @@
     <span class="font-bold text-base truncate">{{ sistema_nome }}</span>
   </div>
 
-  <div x-show="sidebarAberta && !desktop" x-cloak
+  <div x-show="sidebarAberta" x-cloak
        @click="sidebarAberta = false"
        class="fixed inset-0 z-40 bg-black/40 md:hidden"></div>
 
-  <aside x-show="sidebarAberta || desktop" x-cloak
-         class="fixed inset-y-0 left-0 z-50 flex w-[232px] flex-col gap-1 border-r border-grid bg-page p-4">
+  <aside x-show="sidebarAberta" x-cloak
+         class="fixed inset-y-0 left-0 z-50 flex w-[232px] flex-col gap-1 border-r border-grid bg-page p-4 md:!flex">
 
     <div class="pb-4 px-2 flex flex-row items-start justify-between gap-2">
       {# Identidade só via context processor (D-16) — nenhum nome hard-coded. #}
@@ -60,9 +56,8 @@
       </div>
       <button type="button"
               aria-label="Fechar menu"
-              x-show="!desktop"
               @click="sidebarAberta = false"
-              class="w-8 h-8 mt-[3px] flex items-center justify-center rounded-sm text-muted hover:text-ink-2 hover:bg-surface-2 flex-none">
+              class="md:hidden w-8 h-8 mt-[3px] flex items-center justify-center rounded-sm text-muted hover:text-ink-2 hover:bg-surface-2 flex-none">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/>
         </svg>
