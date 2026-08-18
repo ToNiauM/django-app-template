@@ -47,5 +47,14 @@ RUN SECRET_KEY=build \
 
 RUN chmod +x /app/entrypoint.sh
 
+# Usuário não-root (WR-01): reduz a superfície de contenção caso o processo
+# da aplicação seja comprometido (ex.: RCE via alguma dependência) — sem
+# isto, o gunicorn do entrypoint.sh roda como root dentro do container.
+# Precisa vir DEPOIS do collectstatic/chmod acima, que exigem privilégio de
+# root para escrever em `/app/staticfiles` e alterar permissões do script.
+RUN groupadd -r app && useradd -r -g app -d /app app \
+    && chown -R app:app /app
+USER app
+
 EXPOSE 8000
 ENTRYPOINT ["/app/entrypoint.sh"]
