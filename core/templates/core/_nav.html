@@ -22,7 +22,7 @@
 {% url 'core:shell' as url_inicio %}
 <nav aria-label="Navegação principal" class="flex flex-col gap-1">
   <a href="{{ url_inicio }}"
-     @click="if (!desktop) sidebarAberta = false"
+     @click="sidebarAberta = false"
      {% if request.path == url_inicio %}aria-current="page"{% endif %}
      class="relative flex items-center gap-3 rounded-sm px-3 py-2 text-base font-semibold {% if request.path == url_inicio %}bg-brand-tint text-brand-ink{% else %}text-ink-2 hover:bg-surface-2{% endif %}">
     {% if request.path == url_inicio %}<span class="absolute inset-y-0 left-0 w-[2px] bg-brand" aria-hidden="true"></span>{% endif %}
