@@ -173,12 +173,12 @@ Plans:
   2. `copier copy` + preencher `.env` + `docker compose up -d` + `migrate` + `createsuperuser` produz sistema navegável (login, shell, CRUD e dashboard) sem editar código
   3. README do template documenta o nascimento de um sistema, do `copier copy` ao proxy/DNS
 
-**Plans**: 3 plans (3 waves)
+**Plans**: 1/3 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 05-01-PLAN.md — Tracer de nascimento real: cópia efêmera, Compose, migração, superusuário, suíte Django e smoke HTTP
+- [x] 05-01-PLAN.md — Tracer de nascimento real: cópia efêmera, Compose, migração, superusuário, suíte Django e smoke HTTP
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -199,4 +199,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Shell Visual e Kernel | 4/4 | Complete    | 2026-08-18 |
 | 3. App Exemplo | 3/3 | Complete    | 2026-08-18 |
 | 4. Templatização Copier | 7/7 | Complete    | 2026-08-18 |
-| 5. Verificação e Documentação | 0/TBD | Not started | - |
+| 5. Verificação e Documentação | 1/3 | In Progress|  |

@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 5
 current_phase_name: Verificação e Documentação
 status: executing
-stopped_at: Phase 5 UI-SPEC approved
-last_updated: "2026-08-18T19:02:43.868Z"
+stopped_at: Completed 05-01-PLAN.md
+last_updated: "2026-08-18T19:33:46.263Z"
 last_activity: 2026-08-18
-last_activity_desc: Phase 04 complete, transitioned to Phase 5
+last_activity_desc: Phase 5 execution started
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 21
-  completed_plans: 18
+  completed_plans: 19
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-17)
 
 **Core value:** Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de exemplo, Docker, backup) em minutos — restando ao time apenas modelar o domínio em `apps/`.
-**Current focus:** Phase 04 — templatiza-o-copier
+**Current focus:** Phase 5 — Verificação e Documentação
 
 ## Current Position
 
-Phase: 5 — Verificação e Documentação
-Plan: Not started
+Phase: 5 (Verificação e Documentação) — EXECUTING
+Plan: 2 of 3
 Status: Ready to execute
-Last activity: 2026-08-18 — Phase 04 complete, transitioned to Phase 5
+Last activity: 2026-08-18 — Phase 5 execution started
 
-Progress: [██████████] 100%
+Progress: [█████████░] 90%
 
 ## Performance Metrics
 
@@ -64,6 +64,11 @@ Progress: [██████████] 100%
 | Phase 02 P02 | 5min | 3 tasks | 7 files |
 | Phase 02 P03 | 6min | 3 tasks | 10 files |
 | Phase 02 P04 | 5min | 3 tasks | 10 files |
+**Per-Plan Metrics:**
+
+| Plan | Duration | Tasks | Files |
+|------|----------|-------|-------|
+| Phase 05 P01 | 196min | 1 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -91,6 +96,8 @@ Recent decisions affecting current work:
 - [Phase 02-03]: Auditoria padrão: HistoricalRecords() nos modelos de domínio; user model é exceção via simple_history.register() em core/admin.py (dependência circular em model swappable)
 - [Phase 02-04]: hx-on::before-request da limpeza de cache no <form hx-post> (elemento emissor), não no <button> — é onde o htmx dispara before-request
 - [Phase 02-04]: SW hand-rolled com cache static-v1 restrito a /static/ + fallback offline; navegações nunca gravadas em cache (HTML autenticado jamais persiste no cliente)
+- [Phase ?]: O collectstatic recebe somente valores fictícios não secretos no build; o .env substitui-os em runtime.
+- [Phase ?]: O preflight usa o contrato focado de collectstatic; a matriz Copier integral roda separadamente por exceder 45 segundos.
 
 ### Pending Todos
 
@@ -116,6 +123,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-18T18:17:17.300Z
-Stopped at: Phase 5 UI-SPEC approved
-Resume file: .planning/phases/05-verifica-o-e-documenta-o/05-UI-SPEC.md
+Last session: 2026-08-18T19:33:46.236Z
+Stopped at: Completed 05-01-PLAN.md
+Resume file: None

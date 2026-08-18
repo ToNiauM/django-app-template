@@ -46,8 +46,8 @@ Requisitos da entrega inicial. Cada um mapeia para fases do roadmap.
 
 ### Qualidade (QA)
 
-- [ ] **QA-01**: Template inclui suíte de testes do core e do app exemplo, e o sistema gerado passa essa suíte
-- [ ] **QA-02**: Fluxo de nascimento completo funciona sem editar código: `copier copy` + preencher `.env` + `docker compose up -d` + `migrate` + `createsuperuser` produz sistema navegável (login, shell com navegação, CRUD e dashboard de exemplo)
+- [x] **QA-01**: Template inclui suíte de testes do core e do app exemplo, e o sistema gerado passa essa suíte
+- [x] **QA-02**: Fluxo de nascimento completo funciona sem editar código: `copier copy` + preencher `.env` + `docker compose up -d` + `migrate` + `createsuperuser` produz sistema navegável (login, shell com navegação, CRUD e dashboard de exemplo)
 
 ### Documentação (DOC)
 
