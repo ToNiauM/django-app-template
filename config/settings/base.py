@@ -28,8 +28,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.admin",
+    # Substitui a entrada plain do app admin do Django (nunca coexistir com
+    # ela — duas configs do mesmo app geram "Application labels aren't unique").
+    "core.apps.SistemaAdminConfig",
     "django_htmx",
+    "simple_history",
     "axes",
 ]
 
@@ -43,6 +46,9 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    # Precisa vir DEPOIS do AuthenticationMiddleware para capturar
+    # request.user como history_user em toda escrita auditada (CORE-06).
+    "simple_history.middleware.HistoryRequestMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
     "core.middleware.HtmxRedirectMiddleware",
     # A doc oficial do django-axes recomenda AxesMiddleware como o ÚLTIMO
