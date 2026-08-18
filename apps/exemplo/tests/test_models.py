@@ -15,7 +15,7 @@ Usuario = get_user_model()
 class ItemExemploModelTest(TestCase):
     def setUp(self):
         self.usuario = Usuario.objects.create_user(
-            email="autor@cfc.org.br",
+            email="autor@exemplo.test",
             password="SenhaForte123!@#",
             first_name="Autor Teste",
         )
@@ -63,7 +63,7 @@ class ItemExemploModelTest(TestCase):
     def test_validacao_valor_nao_negativo(self):
         item = ItemExemplo(
             titulo="Item Valor Negativo",
-            categoria=CategoriaChoices.FINANCEIRO,
+            categoria=CategoriaChoices.RECURSOS,
             status=StatusChoices.RASCUNHO,
             valor=Decimal("-10.00"),
         )
@@ -74,7 +74,7 @@ class ItemExemploModelTest(TestCase):
         self.assertEqual(CategoriaChoices.OPERACIONAL.label, "Operacional")
         self.assertEqual(CategoriaChoices.ESTRATEGICO.label, "Estratégico")
         self.assertEqual(CategoriaChoices.ADMINISTRATIVO.label, "Administrativo")
-        self.assertEqual(CategoriaChoices.FINANCEIRO.label, "Financeiro")
+        self.assertEqual(CategoriaChoices.RECURSOS.label, "Recursos")
 
         self.assertEqual(StatusChoices.RASCUNHO.label, "Rascunho")
         self.assertEqual(StatusChoices.EM_ANDAMENTO.label, "Em Andamento")

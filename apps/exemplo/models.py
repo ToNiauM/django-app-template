@@ -12,7 +12,7 @@ class CategoriaChoices(models.TextChoices):
     OPERACIONAL = "OPERACIONAL", "Operacional"
     ESTRATEGICO = "ESTRATEGICO", "Estratégico"
     ADMINISTRATIVO = "ADMINISTRATIVO", "Administrativo"
-    FINANCEIRO = "FINANCEIRO", "Financeiro"
+    RECURSOS = "RECURSOS", "Recursos"
 
 
 class StatusChoices(models.TextChoices):

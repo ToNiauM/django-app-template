@@ -5,12 +5,10 @@ O container de produção não tem (e não deve ganhar) Pillow: os PNGs são
 binários gerados UMA vez e commitados (Assumption A2); a regeneração é um
 passo documentado do nascimento de um sistema, não parte do build.
 
-Os defaults abaixo (`#1e40af` / `SB`) espelham os defaults de
-`COR_PRIMARIA` / `SISTEMA_SIGLA` do settings. Ao nascer um sistema novo,
-rode com os valores do SEU `.env` — este é um item de substituição
-documentado (D-20):
+Sem argumentos, a cor e a sigla são lidas obrigatoriamente do `.env`. Os
+dois argumentos posicionais são overrides úteis para uma execução pontual:
 
-    python3 ops/gerar_icones_pwa.py "#0f766e" "OR"
+    python3 ops/gerar_icones_pwa.py "#0f766e" "SA"
 
 Saída (em core/static/img/):
   - icon-192.png            192x192, quadrado chapado na cor + sigla branca
@@ -19,6 +17,7 @@ Saída (em core/static/img/):
                             (safe zone exigida por "purpose": "maskable")
 """
 
+import os
 import sys
 from pathlib import Path
 
@@ -27,6 +26,30 @@ from PIL import Image, ImageDraw, ImageFont
 # Raiz do repositório: o script vive em ops/, os ícones em core/static/img/.
 RAIZ = Path(__file__).resolve().parent.parent
 DESTINO = RAIZ / "core" / "static" / "img"
+
+
+def carregar_env(caminho: Path) -> dict[str, str]:
+    """Lê pares simples do `.env` com a biblioteca padrão, sem defaults."""
+    valores = dict(os.environ)
+    if not caminho.is_file():
+        return valores
+
+    for linha in caminho.read_text(encoding="utf-8").splitlines():
+        linha = linha.strip()
+        if not linha or linha.startswith("#") or "=" not in linha:
+            continue
+        chave, valor = linha.split("=", 1)
+        chave, valor = chave.strip(), valor.strip().strip('"').strip("'")
+        if chave and chave not in valores:
+            valores[chave] = valor
+    return valores
+
+
+def valor_obrigatorio(valores: dict[str, str], chave: str) -> str:
+    valor = valores.get(chave, "").strip()
+    if not valor:
+        raise SystemExit(f"{chave} é obrigatório no .env ou como argumento explícito.")
+    return valor
 
 
 def _desenhar(tamanho: int, cor: str, sigla: str, padding_ratio: float = 0.0) -> Image.Image:
@@ -58,8 +81,9 @@ def _desenhar(tamanho: int, cor: str, sigla: str, padding_ratio: float = 0.0) ->
 
 
 def main() -> None:
-    cor = sys.argv[1] if len(sys.argv) > 1 else "#1e40af"
-    sigla = sys.argv[2] if len(sys.argv) > 2 else "SB"
+    valores = carregar_env(RAIZ / ".env")
+    cor = sys.argv[1] if len(sys.argv) > 1 else valor_obrigatorio(valores, "COR_PRIMARIA")
+    sigla = sys.argv[2] if len(sys.argv) > 2 else valor_obrigatorio(valores, "SISTEMA_SIGLA")
 
     DESTINO.mkdir(parents=True, exist_ok=True)
 

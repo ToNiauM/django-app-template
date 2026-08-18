@@ -15,7 +15,7 @@ class ItemExemploCrudTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.usuario = Usuario.objects.create_user(
-            email="gestor@cfc.org.br",
+            email="gestor@exemplo.test",
             password="SenhaForte123!@#",
             first_name="Gestor Teste",
         )
@@ -54,7 +54,7 @@ class ItemExemploCrudTest(TestCase):
         ItemExemplo.objects.create(
             titulo="Consultoria Tributária",
             descricao="Revisão fiscal anual",
-            categoria=CategoriaChoices.FINANCEIRO,
+            categoria=CategoriaChoices.RECURSOS,
             status=StatusChoices.EM_ANDAMENTO,
             valor=Decimal("30000.00"),
         )
@@ -77,8 +77,8 @@ class ItemExemploCrudTest(TestCase):
             valor=Decimal("1000.00"),
         )
         ItemExemplo.objects.create(
-            titulo="Item Financeiro",
-            categoria=CategoriaChoices.FINANCEIRO,
+            titulo="Item Recursos",
+            categoria=CategoriaChoices.RECURSOS,
             status=StatusChoices.CONCLUIDO,
             valor=Decimal("2000.00"),
         )
@@ -91,11 +91,11 @@ class ItemExemploCrudTest(TestCase):
 
         resposta = self.client.get(
             self.url_listar,
-            {"categoria": [CategoriaChoices.OPERACIONAL, CategoriaChoices.FINANCEIRO]},
+            {"categoria": [CategoriaChoices.OPERACIONAL, CategoriaChoices.RECURSOS]},
             HTTP_HX_REQUEST="true",
         )
         self.assertContains(resposta, "Item Operacional")
-        self.assertContains(resposta, "Item Financeiro")
+        self.assertContains(resposta, "Item Recursos")
         self.assertNotContains(resposta, "Item Estratégico")
 
         resposta_status = self.client.get(
@@ -103,7 +103,7 @@ class ItemExemploCrudTest(TestCase):
             {"status": [StatusChoices.CONCLUIDO]},
             HTTP_HX_REQUEST="true",
         )
-        self.assertContains(resposta_status, "Item Financeiro")
+        self.assertContains(resposta_status, "Item Recursos")
         self.assertNotContains(resposta_status, "Item Operacional")
         self.assertNotContains(resposta_status, "Item Estratégico")
 
@@ -197,7 +197,7 @@ class ItemExemploCrudTest(TestCase):
         dados_editados = {
             "titulo": "Item Atualizado",
             "descricao": "Descrição editada",
-            "categoria": CategoriaChoices.FINANCEIRO,
+            "categoria": CategoriaChoices.RECURSOS,
             "status": StatusChoices.CONCLUIDO,
             "valor": "2500.00",
         }

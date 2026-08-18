@@ -15,7 +15,7 @@ class DashboardAnaliticoTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.usuario = Usuario.objects.create_user(
-            email="analista@cfc.org.br",
+            email="analista@exemplo.test",
             password="SenhaForte123!@#",
             first_name="Analista Teste",
         )
@@ -52,10 +52,10 @@ class DashboardAnaliticoTest(TestCase):
             valor=Decimal("3000.00"),
             ativo=True,
         )
-        # 1 Financeiro Cancelado (Valor: 4000)
+        # 1 recurso cancelado (valor: 4000)
         ItemExemplo.objects.create(
             titulo="Fin 1",
-            categoria=CategoriaChoices.FINANCEIRO,
+            categoria=CategoriaChoices.RECURSOS,
             status=StatusChoices.CANCELADO,
             valor=Decimal("4000.00"),
             ativo=True,
