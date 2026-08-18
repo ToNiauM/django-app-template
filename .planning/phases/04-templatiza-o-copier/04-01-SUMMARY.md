@@ -13,7 +13,7 @@ provides:
 affects: [04-02, 04-03, 04-04, 04-05, 04-06, 04-07, template-copier]
 
 actuals:
-  tokens: 1692 # 6.767 caracteres no único arquivo alterado, dividido por 4
+  tokens: 1724 # 6.896 caracteres no único arquivo alterado, dividido por 4
   tasks: 1
   commits: 1
 
@@ -142,9 +142,11 @@ None - no external service configuration required.
 - O Plano 04-02 pode criar `.venv-template/` e instalar somente `copier==9.17.1`.
 - Antes dessa etapa, os únicos binários permitidos continuam ausentes; qualquer divergência de nome, versão ou origem exige novo checkpoint bloqueante.
 
-## Self-Check: PENDING
+## Self-Check: PASSED
 
-O hash do commit desta evidência será registrado após a criação do commit atômico.
+- Arquivo criado: `.planning/phases/04-templatiza-o-copier/04-01-SUMMARY.md`.
+- Commit de Task 1 encontrado no histórico: `0d5ee5e`.
+- O commit não contém exclusões de arquivos rastreados.
 
 ---
 *Phase: 04-templatiza-o-copier*
