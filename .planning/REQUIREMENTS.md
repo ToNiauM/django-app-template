@@ -51,7 +51,7 @@ Requisitos da entrega inicial. Cada um mapeia para fases do roadmap.
 
 ### Documentação (DOC)
 
-- [ ] **DOC-01**: README do template documenta o nascimento de um sistema, do `copier copy` ao proxy/DNS
+- [x] **DOC-01**: README do template documenta o nascimento de um sistema, do `copier copy` ao proxy/DNS
 
 ## Requisitos v2
 
@@ -102,9 +102,9 @@ Quais fases cobrem quais requisitos. Preenchido na criação do roadmap.
 | TPL-04 | Phase 4 | Pending |
 | INF-03 | Phase 4 | Pending |
 | INF-04 | Phase 4 | Pending |
-| QA-01 | Phase 5 | Pending |
-| QA-02 | Phase 5 | Pending |
-| DOC-01 | Phase 5 | Pending |
+| QA-01 | Phase 5 | Complete |
+| QA-02 | Phase 5 | Complete |
+| DOC-01 | Phase 5 | Complete |
 
 **Cobertura:**
 
