@@ -1,9 +1,6 @@
 """Prova viva das convenções de fundação (CORE-02/CFG-04): HTMX-redirect,
 CSRF round-trip lido do cookie a cada request, lockout do django-axes sem
 quebrar a convenção HTTP 200, e proteção contra open redirect em `?next=`.
-
-Fonte: adaptado de /opt/web/pca/core/tests/test_login_flow.py — mesmas
-convenções, sem nada de domínio.
 """
 
 import re
