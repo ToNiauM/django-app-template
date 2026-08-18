@@ -19,6 +19,10 @@ SECURE_HSTS_SECONDS = env.int("SECURE_HSTS_SECONDS", default=3600)  # noqa: F405
 SECURE_HSTS_INCLUDE_SUBDOMAINS = False
 SECURE_HSTS_PRELOAD = False
 
+# W005/W021 correspondem exatamente às duas flags de HSTS acima
+# (SECURE_HSTS_INCLUDE_SUBDOMAINS / SECURE_HSTS_PRELOAD), deliberadamente
+# False: opt-in em subdomínios/preload é decisão de operação real, fora do
+# escopo deste template genérico.
 SILENCED_SYSTEM_CHECKS = ["security.W005", "security.W021"]
 
 AXES_IPWARE_PROXY_COUNT = 2
