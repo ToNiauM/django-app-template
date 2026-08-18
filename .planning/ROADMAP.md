@@ -13,7 +13,7 @@ Do zero a um template Copier que gera sistemas Django completos para o CFC. Prim
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Fundação Django** - Projeto Django em Docker com auth, usuário customizado e settings seguros por ambiente
+- [x] **Phase 1: Fundação Django** - Projeto Django em Docker com auth, usuário customizado e settings seguros por ambiente (completed 2026-08-18)
 - [ ] **Phase 2: Shell Visual e Kernel** - Layout base, admin customizado, PWA e auditoria no app `core`
 - [ ] **Phase 3: App Exemplo** - CRUD de referência e dashboard ECharts como documentação viva
 - [ ] **Phase 4: Templatização Copier** - Sistema-modelo vira template parametrizado com `copier copy`/`copier update` e ops de produção
@@ -52,7 +52,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 01-04-PLAN.md — Login/logout reais: views + templates + testes de comportamento + checkpoint de verificação via navegador
+- [x] 01-04-PLAN.md — Login/logout reais: views + templates + testes de comportamento + checkpoint de verificação via navegador
 
 ### Phase 2: Shell Visual e Kernel
 
@@ -123,7 +123,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Fundação Django | 3/4 | In Progress|  |
+| 1. Fundação Django | 4/4 | Complete   | 2026-08-18 |
 | 2. Shell Visual e Kernel | 0/TBD | Not started | - |
 | 3. App Exemplo | 0/TBD | Not started | - |
 | 4. Templatização Copier | 0/TBD | Not started | - |

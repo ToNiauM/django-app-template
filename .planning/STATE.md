@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 01-03-PLAN.md
-last_updated: "2026-08-18T00:04:18.509Z"
+status: verifying
+stopped_at: Completed 01-04-PLAN.md
+last_updated: "2026-08-18T00:11:22.107Z"
 last_activity: 2026-08-18
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 4
-  completed_plans: 3
-  percent: 0
+  completed_plans: 4
+  percent: 20
 ---
 
 # Project State
@@ -27,10 +27,10 @@ See: .planning/PROJECT.md (updated 2026-08-17)
 
 Phase: 1 (Fundação Django) — EXECUTING
 Plan: 4 of 4
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-08-18
 
-Progress: [████████░░] 75%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -55,6 +55,7 @@ Progress: [████████░░] 75%
 | Phase 01 P01 | 6min | 1 tasks | 10 files |
 | Phase 01-funda-o-django P02 | 8min | 1 tasks | 14 files |
 | Phase 01-funda-o-django P03 | 15min | 1 tasks | 6 files |
+| Phase 01-funda-o-django P04 | 10min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -73,6 +74,7 @@ Recent decisions affecting current work:
 - [Phase 01-02]: Kernel do app core (Usuario/UsuarioManager, axes_lockout, HtmxRedirectMiddleware, context processor, healthz, base.html com CSRF/htmx) reproduzido verbatim da PCA, sem PcaAdminConfig/login/logout (esses são CORE-03/Fase 2 e Plan 01-04)
 - [Phase 01-03]: compose.yml restrito a web+db (sem backup, INF-03/Fase 4); pgdata sem external:true nesta fase (Assumption A4 — clone limpo sobe sozinho)
 - [Phase 01-03]: nome de projeto compose herdado do diretório (sistema_base) isola containers/rede/volume de qualquer stack pca_* no mesmo host
+- [Phase 01-04]: login_view/logout_view/shell_view reproduzidos verbatim do padrão da PCA, com validação explícita de open redirect em ?next= via url_has_allowed_host_and_scheme
 
 ### Pending Todos
 
@@ -92,6 +94,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-18T00:04:18.467Z
-Stopped at: Completed 01-03-PLAN.md
+Last session: 2026-08-18T00:11:22.042Z
+Stopped at: Completed 01-04-PLAN.md
 Resume file: None
