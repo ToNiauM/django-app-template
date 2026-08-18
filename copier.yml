@@ -1,0 +1,89 @@
+_min_copier_version: "9.17.1"
+_envops:
+  undefined: jinja2.StrictUndefined
+_templates_suffix: .jinja
+_answers_file: .copier-answers.yml
+_exclude:
+  - .git
+  - .gitattributes
+  - .gitignore
+  - .planning
+  - .template-tests
+  - .venv
+  - .venv-template
+  - .venv*
+  - .env
+  - .envrc
+  - .DS_Store
+  - .idea
+  - .vscode
+  - .pytest_cache
+  - .mypy_cache
+  - .ruff_cache
+  - __pycache__
+  - "**/__pycache__"
+  - "*.py[co]"
+  - staticfiles
+  - core/static/dist
+  - node_modules
+  - .coverage
+  - htmlcov
+  - coverage
+  - copier.yml
+  - CLAUDE.md
+  - IDEIA.md
+  - REVIEW.md
+  - README.md
+
+sistema_nome:
+  type: str
+  help: Nome completo exibido pelo sistema.
+  validator: >-
+    {% if not sistema_nome or not sistema_nome|trim %}Informe um nome de sistema não vazio.{% endif %}
+
+sistema_slug:
+  type: str
+  help: Identificador minúsculo, sem separadores, para o sistema.
+  default: "{{ sistema_nome | lower | replace(' ', '') }}"
+  validator: >-
+    {% if not sistema_slug or not sistema_slug|regex_search('^[a-z0-9]+$') %}Use somente letras minúsculas e números, sem separadores.{% endif %}
+
+sistema_hostname:
+  type: str
+  help: Hostname DNS completo de produção, sem esquema, caminho ou porta.
+  default: "{{ sistema_slug }}.exemplo.gov.br"
+  validator: >-
+    {% if not sistema_hostname or not sistema_hostname|regex_search('^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+$') %}Informe um hostname DNS completo, sem esquema, caminho ou porta.{% endif %}
+
+sistema_porta:
+  type: int
+  help: Porta interna publicada pelo Docker Compose (1024–65535).
+  default: 8000
+  validator: >-
+    {% if sistema_porta < 1024 or sistema_porta > 65535 %}Informe uma porta entre 1024 e 65535.{% endif %}
+
+sistema_banco:
+  type: str
+  help: Nome seguro do banco PostgreSQL.
+  default: "{{ sistema_slug }}"
+  validator: >-
+    {% if not sistema_banco or not sistema_banco|regex_search('^[a-z0-9]+$') %}Use somente letras minúsculas e números, sem separadores.{% endif %}
+
+sistema_sigla:
+  type: str
+  help: Sigla curta exibida em títulos e no manifest.
+  default: "{{ sistema_nome.split() | map('first') | join | upper }}"
+  validator: >-
+    {% if not sistema_sigla or not sistema_sigla|trim %}Informe uma sigla não vazia.{% endif %}
+
+cor_primaria:
+  type: str
+  help: Cor de marca no formato #RRGGBB.
+  default: "#1e40af"
+  validator: >-
+    {% if not cor_primaria or not cor_primaria|regex_search('^#[0-9a-fA-F]{6}$') %}Informe uma cor no formato #RRGGBB.{% endif %}
+
+incluir_app_exemplo:
+  type: bool
+  help: Incluir o app exemplo como documentação viva do sistema?
+  default: true
