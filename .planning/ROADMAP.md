@@ -130,7 +130,7 @@ Plans:
   4. O código gerado não contém nenhuma menção a "PCA" ou a qualquer domínio de negócio
   5. `ops/` inclui backup do banco e exemplo de vhost nginx; o app escuta só em `127.0.0.1` e a migração completa é dump + `.env` + `docker compose up -d` + `migrate` + proxy/DNS
 
-**Plans**: 2/7 plans executed
+**Plans**: 3/7 plans executed
 
 Plans:
 **Wave 1**
@@ -143,7 +143,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 04-03-PLAN.md — Identidade `.env`-first: settings, Tailwind, entrypoint, seed, ícones e auditoria do gerado
+- [x] 04-03-PLAN.md — Identidade `.env`-first: settings, Tailwind, entrypoint, seed, ícones e auditoria do gerado
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -185,5 +185,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Fundação Django | 4/4 | Complete    | 2026-08-18 |
 | 2. Shell Visual e Kernel | 4/4 | Complete    | 2026-08-18 |
 | 3. App Exemplo | 3/3 | Complete    | 2026-08-18 |
-| 4. Templatização Copier | 2/7 | In Progress|  |
+| 4. Templatização Copier | 3/7 | In Progress|  |
 | 5. Verificação e Documentação | 0/TBD | Not started | - |
