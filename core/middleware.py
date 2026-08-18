@@ -18,5 +18,13 @@ class HtmxRedirectMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
         if getattr(request, "htmx", False) and response.status_code in (301, 302):
-            return HttpResponseClientRedirect(response["Location"])
+            # `.get()` em vez de `[...]` (IN-01): degrada devolvendo a
+            # resposta original em vez de estourar KeyError, caso um
+            # 301/302 chegue sem header `Location` (não acontece hoje — todo
+            # redirect passa por `redirect_to_login()` ou por
+            # `HttpResponseClientRedirect` explícito — mas protege contra
+            # regressão futura de view/middleware de terceiros).
+            destino = response.get("Location")
+            if destino:
+                return HttpResponseClientRedirect(destino)
         return response
