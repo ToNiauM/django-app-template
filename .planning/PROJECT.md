@@ -14,21 +14,22 @@ Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de ex
 
 <!-- Entregues e confirmados como valiosos. -->
 
-(Nenhum ainda — entregar para validar)
+- ✓ `config/` — settings por ambiente via `django-environ` (tudo via `.env`), urls, wsgi — Fase 1
+- ✓ `core/` — `Usuario` customizado (AbstractUser, login por e-mail) com manager próprio, desde a migração 0001 — Fase 1
+- ✓ Login/logout funcionais com convenções HTMX/CSRF/axes provadas por testes (13/13) — Fase 1
+- ✓ Infra base: `Dockerfile` multi-stage (Tailwind + runtime não-root), `compose.yml` (app + PostgreSQL 17), `entrypoint.sh`, `.env.example` — Fase 1
 
 ### Ativos
 
 <!-- Escopo atual. Construindo em direção a estes. -->
 
 - [ ] Estrutura de template Copier com variáveis (nome do sistema, slug, subdomínio, porta interna, nome do banco, cor primária) — nada hard-coded
-- [ ] `config/` — settings por ambiente via `django-environ` (tudo via `.env`), urls, wsgi
-- [ ] `core/` — app kernel agnóstico de domínio: `Usuario` customizado (AbstractUser) com manager próprio, presente desde a primeira migração
 - [ ] `core/` — admin site customizado com identidade visual do sistema
 - [ ] `core/` — layout base: `base.html`, `shell.html`, login, navegação, breadcrumbs, template tags, context processors, middleware
 - [ ] `core/` — PWA (manifest, ícones, service worker) parametrizado pelo nome do sistema
 - [ ] `apps/exemplo/` — CRUD de referência: tabela paginada server-side, ordenação, filtros multi-seleção, edição via modal HTMX
 - [ ] `apps/exemplo/` — dashboard ECharts com agregações via ORM (`annotate`/`aggregate`)
-- [ ] Infra: `Dockerfile`, `compose.yml` (app + PostgreSQL 17), `entrypoint.sh`, `ops/` (backup do banco, exemplo de vhost nginx), `.env.example` completo
+- [ ] Infra restante: `ops/` (backup do banco, exemplo de vhost nginx)
 - [ ] Suíte de testes do core e do app exemplo, que passa no sistema gerado
 - [ ] `README` do template: documentação de nascimento de sistema, do `copier copy` ao proxy/DNS
 - [ ] `copier copy` + `.env` + `docker compose up -d` + `migrate` + `createsuperuser` produz sistema navegável sem editar código
@@ -92,4 +93,4 @@ Este documento evolui nas transições de fase e nos marcos do projeto.
 4. Atualizar Contexto com o estado atual
 
 ---
-*Última atualização: 2026-08-17 após inicialização*
+*Última atualização: 2026-08-18 após conclusão da Fase 1 (Fundação Django)*
