@@ -135,3 +135,7 @@ Suíte automatizada completa (`docker compose exec -T web python manage.py test 
 ---
 *Phase: 01-funda-o-django*
 *Completed: 2026-08-18*
+
+## Self-Check: PASSED
+
+All 9 created/modified files verified present on disk (core/views.py, core/urls.py, config/urls.py, core/tests/__init__.py, core/tests/test_login_flow.py, core/tests/test_auth.py, core/templates/core/login.html, core/templates/core/_login_form.html, core/templates/core/shell.html); task commits (`0c4f407`, `413d79e`) and summary commit (`cfb45c5`) verified in `git log`.
