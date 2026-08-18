@@ -9,10 +9,10 @@ Requisitos da entrega inicial. Cada um mapeia para fases do roadmap.
 
 ### Template Copier (TPL)
 
-- [ ] **TPL-01**: Operador pode gerar um projeto Django completo com `copier copy`, respondendo às perguntas do template
-- [ ] **TPL-02**: Template parametriza nome do sistema, slug, subdomínio, porta interna, nome do banco e cor primária — nada que difira entre sistemas fica hard-coded
-- [ ] **TPL-03**: Operador pode puxar evoluções do núcleo em um sistema já gerado via `copier update`
-- [ ] **TPL-04**: Código gerado não contém nenhuma menção a "PCA" ou a qualquer domínio de negócio
+- [x] **TPL-01**: Operador pode gerar um projeto Django completo com `copier copy`, respondendo às perguntas do template
+- [x] **TPL-02**: Template parametriza nome do sistema, slug, subdomínio, porta interna, nome do banco e cor primária — nada que difira entre sistemas fica hard-coded
+- [x] **TPL-03**: Operador pode puxar evoluções do núcleo em um sistema já gerado via `copier update`
+- [x] **TPL-04**: Código gerado não contém nenhuma menção a "PCA" ou a qualquer domínio de negócio
 
 ### Configuração (CFG)
 
@@ -41,8 +41,8 @@ Requisitos da entrega inicial. Cada um mapeia para fases do roadmap.
 
 - [x] **INF-01**: Sistema gerado sobe com `docker compose up -d` (app + PostgreSQL 17) usando `Dockerfile`, `compose.yml` e `entrypoint.sh` do template
 - [x] **INF-02**: Sistema gerado inclui `.env.example` completo cobrindo todas as variáveis necessárias
-- [ ] **INF-03**: Sistema gerado inclui `ops/` com script de backup do banco e exemplo de vhost nginx
-- [ ] **INF-04**: App escuta só em `127.0.0.1` atrás do proxy; migração completa = dump + `.env` + `docker compose up -d` + `migrate` + proxy/DNS, sem nenhuma dependência do host
+- [x] **INF-03**: Sistema gerado inclui `ops/` com script de backup do banco e exemplo de vhost nginx
+- [x] **INF-04**: App escuta só em `127.0.0.1` atrás do proxy; migração completa = dump + `.env` + `docker compose up -d` + `migrate` + proxy/DNS, sem nenhuma dependência do host
 
 ### Qualidade (QA)
 
@@ -107,6 +107,7 @@ Quais fases cobrem quais requisitos. Preenchido na criação do roadmap.
 | DOC-01 | Phase 5 | Pending |
 
 **Cobertura:**
+
 - Requisitos v1: 25 no total
 - Mapeados em fases: 25
 - Não mapeados: 0 ✓

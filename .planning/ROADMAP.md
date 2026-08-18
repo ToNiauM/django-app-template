@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Fundação Django** - Projeto Django em Docker com auth, usuário customizado e settings seguros por ambiente (completed 2026-08-18)
 - [x] **Phase 2: Shell Visual e Kernel** - Layout base, admin customizado, PWA e auditoria no app `core` (completed 2026-08-18)
 - [x] **Phase 3: App Exemplo** - CRUD de referência e dashboard ECharts como documentação viva (completed 2026-08-18)
-- [ ] **Phase 4: Templatização Copier** - Sistema-modelo vira template parametrizado com `copier copy`/`copier update` e ops de produção
+- [x] **Phase 4: Templatização Copier** - Sistema-modelo vira template parametrizado com `copier copy`/`copier update` e ops de produção (completed 2026-08-18)
 - [ ] **Phase 5: Verificação e Documentação** - Fluxo de nascimento validado ponta a ponta e README completo
 
 ## Phase Details
@@ -185,5 +185,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Fundação Django | 4/4 | Complete    | 2026-08-18 |
 | 2. Shell Visual e Kernel | 4/4 | Complete    | 2026-08-18 |
 | 3. App Exemplo | 3/3 | Complete    | 2026-08-18 |
-| 4. Templatização Copier | 7/7 | In Progress|  |
+| 4. Templatização Copier | 7/7 | Complete    | 2026-08-18 |
 | 5. Verificação e Documentação | 0/TBD | Not started | - |
