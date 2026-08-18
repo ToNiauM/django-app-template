@@ -27,14 +27,15 @@ Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de ex
 - ✓ `apps/exemplo/` — app 100% autocontido e descartável com protocolo de remoção em 4 passos no `README.md` e testes de isolamento — Fase 3
 - ✓ Template Copier in-place com variáveis validadas, defaults não secretos, `copier copy` e `copier update` provados em ensaio A→B→C — Fase 4
 - ✓ Infra operacional portátil: Compose isolado, backup/retenção containerizados, ensaio de restore confinado, vhost TLS e runbook de migração — Fase 4
+- ✓ Suíte de testes do core e do app exemplo passa no sistema gerado (tracer `.template-tests/test_05_nascimento.sh`, 72 testes na cópia) — Fase 5
+- ✓ `README` do template documenta o nascimento completo, do `copier copy` ao proxy/DNS — Fase 5
+- ✓ `copier copy` + `.env` + `docker compose up -d` + `migrate` + `createsuperuser` produz sistema navegável sem editar código (prova automatizada + inspeção humana 32/32 do UI-SPEC) — Fase 5
 
 ### Ativos
 
 <!-- Escopo atual. Construindo em direção a estes. -->
 
-- [ ] Suíte de testes do core e do app exemplo, que passa no sistema gerado
-- [ ] `README` do template: documentação de nascimento de sistema, do `copier copy` ao proxy/DNS
-- [ ] `copier copy` + `.env` + `docker compose up -d` + `migrate` + `createsuperuser` produz sistema navegável sem editar código
+- Nenhum — milestone v1.0 concluído com a Fase 5 (2026-08-18). Próximo escopo será definido em novo planejamento.
 
 ### Fora de Escopo
 
@@ -95,4 +96,4 @@ Este documento evolui nas transições de fase e nos marcos do projeto.
 4. Atualizar Contexto com o estado atual
 
 ---
-*Última atualização: 2026-08-18 após conclusão da Fase 4 (Templatização Copier)*
+*Última atualização: 2026-08-18 após conclusão da Fase 5 (Verificação e Documentação) — última fase do milestone v1.0*
