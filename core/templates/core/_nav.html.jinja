@@ -1,10 +1,10 @@
+{% raw %}
 {% comment %}
   D-10 — navegação principal como PONTO DE EXTENSÃO.
 
   Apps de domínio adicionam seus `<a>` AQUI, copiando o contrato do item
-  abaixo (o `apps/exemplo` da Fase 3 será o exemplo vivo). Não existe
-  registry dinâmico de menu por decisão — a navegação é declarada neste
-  arquivo, e só.
+  abaixo. Não existe registry dinâmico de menu por decisão — a navegação é
+  declarada neste arquivo, e só.
 
   Contrato de item de navegação:
   - `{% url '...' as url_x %}` no topo, comparado com `request.path` para
@@ -20,8 +20,6 @@
   inteira — o componente Alpine do shell é montado uma única vez por página.
 {% endcomment %}
 {% url 'core:shell' as url_inicio %}
-{% url 'exemplo:dashboard' as url_exemplo_dash %}
-{% url 'exemplo:item_listar' as url_exemplo_crud %}
 <nav aria-label="Navegação principal" class="flex flex-col gap-1">
   <a href="{{ url_inicio }}"
      @click="sidebarAberta = false"
@@ -33,8 +31,13 @@
     </svg>
     <span>Início</span>
   </a>
+{% endraw %}
+{% if incluir_app_exemplo %}
+{% raw %}
 
   <!-- Ponto de extensão para apps de domínio (D-10, D-34) -->
+  {% url 'exemplo:dashboard' as url_exemplo_dash %}
+  {% url 'exemplo:item_listar' as url_exemplo_crud %}
   <a href="{{ url_exemplo_dash }}"
      @click="sidebarAberta = false"
      {% if request.path == url_exemplo_dash %}aria-current="page"{% endif %}
@@ -56,4 +59,8 @@
     </svg>
     <span>Itens (CRUD)</span>
   </a>
+{% endraw %}
+{% endif %}
+{% raw %}
 </nav>
+{% endraw %}

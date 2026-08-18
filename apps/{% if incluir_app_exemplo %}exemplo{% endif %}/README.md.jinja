@@ -1,0 +1,43 @@
+# App exemplo de {{ sistema_nome }}
+
+O app `apps/exemplo` é uma documentação viva das convenções Django deste
+sistema. Ele demonstra CRUD com HTMX e Alpine.js, dashboard analítico com ORM
+e ECharts local, e auditoria via `django-simple-history`. Use-o como referência
+ao criar apps de domínio em `apps/`; o núcleo em `core/` não depende dele.
+
+## Pontos de integração
+
+O app se conecta exclusivamente nestes três pontos:
+
+1. `config/settings/base.py` registra `apps.exemplo.apps.ExemploConfig`.
+2. `config/urls.py` inclui a rota `/exemplo/`.
+3. `core/templates/core/_nav.html` fornece os links Dashboard e Itens (CRUD).
+
+## Remover pelo Copier
+
+Quando a documentação viva não for mais necessária, mantenha a árvore Git
+limpa e execute:
+
+```bash
+copier update --data incluir_app_exemplo=false
+```
+
+Esse fluxo versionado remove o diretório e somente os três pontos acima. Não
+remova arquivos manualmente nem edite `.copier-answers.yml`; futuras atualizações
+do template preservam a resposta e não devem recriar o app.
+
+## Protocolo de evolução do banco
+
+Para começar um app de domínio próprio, modele-o em `apps/`, crie e aplique as
+migrações, depois valide a árvore gerada:
+
+```bash
+docker compose exec web python manage.py makemigrations
+docker compose exec web python manage.py migrate
+docker compose exec web python manage.py check
+docker compose exec web python manage.py test
+```
+
+Revise o diff antes de registrar o resultado. Se um `copier update` apresentar
+marcadores inline de conflito, resolva-os, execute novamente as verificações e
+faça o commit da atualização.
