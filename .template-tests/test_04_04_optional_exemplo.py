@@ -79,6 +79,32 @@ class OptionalExampleAppTemplateTests(unittest.TestCase):
             py_compile.compile(settings_path, doraise=True)
             py_compile.compile(urls_path, doraise=True)
 
+    def test_navigation_and_readme_follow_the_same_boolean_contract(self) -> None:
+        with tempfile.TemporaryDirectory() as tempdir:
+            root = Path(tempdir)
+            without_example = render(root / "sem-exemplo", incluir_app_exemplo=False)
+            with_example = render(root / "com-exemplo", incluir_app_exemplo=True)
+
+            nav_without = (without_example / "core/templates/core/_nav.html").read_text(
+                encoding="utf-8"
+            )
+            nav_with = (with_example / "core/templates/core/_nav.html").read_text(
+                encoding="utf-8"
+            )
+            readme = (with_example / "apps/exemplo/README.md").read_text(encoding="utf-8")
+
+            self.assertIn("core:shell", nav_without)
+            self.assertNotIn("exemplo:", nav_without)
+            self.assertNotIn("Dashboard", nav_without)
+            self.assertNotIn("Itens (CRUD)", nav_without)
+            self.assertIn("exemplo:dashboard", nav_with)
+            self.assertIn("exemplo:item_listar", nav_with)
+            self.assertIn("Dashboard", nav_with)
+            self.assertIn("Itens (CRUD)", nav_with)
+            self.assertIn("Sistema Núcleo", readme)
+            self.assertIn("copier update --data incluir_app_exemplo=false", readme)
+            self.assertNotRegex(readme, r"(?i)\b(?:pca|cfc\.org\.br|orcamento\.cfc\.org\.br|dominio-da-vps)\b")
+
 
 if __name__ == "__main__":
     unittest.main()
