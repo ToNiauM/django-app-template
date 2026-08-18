@@ -44,6 +44,9 @@ COPY --from=assets /build/core/static/dist/tailwind.css ./core/static/dist/tailw
 RUN SECRET_KEY=build \
     DATABASE_URL=sqlite:///tmp/build.db \
     DJANGO_SETTINGS_MODULE=config.settings.prod \
+    SISTEMA_NOME=build \
+    SISTEMA_SIGLA=BLD \
+    COR_PRIMARIA=#000000 \
     python manage.py collectstatic --noinput
 
 RUN chmod +x /app/entrypoint.sh
