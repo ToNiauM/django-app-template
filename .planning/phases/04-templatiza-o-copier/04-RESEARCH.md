@@ -256,9 +256,9 @@ O ASVS atual organiza controles de autenticação, sessão, autorização, valid
 | Criptografia e segredos | Sim | Não registrar `SECRET_KEY`, senhas PostgreSQL ou credenciais R2 em respostas/Copier; apenas placeholders em `.env.example.jinja`. [VERIFIED: .env.example:1-8; .env.example:56-65] |
 | Comunicação | Sim | Vhost TLS e proxy loopback; manter header forwarding controlado pelo Nginx. [VERIFIED: /opt/web/pca/ops/nginx/pca.conf:21-40] |
 
-## Perguntas em Aberto
+## Perguntas em Aberto (RESOLVED)
 
-Nenhuma decisão de produto bloqueia o plano. Há somente um checkpoint operacional: confirmar e instalar a distribuição PyPI `copier` antes de executar a prova real de copy/update, pois o CLI não está instalado nesta máquina.
+Nenhuma decisão de produto permanece aberta. A resolução de planejamento para a procedência/instalação do Copier é o checkpoint humano bloqueante de `04-01-PLAN.md`: uma pessoa deve confirmar a distribuição PyPI oficial e a versão exata `copier==9.17.1` antes de qualquer instalação ou prova real de copy/update. Este marcador `RESOLVED` registra somente que o plano definiu como a dúvida será decidida; o checkpoint ainda não foi executado e nenhuma aprovação é presumida nesta pesquisa.
 
 ## Ambiente Disponível
 
