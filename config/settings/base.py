@@ -43,6 +43,13 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
     "core.middleware.HtmxRedirectMiddleware",
+    # A doc oficial do django-axes recomenda AxesMiddleware como o ÚLTIMO
+    # item da lista. Aqui ele fica antes de MessageMiddleware/
+    # LoginRequiredMiddleware por exceção deliberada: AXES_LOCKOUT_CALLABLE
+    # (abaixo) já neutraliza a substituição de resposta que o AxesMiddleware
+    # faria por padrão, então a posição não-canônica não tem efeito prático
+    # hoje. Se o callable for removido/alterado no futuro, mover este item
+    # para o final da lista.
     "axes.middleware.AxesMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.contrib.auth.middleware.LoginRequiredMiddleware",
