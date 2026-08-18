@@ -141,7 +141,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Fundação Django | 4/4 | Complete    | 2026-08-18 |
-| 2. Shell Visual e Kernel | 4/4 | Complete   | 2026-08-18 |
+| 2. Shell Visual e Kernel | 4/4 | Complete    | 2026-08-18 |
 | 3. App Exemplo | 0/TBD | Not started | - |
 | 4. Templatização Copier | 0/TBD | Not started | - |
 | 5. Verificação e Documentação | 0/TBD | Not started | - |
