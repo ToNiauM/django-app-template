@@ -33,12 +33,11 @@ exigir_limpo() {
         falhar 'o destino precisa estar limpo antes do update'
 }
 
-commit_destino() {
-    mensagem="$1"
+preparar_commit_destino() {
     git -C "$DESTINO" add .
-    git -C "$DESTINO" commit -qm "${mensagem}"
-    test -z "$(git -C "$DESTINO" status --porcelain)" || \
-        falhar "${mensagem}: commit não deixou a árvore limpa"
+    # O template ignora arquivos locais; as respostas são a exceção contratual
+    # porque `copier update` depende delas e o ensaio deve versioná-las.
+    git -C "$DESTINO" add -f .copier-answers.yml
 }
 
 exigir_sem_exemplo() {
@@ -77,7 +76,9 @@ git -C "${TEMPLATE}" tag v0.1.0
 git -C "$DESTINO" init -q
 git -C "$DESTINO" config user.name 'Copier rehearsal'
 git -C "$DESTINO" config user.email 'copier-rehearsal@example.invalid'
-commit_destino 'test: estado A gerado'
+preparar_commit_destino
+git -C "$DESTINO" commit -qm 'test: estado A gerado'
+test -z "$(git -C "$DESTINO" status --porcelain)" || falhar 'estado A não ficou limpo'
 COMMIT_A=$(commit_resposta)
 [ -n "${COMMIT_A}" ] || falhar 'estado A não registrou _commit'
 
@@ -87,7 +88,7 @@ git -C "${TEMPLATE}" commit -qm 'test: mudança de núcleo B'
 git -C "${TEMPLATE}" tag v0.1.1
 
 exigir_limpo
-"${COPIER}" update --defaults --data incluir_app_exemplo=false --vcs-ref v0.1.1 --trust >/dev/null
+"${COPIER}" update --defaults --data incluir_app_exemplo=false --vcs-ref v0.1.1 --trust "$DESTINO" >/dev/null
 grep -Fq 'Atualização contratual B: núcleo entregue pelo Copier.' "${DESTINO}/core/README.md" || \
     falhar 'mudança B não chegou ao destino'
 COMMIT_B=$(commit_resposta)
@@ -95,7 +96,9 @@ COMMIT_B=$(commit_resposta)
     falhar '_commit não avançou de A para B'
 exigir_sem_exemplo
 assert_no_conflict_markers "$DESTINO"
-commit_destino 'test: estado B atualizado sem exemplo'
+preparar_commit_destino
+git -C "$DESTINO" commit -qm 'test: estado B atualizado sem exemplo'
+test -z "$(git -C "$DESTINO" status --porcelain)" || falhar 'estado B não ficou limpo'
 
 printf '\nAtualização contratual C: núcleo permanece sincronizável.\n' >> "${TEMPLATE}/core/README.md"
 git -C "${TEMPLATE}" add core/README.md
@@ -103,7 +106,7 @@ git -C "${TEMPLATE}" commit -qm 'test: mudança de núcleo C'
 git -C "${TEMPLATE}" tag v0.1.2
 
 exigir_limpo
-"${COPIER}" update --defaults --vcs-ref v0.1.2 --trust >/dev/null
+"${COPIER}" update --defaults --data incluir_app_exemplo=false --vcs-ref v0.1.2 --trust "$DESTINO" >/dev/null
 grep -Fq 'Atualização contratual C: núcleo permanece sincronizável.' "${DESTINO}/core/README.md" || \
     falhar 'mudança C não chegou ao destino'
 COMMIT_C=$(commit_resposta)
@@ -111,7 +114,9 @@ COMMIT_C=$(commit_resposta)
     falhar '_commit não avançou de B para C'
 exigir_sem_exemplo
 assert_no_conflict_markers "$DESTINO"
-commit_destino 'test: estado C atualizado sem ressurreição'
+preparar_commit_destino
+git -C "$DESTINO" commit -qm 'test: estado C atualizado sem ressurreição'
+test -z "$(git -C "$DESTINO" status --porcelain)" || falhar 'estado C não ficou limpo'
 
 grep -Fq 'A → B → C' "${ROOT}/README.md" || \
     falhar 'README não documenta o ensaio A → B → C'

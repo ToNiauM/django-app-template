@@ -117,13 +117,26 @@ Para mudar uma resposta, use o próprio Copier, nunca edite
 
 Se houver conflitos, revise os marcadores inline `<<<<<<<`, `=======` e
 `>>>>>>>`, escolha a versão correta, rode testes e faça um commit do resultado.
-O ensaio contratual desta evolução é A → B: copie na tag A, altere o núcleo e
-tageie B, execute `copier update`, valide a mudança e confirme que o app
-exemplo removido não reaparece. Quando disponível, execute também:
+O ensaio contratual desta evolução é A → B → C: copie na tag A, altere o
+núcleo e tageie B, execute `copier update` com `incluir_app_exemplo=false`,
+valide a mudança e confirme a remoção do exemplo. Faça então outra mudança de
+núcleo, tageie C e atualize novamente; a mudança C deve chegar sem ressuscitar
+o diretório, settings, URLs ou navegação do exemplo. Antes de B e C, e após
+cada estado aprovado, a árvore Git do sistema deve estar limpa e commitada.
+
+Updates são serializados: nunca rode dois `copier update` sobre o mesmo
+repositório. Se uma execução for interrompida, use `git status --short` e
+`git diff` para registrar e revisar o estado deixado pelo Copier, resolva os
+marcadores inline se existirem, teste e faça um commit antes de tentar outro
+update. Essa recuperação é auditável pelo histórico Git; não edite o arquivo
+de respostas manualmente nem reinicie o update sobre uma árvore suja.
+
+Execute os dois ensaios de regressão no checkout do template:
 
 ```bash
+.template-tests/test_copier_copy.sh
 .template-tests/test_copier_update.sh
 ```
 
-Esse roteiro prova o mecanismo de atualização; ele não substitui revisão,
+Eles usam somente repositórios e tags temporários; não substituem revisão,
 testes e commit em cada sistema derivado.
