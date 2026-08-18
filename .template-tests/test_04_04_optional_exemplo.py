@@ -55,6 +55,7 @@ class OptionalExampleAppTemplateTests(unittest.TestCase):
             urls = (destination / "config/urls.py").read_text(encoding="utf-8")
 
             self.assertTrue((destination / "apps/exemplo").is_dir())
+            self.assertTrue((destination / "apps/__init__.py").is_file())
             self.assertIn('"apps.exemplo.apps.ExemploConfig",', settings)
             self.assertIn('path("exemplo/", include("apps.exemplo.urls"))', urls)
             py_compile.compile(destination / "config/settings/base.py", doraise=True)
@@ -69,6 +70,7 @@ class OptionalExampleAppTemplateTests(unittest.TestCase):
             urls = urls_path.read_text(encoding="utf-8")
 
             self.assertFalse((destination / "apps/exemplo").exists())
+            self.assertTrue((destination / "apps/__init__.py").is_file())
             self.assertNotIn("apps.exemplo", settings)
             self.assertNotIn("apps.exemplo", urls)
             self.assertIn('path("admin/", admin.site.urls)', urls)
