@@ -959,11 +959,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Exact Seed Records Volume:**
-   - *What we know:* `seed_exemplo` must generate realistic sample items across categories, statuses, dates, and values.
-   - *Recommendation:* Default to generating 30 records (spanning 4 categories and 4 statuses with varied dates and values between R$ 1.500 and R$ 250.000) with a `--quantidade` flag for customization.
+   - *RESOLVED:* Usar default de 25 a 30 itens representativos cobrindo as 4 categorias e 4 status, com suporte a customização via flag `--quantidade`.
 
 ---
 
