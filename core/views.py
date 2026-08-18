@@ -98,11 +98,17 @@ def logout_view(request):
 
 
 def shell_view(request):
-    """Casca autenticada mínima desta fase.
+    """Shell autenticado completo (CORE-04): aside + gaveta mobile + blocos.
 
     Sem `@login_not_required`: precisa de sessão válida, o que o
-    `LoginRequiredMiddleware` já garante por padrão (Pitfall 9). A casca
-    completa com navegação/breadcrumbs é `CORE-04`, Fase 2 — aqui só existe
-    a prova de que o Walking Skeleton autentica de ponta a ponta.
+    `LoginRequiredMiddleware` já garante por padrão (Pitfall 9).
+
+    Contrato `trilha` (D-12): a view monta os breadcrumbs como uma lista de
+    dicts `{"rotulo": str, "url": str|None}` a partir de dados JÁ presentes
+    no contexto — o partial `core/_breadcrumbs.html` só renderiza, nunca
+    consulta banco nem usa templatetag com ORM por trás. O ÚLTIMO item é
+    sempre a página atual e nunca carrega `url`. A trilha abaixo, de item
+    único, é o exemplo vivo do contrato que as views de domínio copiam.
     """
-    return TemplateResponse(request, "core/shell.html", {})
+    trilha = [{"rotulo": "Início", "url": None}]
+    return TemplateResponse(request, "core/shell.html", {"trilha": trilha})
