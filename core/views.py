@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_not_required
 from django.db import connection
 from django.http import HttpResponse, JsonResponse
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -27,9 +28,30 @@ def healthz(request):
     return JsonResponse({"status": "ok"})
 
 
+def _redirecionar(request, destino):
+    """Redirect pós-autenticação ciente de htmx (CR-01).
+
+    Requisição htmx precisa de `HX-Redirect` (Pitfall 2): um 302 comum
+    seria seguido pelo próprio XHR e o htmx faria swap do HTML da página de
+    destino dentro do alvo do form, em vez de navegar. Já um POST
+    tradicional (o fallback no-JS dos forms de login/logout, que declaram
+    `method="post"`/`action`) precisa do 302 real — a resposta
+    `HX-Redirect` é um 200 de corpo vazio, que um navegador sem JS
+    renderizaria como página em branco.
+    """
+    if request.htmx:
+        return HttpResponseClientRedirect(destino)
+    return redirect(destino)
+
+
 @login_not_required
 def login_view(request):
-    """GET renderiza a tela de login; POST autentica via htmx (CORE-02).
+    """GET renderiza a tela de login; POST autentica (CORE-02).
+
+    O POST atende dois caminhos: o principal via htmx (fragmento
+    `_login_form.html` no erro, `HX-Redirect` no sucesso) e o fallback
+    no-JS do form (página completa no erro, 302 real no sucesso) — ver
+    `_redirecionar` e o comentário em `_login_form.html` (CR-01).
 
     Nunca envolve `authenticate()` com `except PermissionDenied`: o
     dispatcher de alto nível do Django (`django.contrib.auth.authenticate`)
@@ -58,9 +80,15 @@ def login_view(request):
 
     if user is None:
         bloqueado = bool(getattr(request, "axes_locked_out", False))
+        # htmx troca só o fragmento do form (hx-swap="outerHTML"); o POST
+        # tradicional do fallback no-JS precisa da página completa — devolver
+        # o fragmento cru deixaria o usuário sem layout/estilo (CR-01).
+        template_erro = (
+            "core/_login_form.html" if request.htmx else "core/login.html"
+        )
         return TemplateResponse(
             request,
-            "core/_login_form.html",
+            template_erro,
             {
                 "email": email,
                 # Preserva `next` também no branch de erro/bloqueio — senão
@@ -90,13 +118,13 @@ def login_view(request):
     else:
         destino = "/"
 
-    return HttpResponseClientRedirect(destino)  # nunca redirect() puro (Pitfall 2)
+    return _redirecionar(request, destino)
 
 
 @require_POST
 def logout_view(request):
     logout(request)
-    return HttpResponseClientRedirect("/login/")
+    return _redirecionar(request, "/login/")
 
 
 def shell_view(request):

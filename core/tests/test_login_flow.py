@@ -51,6 +51,57 @@ class LoginFlowTests(TestCase):
         self.assertEqual(response.status_code, 200)
         content = response.content.decode("utf-8")
         self.assertIn("E-mail ou senha inválidos.", content)
+        # Sem o header HX-Request, o erro volta como página completa — o
+        # fallback no-JS nunca recebe o fragmento cru sem layout (CR-01).
+        self.assertTemplateUsed(response, "core/login.html")
+
+    def test_post_login_invalido_htmx_devolve_fragmento(self):
+        # Caminho htmx do erro: só o fragmento do form, que o hx-swap
+        # "outerHTML" troca no lugar — nunca a página completa (que seria
+        # aninhada dentro do form pelo swap).
+        client = Client()
+        response = client.post(
+            "/login/",
+            {"email": "errado@exemplo.org", "password": "errada"},
+            headers={"HX-Request": "true"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "core/_login_form.html")
+        self.assertNotContains(response, "<!DOCTYPE html>")
+
+    def test_post_login_sem_htmx_devolve_302_real(self):
+        # Fallback no-JS (CR-01): um POST tradicional precisa de um redirect
+        # HTTP de verdade — HX-Redirect é um 200 de corpo vazio que um
+        # navegador sem JS renderizaria como página em branco.
+        client = Client()
+        response = client.post(
+            "/login/", {"email": self.email, "password": self.password}
+        )
+        self.assertRedirects(response, "/", fetch_redirect_response=False)
+        self.assertIn("_auth_user_id", client.session)
+
+    def test_post_logout_sem_htmx_devolve_302_real(self):
+        client = Client()
+        client.force_login(self.user)
+        response = client.post("/logout/")
+        self.assertRedirects(
+            response, "/login/", fetch_redirect_response=False
+        )
+        self.assertNotIn("_auth_user_id", client.session)
+
+    def test_forms_declaram_method_post_e_action(self):
+        # Sem method/action o submit nativo degrada para GET na URL atual —
+        # senha (login) e token CSRF (logout) vazariam na querystring
+        # (CR-01). As asserções travam os atributos nos dois forms.
+        client = Client()
+        conteudo_login = client.get("/login/").content.decode("utf-8")
+        self.assertIn('method="post"', conteudo_login)
+        self.assertIn('action="/login/"', conteudo_login)
+
+        client.force_login(self.user)
+        conteudo_shell = client.get("/").content.decode("utf-8")
+        self.assertIn('method="post"', conteudo_shell)
+        self.assertIn('action="/logout/"', conteudo_shell)
 
     def test_sexta_tentativa_consecutiva_bloqueada_permanece_200(self):
         client = Client()
