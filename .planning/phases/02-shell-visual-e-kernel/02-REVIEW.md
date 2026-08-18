@@ -34,7 +34,12 @@ findings:
   warning: 2
   info: 7
   total: 10
-status: issues_found
+fixes:
+  fixed_at: 2026-08-18T04:35:00Z
+  CR-01: 9fa7d87
+  WR-01: "9532245"
+  WR-02: 011d4c6
+status: fixes_applied
 ---
 
 # Phase 2: Code Review Report
@@ -42,7 +47,7 @@ status: issues_found
 **Reviewed:** 2026-08-18T04:18:50Z
 **Depth:** standard
 **Files Reviewed:** 25
-**Status:** issues_found
+**Status:** fixes_applied (CR-01, WR-01 and WR-02 fixed on 2026-08-18; Info findings deliberately left open — original findings text preserved below for audit)
 
 ## Summary
 
@@ -53,6 +58,8 @@ Three substantive problems were found. The most serious: the "no-JS fallback" do
 ## Critical Issues
 
 ### CR-01: "No-JS fallback" claim is false — native form submit sends credentials via GET in the query string
+
+> **fixed:** commit `9fa7d87` (2026-08-18) — `method="post"`/`action` added to both forms; `_redirecionar()` in `core/views.py` branches on `request.htmx` (htmx keeps `HX-Redirect`, plain POST gets a real 302); non-htmx login error renders the full `core/login.html` page instead of the bare fragment; new tests lock the form attributes and both response paths.
 
 **File:** `core/templates/core/shell.html:85-92` (logout form); `core/templates/core/login.html:10` (includes `core/_login_form.html`, which has the same defect at its `<form>` on line 1); `core/views.py:31-99` (docstrings/flow assume the fallback works)
 
@@ -87,6 +94,8 @@ Alternatively, if no-JS support is explicitly out of contract, delete the false 
 
 ### WR-01: `HistoricalUsuario` snapshots the password hash on every save — including one row per login
 
+> **fixed:** commit `9532245` (2026-08-18) — `simple_history.register(Usuario, excluded_fields=["password", "last_login"])` + migration `0003` removing both columns; test locks the absence of the fields on the historical model. Residual note (verified against simple-history 3.13.0 source): `post_save` ignores `update_fields`, so each login still inserts one `~` history row — but it no longer carries any sensitive data (no hash, no `last_login`). Consequence 1 (hash retention) is fully eliminated; consequence 2 (login noise) is only defanged, not removed.
+
 **File:** `core/admin.py:13`; `core/migrations/0002_historicalusuario.py:21-22`
 
 **Issue:** `simple_history.register(Usuario)` tracks all fields, so the historical table carries a `password` column (migration line 21). Two consequences:
@@ -101,6 +110,8 @@ simple_history.register(Usuario, excluded_fields=["password", "last_login"])
 Then regenerate the historical migration (or add a follow-up migration removing the two columns). If a "password was changed" audit signal is desired, keep the event derivable by other means (e.g., `history_change_reason`), never the hash itself.
 
 ### WR-02: Desktop sidebar visibility driven by Alpine state — invisible flash on every page load; permanently hidden without JS
+
+> **fixed:** commit `011d4c6` (2026-08-18) — aside gets `md:!flex` (CSS-owned desktop visibility, wins over the inline `display: none` a false `x-show` writes); the `desktop` Alpine state and its MediaQueryList listener were removed entirely — `x-show="sidebarAberta"` now drives only the mobile drawer, with overlay and close button made mobile-only via `md:hidden`; the `[x-cloak]` rule in `input.css` is scoped to `max-width: 767px`. Generated CSS verified in the built image; regression test locks `md:!flex` and the absence of the JS-gated desktop state.
 
 **File:** `core/templates/core/shell.html:50-51` (aside `x-show="sidebarAberta || desktop"` + `x-cloak`); `core/static/src/input.css:9-11`
 
