@@ -10,6 +10,23 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 COPIER = ROOT / ".venv-template" / "bin" / "copier"
+FORBIDDEN_IDENTITY = (
+    "sistema_base",
+    "Sistema Base",
+    "PCA",
+    "CFC",
+    "orcamento",
+    "financeiro",
+    "dividaativa",
+    "orcamento.cfc.org.br",
+    "cfc.org.br",
+    "toniaum/pca",
+    "github.com/ToNiauM/pca",
+    "pca_rehearsal_",
+    "pca_pgdata",
+    "_retention_test",
+    "dominio-da-vps",
+)
 
 
 def render(destination: Path, *, color: str) -> Path:
@@ -78,6 +95,55 @@ class RuntimeIdentityTemplateTests(unittest.TestCase):
         self.assertIn('re.fullmatch(r"#[0-9a-fA-F]{6}", COR_PRIMARIA)', settings)
         self.assertIn('const corBrand = "{{ cor_primaria }}";', dashboard)
         self.assertNotIn("default:", dashboard)
+
+    def test_runtime_scripts_are_neutral_and_generated_tree_has_no_identity_leaks(self) -> None:
+        entrypoint = (ROOT / "entrypoint.sh").read_text(encoding="utf-8")
+        seed = (ROOT / "apps/exemplo/management/commands/seed_exemplo.py").read_text(
+            encoding="utf-8"
+        )
+        readme = (ROOT / "apps/exemplo/README.md").read_text(encoding="utf-8")
+        icon_generator = (ROOT / "ops/gerar_icones_pwa.py").read_text(encoding="utf-8")
+
+        self.assertIn("--bind 0.0.0.0:8000", entrypoint)
+        self.assertNotIn("WEB_PORT", entrypoint)
+        self.assertIn("app exemplo removível", seed)
+        self.assertNotIn("Sistema Base", readme)
+        self.assertNotIn("CFC", readme)
+        self.assertIn("def carregar_env", icon_generator)
+        self.assertNotIn('else "#1e40af"', icon_generator)
+        self.assertNotIn('else "SB"', icon_generator)
+
+        with tempfile.TemporaryDirectory() as tempdir:
+            destination = render(Path(tempdir) / "system", color="#0f766e")
+            hits = []
+            for path in destination.rglob("*"):
+                if not path.is_file():
+                    continue
+                relative = path.relative_to(destination).as_posix()
+                text = path.read_text(encoding="utf-8", errors="ignore")
+                for token in FORBIDDEN_IDENTITY:
+                    needle = token.casefold()
+                    if needle in relative.casefold() or needle in text.casefold():
+                        hits.append((token, relative))
+
+            excluded = (
+                ".planning",
+                ".template-tests",
+                "copier.yml",
+                ".venv-template",
+                "IDEIA.md",
+                "REVIEW.md",
+                "CLAUDE.md",
+                ".copier-answers.yml.jinja",
+            )
+            artifacts = [name for name in excluded if (destination / name).exists()]
+            artifacts.extend(
+                item.relative_to(destination).as_posix()
+                for item in destination.rglob("*.jinja")
+            )
+
+        self.assertEqual(hits, [])
+        self.assertEqual(artifacts, [])
 
 
 if __name__ == "__main__":
