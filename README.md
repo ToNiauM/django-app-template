@@ -70,7 +70,8 @@ oculta após a cópia: cada passo é consciente e auditável.
    `.venv-template` (seção anterior).
 
 2. **Escolha uma tag estável do template**, por exemplo `v0.1.0`. Sistemas
-   nascem de releases revisadas, não de commits arbitrários.
+   nascem de releases revisadas, não de commits arbitrários. Para criar a
+   tag, veja [Criando a tag de release](#criando-a-tag-de-release).
 
 3. **Gere a cópia a partir de um diretório de trabalho fora do destino:**
 
@@ -355,6 +356,31 @@ Publique mudanças conscientes do template em tags semver (`v0.1.0`, `v0.2.0`
 etc.). Antes de criar uma tag, revise o diff gerado, execute as verificações
 cabíveis e só então registre a release. Sistemas derivados só recebem mudanças
 quando o operador decide atualizar para uma tag posterior.
+
+### Criando a tag de release
+
+Pré-condições: árvore limpa (`git status --short` sem saída) e a regressão
+completa da seção [Regressão do template](#regressão-do-template) verde.
+
+```bash
+# criar a tag anotada da release
+git tag -a v0.1.0 -m "descrição da release"
+
+# listar as tags existentes
+git tag
+
+# inspecionar o conteúdo de uma tag
+git show v0.1.0 --stat
+```
+
+Sem `--vcs-ref`, `copier copy` e `copier update` renderizam sempre a **última
+tag** (ordenada pelo algoritmo PEP 440), nunca o HEAD — é por isso que
+sistemas nascem de releases. Se o repositório não tem nenhuma tag, o Copier
+cai no HEAD com uma versão sintética como `0.0.0.postN.dev0+hash` e, se a
+árvore estiver suja, emite `DirtyLocalWarning` e inclui as mudanças não
+commitadas na cópia — nunca gere um sistema real nesse estado. A opção
+`--vcs-ref=HEAD` existe apenas para ensaio e depuração do template, nunca
+para nascimento de produção.
 
 Faça `copier update` exclusivamente com o Git limpo:
 
