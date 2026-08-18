@@ -1,10 +1,46 @@
 /** @type {import('tailwindcss').Config} */
+
+// ÚNICO valor de identidade deste arquivo — a Fase 4 (Copier) parametriza
+// exatamente esta linha + o .env (D-17). Nenhum outro hex de marca pode
+// existir aqui: brand-hover/brand-ink/brand-tint são DERIVADOS abaixo.
+const COR_PRIMARIA = "#1e40af";
+
+// Derivações em JS puro (sem dependência): mistura o hex com um alvo
+// (255 = branco, 0 = preto) na proporção `fator`. Assim a Fase 4 troca um
+// valor só e a paleta inteira acompanha, sem matemática de cor em Jinja.
+function misturar(hex, alvo, fator) {
+  const n = parseInt(hex.slice(1), 16);
+  const canal = (desloc) => {
+    const c = (n >> desloc) & 0xff;
+    return Math.round(c + (alvo - c) * fator);
+  };
+  return (
+    "#" + [16, 8, 0].map((d) => canal(d).toString(16).padStart(2, "0")).join("")
+  );
+}
+
 module.exports = {
-  // darkMode/paleta de marca ficam fora de escopo desta fase (CORE-03/Fase
-  // 2) — este config é o piso mínimo para provar o pipeline de build.
   content: ["./core/templates/**/*.html"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        // Paleta semântica neutra (NÃO é identidade — fixa do template).
+        // Os templates da Fase 1 JÁ usavam bg-page/bg-surface/text-ink sem
+        // que existissem — o JIT os ignorava em silêncio (Pitfall 6).
+        page: "#f9f9f7",
+        surface: "#fcfcfb",
+        "surface-2": "#f3f2ef",
+        ink: "#0b0b0b",
+        "ink-2": "#52514e",
+        muted: "#77756f",
+        grid: "#e4e2dd",
+        // Marca — todos derivados do único literal acima (D-17).
+        brand: COR_PRIMARIA,
+        "brand-hover": misturar(COR_PRIMARIA, 255, 0.12), // clareado 12%
+        "brand-ink": misturar(COR_PRIMARIA, 0, 0.18), // escurecido 18% (pressed)
+        "brand-tint": misturar(COR_PRIMARIA, 255, 0.9), // fundo tênue (nav ativa)
+      },
+    },
   },
   plugins: [],
 };

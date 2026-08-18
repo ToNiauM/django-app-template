@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* `x-cloak` é só um atributo — sem esta regra escrita à mão ele é inerte
+   (não é classe utilitária, o JIT não a gera). Sem ela, a gaveta mobile do
+   shell (wave 2) pisca aberta no primeiro paint, antes de o Alpine iniciar
+   (Pitfall 7; o primeiro uso de x-cloak entra na plan 02-02). */
+[x-cloak] {
+  display: none !important;
+}
