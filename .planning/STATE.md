@@ -4,8 +4,8 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Phase 2 context gathered
-last_updated: "2026-08-18T02:09:02.055Z"
-last_activity: 2026-08-18 -- Phase 2 planning complete
+last_updated: "2026-08-18T03:52:24.888Z"
+last_activity: 2026-08-18
 progress:
   total_phases: 5
   completed_phases: 1
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-17)
 
 **Core value:** Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de exemplo, Docker, backup) em minutos — restando ao time apenas modelar o domínio em `apps/`.
-**Current focus:** Phase 2 — shell visual e kernel
+**Current focus:** Phase 2 — Shell Visual e Kernel
 
 ## Current Position
 
-Phase: 2
-Plan: Not started
+Phase: 2 (Shell Visual e Kernel) — EXECUTING
+Plan: 2 of 4
 Status: Ready to execute
-Last activity: 2026-08-18 -- Phase 2 planning complete
+Last activity: 2026-08-18
 
-Progress: [██████████] 100%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
@@ -56,6 +56,7 @@ Progress: [██████████] 100%
 | Phase 01-funda-o-django P02 | 8min | 1 tasks | 14 files |
 | Phase 01-funda-o-django P03 | 15min | 1 tasks | 6 files |
 | Phase 01-funda-o-django P04 | 10min | 3 tasks | 9 files |
+| Phase 02 P01 | 4min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -75,6 +76,8 @@ Recent decisions affecting current work:
 - [Phase 01-03]: compose.yml restrito a web+db (sem backup, INF-03/Fase 4); pgdata sem external:true nesta fase (Assumption A4 — clone limpo sobe sozinho)
 - [Phase 01-03]: nome de projeto compose herdado do diretório (sistema_base) isola containers/rede/volume de qualquer stack pca_* no mesmo host
 - [Phase 01-04]: login_view/logout_view/shell_view reproduzidos verbatim do padrão da PCA, com validação explícita de open redirect em ?next= via url_has_allowed_host_and_scheme
+- [Phase 02-01]: COR_PRIMARIA validada com re.fullmatch(#RRGGBB) no boot — ImproperlyConfigured como barreira contra CSS injection via .env (T-02-01)
+- [Phase 02-01]: Tokens de marca derivados por misturar() em JS puro no tailwind.config.js — um unico hex literal de identidade (D-17), sem CSS vars (sem dark mode nesta fase)
 
 ### Pending Todos
 
@@ -94,6 +97,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-18T01:41:26.059Z
+Last session: 2026-08-18T03:51:46.330Z
 Stopped at: Phase 2 context gathered
-Resume file: .planning/phases/02-shell-visual-e-kernel/02-CONTEXT.md
+Resume file: None
