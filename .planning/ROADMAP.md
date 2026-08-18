@@ -48,7 +48,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 01-03-PLAN.md — Docker infra + migração 0001 + subida real (build, up, migrate, createsuperuser)
+- [x] 01-03-PLAN.md — Docker infra + migração 0001 + subida real (build, up, migrate, createsuperuser)
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -123,7 +123,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Fundação Django | 2/4 | In Progress|  |
+| 1. Fundação Django | 3/4 | In Progress|  |
 | 2. Shell Visual e Kernel | 0/TBD | Not started | - |
 | 3. App Exemplo | 0/TBD | Not started | - |
 | 4. Templatização Copier | 0/TBD | Not started | - |

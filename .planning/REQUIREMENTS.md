@@ -39,8 +39,8 @@ Requisitos da entrega inicial. Cada um mapeia para fases do roadmap.
 
 ### Infraestrutura (INF)
 
-- [ ] **INF-01**: Sistema gerado sobe com `docker compose up -d` (app + PostgreSQL 17) usando `Dockerfile`, `compose.yml` e `entrypoint.sh` do template
-- [ ] **INF-02**: Sistema gerado inclui `.env.example` completo cobrindo todas as variáveis necessárias
+- [x] **INF-01**: Sistema gerado sobe com `docker compose up -d` (app + PostgreSQL 17) usando `Dockerfile`, `compose.yml` e `entrypoint.sh` do template
+- [x] **INF-02**: Sistema gerado inclui `.env.example` completo cobrindo todas as variáveis necessárias
 - [ ] **INF-03**: Sistema gerado inclui `ops/` com script de backup do banco e exemplo de vhost nginx
 - [ ] **INF-04**: App escuta só em `127.0.0.1` atrás do proxy; migração completa = dump + `.env` + `docker compose up -d` + `migrate` + proxy/DNS, sem nenhuma dependência do host
 
@@ -86,8 +86,8 @@ Quais fases cobrem quais requisitos. Preenchido na criação do roadmap.
 | CFG-04 | Phase 1 | Complete |
 | CORE-01 | Phase 1 | Complete |
 | CORE-02 | Phase 1 | Pending |
-| INF-01 | Phase 1 | Pending |
-| INF-02 | Phase 1 | Pending |
+| INF-01 | Phase 1 | Complete |
+| INF-02 | Phase 1 | Complete |
 | CORE-03 | Phase 2 | Pending |
 | CORE-04 | Phase 2 | Pending |
 | CORE-05 | Phase 2 | Pending |
