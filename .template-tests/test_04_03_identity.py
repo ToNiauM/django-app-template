@@ -11,6 +11,7 @@ import re
 
 ROOT = Path(__file__).resolve().parents[1]
 COPIER = ROOT / ".venv-template" / "bin" / "copier"
+OPTIONAL_EXAMPLE_APP = ROOT / "apps/{% if incluir_app_exemplo %}exemplo{% endif %}"
 FORBIDDEN_IDENTITY = (
     "sistema_base",
     "Sistema Base",
@@ -99,10 +100,10 @@ class RuntimeIdentityTemplateTests(unittest.TestCase):
 
     def test_runtime_scripts_are_neutral_and_generated_tree_has_no_identity_leaks(self) -> None:
         entrypoint = (ROOT / "entrypoint.sh").read_text(encoding="utf-8")
-        seed = (ROOT / "apps/exemplo/management/commands/seed_exemplo.py").read_text(
+        seed = (OPTIONAL_EXAMPLE_APP / "management/commands/seed_exemplo.py").read_text(
             encoding="utf-8"
         )
-        readme = (ROOT / "apps/exemplo/README.md").read_text(encoding="utf-8")
+        readme = (OPTIONAL_EXAMPLE_APP / "README.md.jinja").read_text(encoding="utf-8")
         icon_generator = (ROOT / "ops/gerar_icones_pwa.py").read_text(encoding="utf-8")
 
         self.assertIn("--bind 0.0.0.0:8000", entrypoint)
