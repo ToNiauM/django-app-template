@@ -173,7 +173,20 @@ Plans:
   2. `copier copy` + preencher `.env` + `docker compose up -d` + `migrate` + `createsuperuser` produz sistema navegável (login, shell, CRUD e dashboard) sem editar código
   3. README do template documenta o nascimento de um sistema, do `copier copy` ao proxy/DNS
 
-**Plans**: TBD
+**Plans**: 3 plans (3 waves)
+
+Plans:
+**Wave 1**
+
+- [ ] 05-01-PLAN.md — Tracer de nascimento real: cópia efêmera, Compose, migração, superusuário, suíte Django e smoke HTTP
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 05-02-PLAN.md — README canônico: nascimento local, navegação, regressão e publicação por proxy/TLS/DNS
+
+**Wave 3** *(blocked on Waves 1–2 completion)*
+
+- [ ] 05-03-PLAN.md — Ambiente retido, checkpoint visual 32/32 e cleanup confinado
 
 ## Progress
 
