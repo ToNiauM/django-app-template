@@ -14,7 +14,7 @@ Do zero a um template Copier que gera sistemas Django completos para o CFC. Prim
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Fundação Django** - Projeto Django em Docker com auth, usuário customizado e settings seguros por ambiente (completed 2026-08-18)
-- [ ] **Phase 2: Shell Visual e Kernel** - Layout base, admin customizado, PWA e auditoria no app `core`
+- [x] **Phase 2: Shell Visual e Kernel** - Layout base, admin customizado, PWA e auditoria no app `core` (completed 2026-08-18)
 - [ ] **Phase 3: App Exemplo** - CRUD de referência e dashboard ECharts como documentação viva
 - [ ] **Phase 4: Templatização Copier** - Sistema-modelo vira template parametrizado com `copier copy`/`copier update` e ops de produção
 - [ ] **Phase 5: Verificação e Documentação** - Fluxo de nascimento validado ponta a ponta e README completo
@@ -85,7 +85,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 02-04-PLAN.md — PWA: manifest/sw por views, ícones + script de regeneração, offline.html, limpeza de cache no logout, test_pwa
+- [x] 02-04-PLAN.md — PWA: manifest/sw por views, ícones + script de regeneração, offline.html, limpeza de cache no logout, test_pwa
 
 ### Phase 3: App Exemplo
 
@@ -141,7 +141,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Fundação Django | 4/4 | Complete    | 2026-08-18 |
-| 2. Shell Visual e Kernel | 3/4 | In Progress|  |
+| 2. Shell Visual e Kernel | 4/4 | Complete   | 2026-08-18 |
 | 3. App Exemplo | 0/TBD | Not started | - |
 | 4. Templatização Copier | 0/TBD | Not started | - |
 | 5. Verificação e Documentação | 0/TBD | Not started | - |

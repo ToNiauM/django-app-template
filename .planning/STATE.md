@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
+status: verifying
 stopped_at: Phase 2 context gathered
-last_updated: "2026-08-18T04:06:56.830Z"
+last_updated: "2026-08-18T04:13:58.390Z"
 last_activity: 2026-08-18
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 8
-  completed_plans: 7
-  percent: 20
+  completed_plans: 8
+  percent: 40
 ---
 
 # Project State
@@ -27,10 +27,10 @@ See: .planning/PROJECT.md (updated 2026-08-17)
 
 Phase: 2 (Shell Visual e Kernel) — EXECUTING
 Plan: 4 of 4
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-08-18
 
-Progress: [█████████░] 88%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -59,6 +59,7 @@ Progress: [█████████░] 88%
 | Phase 02 P01 | 4min | 2 tasks | 6 files |
 | Phase 02 P02 | 5min | 3 tasks | 7 files |
 | Phase 02 P03 | 6min | 3 tasks | 10 files |
+| Phase 02 P04 | 5min | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -84,6 +85,8 @@ Recent decisions affecting current work:
 - [Phase 02-02]: Botão Sair do shell como <form hx-post> com csrf_token de fallback no-JS (padrão IN-02), não botão solto
 - [Phase 02-03]: Gate do admin mantido no padrão do Django (is_active and is_staff) — decisão A1 travada por teste; gate superuser é política de domínio, não do template
 - [Phase 02-03]: Auditoria padrão: HistoricalRecords() nos modelos de domínio; user model é exceção via simple_history.register() em core/admin.py (dependência circular em model swappable)
+- [Phase 02-04]: hx-on::before-request da limpeza de cache no <form hx-post> (elemento emissor), não no <button> — é onde o htmx dispara before-request
+- [Phase 02-04]: SW hand-rolled com cache static-v1 restrito a /static/ + fallback offline; navegações nunca gravadas em cache (HTML autenticado jamais persiste no cliente)
 
 ### Pending Todos
 
@@ -103,6 +106,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-18T04:06:26.850Z
+Last session: 2026-08-18T04:13:31.178Z
 Stopped at: Phase 2 context gathered
 Resume file: None
