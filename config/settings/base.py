@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "django_htmx",
     "simple_history",
     "axes",
+    "apps.exemplo.apps.ExemploConfig",
 ]
 
 # A ordem do MIDDLEWARE é normativa — não reordenar sem entender o motivo
