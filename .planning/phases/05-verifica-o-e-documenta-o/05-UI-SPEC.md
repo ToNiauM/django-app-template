@@ -19,6 +19,7 @@ created: 2026-08-18
 - O README é um runbook Markdown; não é uma nova superfície web. Deve orientar a abertura das telas existentes, sem duplicar ou inventar fluxos de produto.
 - O ensaio automatizado prova renderização/comportamento e o alcance HTTP. A inspeção manual breve no navegador é a evidência complementar de que login, shell, CRUD e dashboard estão navegáveis na cópia efêmera; ela não introduz automação de navegador nesta fase. [Fonte: `05-RESEARCH.md`, alternativa adotada.]
 - O executor não pode alterar a aparência das telas existentes apenas para fazer o ensaio passar. Uma regressão visual encontrada durante a inspeção deve ser registrada e tratada em escopo próprio, salvo se for causada diretamente pelo artefato desta fase.
+- Hierarquia primária a preservar: no login, campos de credencial e CTA `Entrar` vêm antes de texto auxiliar; no CRUD, título/lista e CTA `Novo item` são o foco acima dos filtros e metadados; no dashboard, KPIs aparecem antes dos gráficos.
 
 ## Design System
 
@@ -64,7 +65,7 @@ Usar somente os quatro tamanhos e os dois pesos já contratados para as telas ve
 | Corpo | 16px | 400 ou 600 | 1.50 | texto de interface, navegação e conteúdo de modal |
 | Título/destaque | 24px | 600 | 1.20 | títulos das telas de exemplo e métricas KPI |
 
-Pesos permitidos: regular 400 e semibold 600. A ocorrência legada de `text-xl` (20px) no cabeçalho padrão do shell é uma exceção herdada, congelada para compatibilidade; não adotar 20px em novos artefatos da Fase 5.
+Pesos permitidos: regular 400 e semibold 600. A classe legada `text-xl` no cabeçalho padrão do shell permanece inalterada por compatibilidade e está fora desta escala tipográfica ativa; não a adotar em novos artefatos da Fase 5.
 
 ---
 
@@ -96,7 +97,7 @@ Esta fase não introduz nova cópia de produto. O roteiro de verificação deve 
 | Erro de login | `E-mail ou senha inválidos.` |
 | Erro de bloqueio | `Muitas tentativas de acesso. Por segurança, novas tentativas estão bloqueadas temporariamente — aguarde e tente novamente em alguns minutos.` |
 | Erro de formulário | mensagem inline do campo, mantendo o erro retornado pelo Django; não substituir por toast genérico |
-| Confirmação destrutiva | `Excluir Item`: `Tem certeza que deseja excluir o item "{item.titulo}"?` + `Esta ação não pode ser desfeita.`; CTAs `Sim, excluir item` e `Cancelar` |
+| Confirmação destrutiva | `Excluir Item`: `Tem certeza que deseja excluir o item "{item.titulo}"?` + `Esta ação não pode ser desfeita.`; CTAs `Sim, excluir item` e `Voltar sem excluir` |
 
 ---
 
@@ -116,18 +117,45 @@ Esses passos são um checkpoint visual complementar; a prova regressiva mandató
 
 ## UI Considerations
 
-Aplicáveis resolvidos: **7 covered, 1 dismissed, 0 unresolved**. A fase não acrescenta uma superfície assíncrona ou um estado novo; as linhas abaixo definem o que a prova deve preservar nas telas existentes.
+Prova determinística pós-checker: **32/32 considerações resolvidas — 17 covered, 15 backstop, 0 unresolved**. Cada item abaixo corresponde a uma combinação superfície/categoria produzida por `ui-consideration-probe.cjs`; nenhuma consideração foi descartada silenciosamente.
 
-| Categoria | Elemento(s) | Status | Resolução / razão |
-|-----------|-------------|--------|-------------------|
-| empty | coleção CRUD; dashboard | ✅ covered | Lista sem objetos mostra a cópia de vazio contratada; dashboard com banco vazio responde com segurança. A inspeção manual e os testes existentes cobrem ambos. |
-| loading | login, filtros HTMX, modais | — dismissed | Nenhum indicador de carregamento é introduzido nesta fase; o contrato é preservar o swap HTMX existente, sem criar spinner ou estado novo fora de escopo. |
-| error | login e formulário modal | ✅ covered | Login inválido mantém a página/fragmento e exibe a cópia contratada; validação 422 mantém os erros de campo no modal. |
-| populated | shell, CRUD e dashboard | ✅ covered | Após criar o administrador e os dados de ensaio, shell, tabela, cards e gráficos renderizam navegáveis na cópia derivada. |
-| partial | linha de tabela com prazo/descrição ausente | ✅ covered | Campo opcional ausente mantém `—`; descrição ausente não cria bloco vazio nem altera o alinhamento. |
-| overflow | tabela, breadcrumb, nav e descrição | ✅ covered | Tabela usa `overflow-x-auto`; textos longos da descrição e identidade aplicam truncamento; breadcrumb usa `flex-wrap`. |
-| zero-one-many | coleção paginada | ✅ covered | Zero apresenta vazio; um item mantém a tabela; muitos itens preservam paginação e quantidade exibida. |
-| long-text | título do item, descrição e identidade | ✅ covered | Ações não saem da área visível; descrição usa `truncate`, identidade do shell usa `min-w-0`/`truncate` e o texto de confirmação interpola título com escape Django. |
+### Covered — critérios explícitos
+
+- `[login-form/empty]` `GET /login/` renderiza campos de e-mail e senha vazios e o CTA `Entrar`, sem dados de sessão expostos.
+- `[login-form/error]` Credencial inválida mantém a tela de login e exibe `E-mail ou senha inválidos.`; bloqueio temporário exibe a mensagem contratada.
+- `[responsive-shell-navigation/overflow]` Breadcrumb usa `flex-wrap`, aside mantém 232px no desktop e a gaveta móvel não amplia o viewport.
+- `[responsive-shell-navigation/long-text]` Identidade usa `min-w-0`/`truncate`; breadcrumbs quebram linha sem ocultar controles.
+- `[crud-list/empty]` Zero resultados exibe `Nenhum item encontrado`, o corpo explicativo e `Limpar filtros`.
+- `[crud-list/populated]` Com dados de ensaio, título, `Novo item`, filtros, tabela, ordenação, ações e paginação permanecem navegáveis.
+- `[crud-list/partial]` Prazo ou descrição opcionais ausentes usam `—` sem alterar alinhamento nem ações da linha.
+- `[crud-list/overflow]` Tabela larga usa `overflow-x-auto`; ações permanecem alcançáveis e breadcrumb usa `flex-wrap`.
+- `[crud-list/zero-one-many]` Zero itens mostra o vazio; um item conserva a tabela; muitos itens acionam paginação e quantidade exibida.
+- `[crud-list/long-text]` Descrição e identidade truncam; título e cópias auxiliares quebram linha sem deslocar ações.
+- `[crud-modal-form/empty]` `Novo item` abre formulário sem dados persistidos e com CTAs de criação/fechamento visíveis.
+- `[crud-modal-form/error]` Resposta 422 mantém o modal aberto e apresenta erros inline no campo correspondente.
+- `[crud-modal-form/partial]` Campos opcionais podem ficar vazios; obrigatórios ausentes recebem erro sem descartar valores válidos.
+- `[crud-modal-form/long-text]` Título interpolado é escapado pelo Django e quebra linha sem sobrepor os CTAs destrutivos.
+- `[dashboard/empty]` Banco vazio retorna dashboard sem erro, com KPIs e contêineres de gráfico em estado neutro seguro.
+- `[dashboard/populated]` Com dados de ensaio, KPIs antecedem dois gráficos ECharts e barras/setores levam à lista filtrada.
+- `[dashboard/zero-one-many]` Zero registros preserva estado seguro; um produz métricas válidas; muitos preservam agregação e interação.
+
+### Backstops — exigem evidência visual/held-out
+
+- `{ statement: "[login-form/loading] Durante o submit síncrono, o formulário permanece visível até a navegação completar; nenhum spinner ou skeleton novo é introduzido.", verification: backstop }`
+- `{ statement: "[login-form/partial] Envio com um campo preenchido mantém ambos os controles e associa validação ao campo ausente sem apagar o valor informado.", verification: backstop }`
+- `{ statement: "[login-form/overflow] Em viewport móvel, o formulário fica dentro do canvas sem rolagem horizontal nem recorte do CTA.", verification: backstop }`
+- `{ statement: "[login-form/long-text] Mensagens longas de bloqueio quebram linha sem sobrepor campos ou CTA.", verification: backstop }`
+- `{ statement: "[responsive-shell-navigation/loading] Navegação full-page mantém o shell anterior até a resposta; nenhum estado assíncrono customizado é criado.", verification: backstop }`
+- `{ statement: "[responsive-shell-navigation/error] Falha de destino não deixa gaveta/overlay presos e permite retornar à última página válida.", verification: backstop }`
+- `{ statement: "[crud-list/loading] Durante swaps HTMX, a lista preserva geometria e não duplica controles; nenhum spinner novo é exigido.", verification: backstop }`
+- `{ statement: "[crud-list/error] Falha HTMX não troca a tabela por vazio silencioso e mantém recuperação por nova tentativa ou recarga.", verification: backstop }`
+- `{ statement: "[crud-modal-form/loading] Durante submit HTMX, o modal permanece estável, sem formulário duplicado ou confirmação destrutiva acidental.", verification: backstop }`
+- `{ statement: "[crud-modal-form/overflow] Em viewport móvel ou com muitos erros, o modal permanece rolável e ambos os CTAs alcançáveis.", verification: backstop }`
+- `{ statement: "[dashboard/loading] Enquanto ECharts inicializa, contêineres mantêm dimensões e não cobrem KPIs nem navegação.", verification: backstop }`
+- `{ statement: "[dashboard/error] Falha de um gráfico não impede acesso a KPIs, navegação ou lista filtrada.", verification: backstop }`
+- `{ statement: "[dashboard/partial] Com apenas parte das séries, KPIs e gráfico disponível continuam legíveis sem inventar valores.", verification: backstop }`
+- `{ statement: "[dashboard/overflow] Em viewport estreito, cards/gráficos refluem sem rolagem horizontal de página nem corte de rótulos críticos.", verification: backstop }`
+- `{ statement: "[dashboard/long-text] Rótulos longos truncam ou quebram linha sem sobrepor legenda, KPIs ou alvos clicáveis.", verification: backstop }`
 
 ---
 
@@ -142,11 +170,11 @@ Aplicáveis resolvidos: **7 covered, 1 dismissed, 0 unresolved**. A fase não ac
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: PASS com uma recomendação não bloqueante sobre `Entrar`
+- [x] Dimension 2 Visuals: PASS
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** verified — `gsd-ui-checker`, 2026-08-18
