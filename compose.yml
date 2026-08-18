@@ -27,7 +27,11 @@ services:
     env_file:
       - .env
     ports:
-      - "${WEB_BIND_ADDRESS}:${WEB_PORT}:8000"
+      # Default seguro (WR-02): se `.env` for criado sem `WEB_BIND_ADDRESS`,
+      # o Compose interpolaria string vazia e exporia a aplicação em todas
+      # as interfaces (0.0.0.0) — quebrando silenciosamente o invariante
+      # "bound to 127.0.0.1 on the host".
+      - "${WEB_BIND_ADDRESS:-127.0.0.1}:${WEB_PORT:-8000}:8000"
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/healthz"]
       interval: 10s
