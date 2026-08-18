@@ -73,18 +73,22 @@
       </div>
       <div class="text-sm leading-tight min-w-0">
         <div class="truncate">{{ usuario_atual.email }}</div>
-        {# hx-on::before-request: limpa Cache Storage + histórico htmx ANTES
-           do POST de logout (T-02-11) — a função vive no base.html. Fica no
-           <form> (o elemento hx-post) porque é nele que o htmx dispara o
-           evento before-request. #}
+        {% comment %}
+          hx-on::before-request: limpa Cache Storage + histórico htmx ANTES
+          do POST de logout (T-02-11) — a função vive no base.html. Fica no
+          <form> (o elemento hx-post) porque é nele que o htmx dispara o
+          evento before-request.
+        {% endcomment %}
         <form method="post" action="{% url 'core:logout' %}"
               hx-post="{% url 'core:logout' %}" hx-target="body" class="inline"
               hx-on::before-request="limparCachePwa()">
-          {# `method`/`action` explícitos (CR-01): sem eles o submit nativo
-             viraria GET com o token CSRF na querystring e o logout nunca
-             aconteceria se o htmx falhasse. Junto com o branch não-htmx de
-             `logout_view`, este form é o fallback no-JS real — ver o
-             comentário homólogo em _login_form.html. #}
+          {% comment %}
+            `method`/`action` explícitos (CR-01): sem eles o submit nativo
+            viraria GET com o token CSRF na querystring e o logout nunca
+            aconteceria se o htmx falhasse. Junto com o branch não-htmx de
+            `logout_view`, este form é o fallback no-JS real — ver o
+            comentário homólogo em _login_form.html.
+          {% endcomment %}
           {% csrf_token %}
           <button type="submit" class="text-muted hover:text-ink-2 underline text-left">
             Sair

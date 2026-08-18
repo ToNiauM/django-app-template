@@ -1,15 +1,17 @@
 <form id="login-form" method="post" action="{% url 'core:login' %}"
       hx-post="{% url 'core:login' %}" hx-target="#login-form" hx-swap="outerHTML"
       class="flex flex-col gap-3">
-  {# `method`/`action` explícitos são parte do fallback no-JS (CR-01): sem
-     eles, o submit nativo degrada para o default do HTML — GET na URL
-     atual — e a senha vazaria em texto puro na querystring (histórico do
-     navegador, logs do proxy reverso). Com eles + o branch não-htmx de
-     `login_view`, o form funciona como POST tradicional quando o htmx não
-     carrega. O campo oculto csrfmiddlewaretoken abaixo é o par desse
-     fallback: redundante com o header X-CSRFToken injetado pelo listener
-     htmx:configRequest (base.html), mas necessário porque o
-     CsrfViewMiddleware aceita token via header OU corpo. #}
+  {% comment %}
+    `method`/`action` explícitos são parte do fallback no-JS (CR-01): sem
+    eles, o submit nativo degrada para o default do HTML — GET na URL
+    atual — e a senha vazaria em texto puro na querystring (histórico do
+    navegador, logs do proxy reverso). Com eles + o branch não-htmx de
+    `login_view`, o form funciona como POST tradicional quando o htmx não
+    carrega. O campo oculto csrfmiddlewaretoken abaixo é o par desse
+    fallback: redundante com o header X-CSRFToken injetado pelo listener
+    htmx:configRequest (base.html), mas necessário porque o
+    CsrfViewMiddleware aceita token via header OU corpo.
+  {% endcomment %}
   {% csrf_token %}
   <input type="hidden" name="next" value="{{ next|default:'' }}">
   <div class="flex flex-col gap-1">

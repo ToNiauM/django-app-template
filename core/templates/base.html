@@ -17,9 +17,11 @@
   tela de login e espremeria a aside fixa do shell no meio da página. O
   wrapper de centering agora vive em core/login.html.
 {% endcomment %}
-{# O atributo hx-history desligado no <body> impede o htmx de tirar snapshot
-   de HTML autenticado para o localStorage (htmx-history-cache) — defesa V3
-   contra conteúdo de sessão persistido no cliente após o logout (T-02-11). #}
+{% comment %}
+  O atributo hx-history desligado no <body> impede o htmx de tirar snapshot
+  de HTML autenticado para o localStorage (htmx-history-cache) — defesa V3
+  contra conteúdo de sessão persistido no cliente após o logout (T-02-11).
+{% endcomment %}
 <body class="min-h-screen bg-page text-ink font-sans text-base" hx-history="false">
   {% block content %}{% endblock %}
 
