@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-08-17)
 Phase: 05
 Plan: Not started
 Status: Milestone complete
-Last activity: 2026-08-18 - Completed quick task 260818-qoy: seção 'Os três ciclos de trabalho' no README
+Last activity: 2026-08-18 - Completed quick task 260818-qwd: docs de tag de release + Resumo executável no README
 
 Progress: [█████████░] 90%
 
@@ -114,6 +114,7 @@ None yet.
 | 260818-n9k | Corrigir vazamento de comentários `{# #}` de template Django exibidos como texto (login e topo da página); causa raiz + teste de regressão | 2026-08-18 | ba86084 | [260818-n9k-corrija-o-vazamento-de-coment-rios-de-te](./quick/260818-n9k-corrija-o-vazamento-de-coment-rios-de-te/) |
 | 260818-qc7 | Documentar padrão nginx conf.d + certbot --nginx na seção de publicação do README | 2026-08-18 | 8a52155 | [260818-qc7-documentar-padr-o-nginx-conf-d-certbot-n](./quick/260818-qc7-documentar-padr-o-nginx-conf-d-certbot-n/) |
 | 260818-qoy | Adicionar seção 'Os três ciclos de trabalho' ao README do template | 2026-08-18 | f910787 | [260818-qoy-adicionar-se-o-os-tr-s-ciclos-de-trabalh](./quick/260818-qoy-adicionar-se-o-os-tr-s-ciclos-de-trabalh/) |
+| 260818-qwd | Documentar criação da tag de release + seção Resumo executável (exemplo financeiro:12010) no README | 2026-08-18 | 44ae507 | [260818-qwd-documentar-cria-o-da-tag-de-release-e-re](./quick/260818-qwd-documentar-cria-o-da-tag-de-release-e-re/) |
 
 ## Deferred Items
 
