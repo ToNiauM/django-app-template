@@ -31,6 +31,17 @@ hostname `{{ sistema_hostname }}` e a porta interna `{{ sistema_porta }}`.
    produção, mantenha o bind em loopback e configure o proxy/TLS para
    `https://{{ sistema_hostname }}`.
 
+## Migração, proxy e recuperação
+
+Para levar o sistema a uma VM limpa, restaurar um dump e publicar o hostname com
+TLS, siga o [runbook de migração](ops/MIGRACAO.md). Ele mantém a aplicação em
+loopback, configura o vhost Nginx e documenta DNS, certificado e validação de
+`/healthz`.
+
+Execute periodicamente o ensaio de restore descrito no runbook, sobretudo antes
+de alterações de banco. O ensaio usa recursos Docker efêmeros identificados pelo
+slug e limpa exclusivamente o que criou; não substitui um backup monitorado.
+
 ## Convenções para apps
 
 O núcleo fica em `core/`; o domínio do sistema deve nascer em `apps/`. Use o

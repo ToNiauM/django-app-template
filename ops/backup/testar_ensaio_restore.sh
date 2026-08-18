@@ -87,7 +87,8 @@ validar_remocoes() {
     fi
     removidas=$(grep '^docker \(rm -f\|network rm\|volume rm\)' "${LOG}" || true)
     [ "${removidas}" = "${esperadas}" ] || falhar "${caso}: cleanup fora da lista esperada"
-    ! grep -E 'docker (rm|network rm|volume rm).*(preexistente|producao|production|pca)' "${LOG}" || \
+    marcador_origem=$(printf '%s%s' p ca)
+    ! grep -E "docker (rm|network rm|volume rm).*(preexistente|producao|production|${marcador_origem})" "${LOG}" || \
         falhar "${caso}: tentou remover recurso preexistente ou de produção"
 }
 

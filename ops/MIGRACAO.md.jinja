@@ -1,0 +1,121 @@
+# Migração para uma VM limpa
+
+Este runbook leva uma cópia gerada do sistema a uma VM Debian ou Ubuntu limpa.
+A topologia final é Internet → Nginx com TLS → `127.0.0.1:{{ sistema_porta }}`
+→ serviço `web` do Compose. A porta da aplicação não é pública.
+
+## 1. Preparar a VM
+
+Instale Docker Engine, o plugin Docker Compose, Nginx e Certbot pelos repositórios
+oficiais da distribuição. Confirme as ferramentas antes de copiar o sistema:
+
+```sh
+docker compose version
+nginx -v
+certbot --version
+```
+
+Não instale Python, pip, cron nem rclone para a aplicação no host. O backup usa
+rclone apenas dentro do container `backup`.
+
+## 2. Transferir o sistema e configurar o ambiente
+
+Transfira o repositório gerado e o dump customizado para a VM por um canal seguro.
+No diretório do sistema, crie o ambiente local a partir do arquivo versionado:
+
+```sh
+cp .env.example .env
+```
+
+Edite `.env` e gere valores novos para `SECRET_KEY` e `POSTGRES_PASSWORD`.
+Defina `DJANGO_SETTINGS_MODULE=config.settings.prod`, `DEBUG=false`, os hosts e
+origens HTTPS do hostname, as credenciais R2 e mantenha
+`WEB_BIND_ADDRESS=127.0.0.1`. Não copie segredos de outro ambiente.
+
+Valide a stack renderizada antes de iniciá-la:
+
+```sh
+docker compose config
+```
+
+O volume `pgdata` é gerenciado pelo Compose; não há etapa de `docker volume create`
+e não use volume externo para esta migração.
+
+## 3. Restaurar o dump customizado
+
+Suba somente o banco e espere o healthcheck:
+
+```sh
+docker compose up -d db
+until [ "$(docker inspect --format '{% raw %}{{.State.Health.Status}}{% endraw %}' "$(docker compose ps -q db)")" = "healthy" ]; do
+  sleep 2
+done
+```
+
+Se o dump estiver no remoto R2, liste e baixe-o pelo container de backup, sem
+instalar rclone no host. Caso já tenha transferido o arquivo, pule esses comandos:
+
+```sh
+docker compose run --rm --entrypoint rclone backup lsf "r2:${R2_BUCKET}/daily/"
+docker compose run --rm --entrypoint rclone backup copyto \
+  "r2:${R2_BUCKET}/daily/<dump-mais-recente>.dump" /tmp/restore.dump
+```
+
+Restaure somente no banco recém-criado da stack desta VM. O arquivo precisa ser
+um dump de `pg_dump --format=custom`:
+
+```sh
+docker compose exec -T db pg_restore --clean --if-exists --no-owner \
+  --username="$POSTGRES_USER" --dbname="$POSTGRES_DB" < /caminho/para/restore.dump
+```
+
+## 4. Subir a aplicação e validar
+
+Construa e inicie a stack; rode migrations explicitamente e confirme a saúde:
+
+```sh
+docker compose up -d --build
+docker compose exec -T web python manage.py migrate --noinput
+curl -fsS "http://127.0.0.1:${WEB_PORT}/healthz"
+```
+
+O último comando deve responder com o status de saúde. Investigue os logs com
+`docker compose logs --tail=100 web db backup` antes de expor o serviço.
+
+## 5. Configurar DNS, TLS e Nginx
+
+Crie o registro DNS de `{{ sistema_hostname }}` apontando para a VM e libere as
+portas 80 e 443. Em seguida, obtenha o certificado antes de instalar o vhost TLS:
+
+```sh
+sudo systemctl stop nginx
+sudo certbot certonly --standalone -d {{ sistema_hostname }}
+sudo install -m 0644 ops/nginx/{{ sistema_slug }}.conf /etc/nginx/sites-available/{{ sistema_slug }}.conf
+sudo ln -sf /etc/nginx/sites-available/{{ sistema_slug }}.conf /etc/nginx/sites-enabled/{{ sistema_slug }}.conf
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+Teste `https://{{ sistema_hostname }}/healthz` de fora da VM. O vhost termina TLS,
+redireciona HTTP para HTTPS e reescreve `Host`, `X-Real-IP`,
+`X-Forwarded-For` e `X-Forwarded-Proto` a partir da conexão recebida.
+
+## 6. Ensaiar a recuperação periodicamente
+
+Agende um ensaio após mudanças relevantes de banco e em intervalos definidos pela
+operação. Primeiro construa as imagens locais; depois informe-as explicitamente ao
+script, que cria nomes com `{{ sistema_slug }}_rehearsal_<PID>` e remove somente
+o container, rede e volume que registrou como próprios:
+
+```sh
+docker compose build web backup
+SISTEMA_SLUG={{ sistema_slug }} \
+R2_BUCKET="$R2_BUCKET" \
+REHEARSAL_BACKUP_IMAGE={{ sistema_slug }}-backup \
+REHEARSAL_WEB_IMAGE={{ sistema_slug }}-web \
+sh ops/backup/ensaio_restore_local.sh
+```
+
+O ensaio não usa `docker compose down`, prune, glob de recursos ou nomes da
+produção. Em caso de erro ou interrupção, o trap remove somente os recursos
+efêmeros que ele criou; confira a saída antes de repetir.
