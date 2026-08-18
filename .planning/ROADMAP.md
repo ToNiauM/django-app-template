@@ -101,7 +101,20 @@ Plans:
   3. Dashboard ECharts exibe agregações calculadas via ORM (`annotate`/`aggregate`), nunca em Python
   4. Remover o app `exemplo` (seguindo os passos documentados) deixa o sistema íntegro
 
-**Plans**: TBD
+**Plans**: 3 plans (3 waves)
+
+Plans:
+**Wave 1**
+
+- [ ] 03-01-PLAN.md — Fundação: assets vendor ECharts, tags de formatação pt-BR, modelo `ItemExemplo` com auditoria simple-history, migrações e comando `seed_exemplo`
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 03-02-PLAN.md — CRUD de Referência: tabela paginada server-side, busca textual, filtros multi-seleção, ordenação com whitelist, modais HTMX (criar/editar/excluir com HTTP 422 e HX-Trigger)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 03-03-PLAN.md — Dashboard Analítico: KPIs agregados via ORM no PostgreSQL, gráficos ECharts (barras e donut), documentação de isolamento/remoção no README e testes de desacoplamento
 
 ### Phase 4: Templatização Copier
 
