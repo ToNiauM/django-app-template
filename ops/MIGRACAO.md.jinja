@@ -38,8 +38,14 @@ Valide a stack renderizada antes de iniciá-la:
 docker compose config
 ```
 
-O volume `pgdata` é gerenciado pelo Compose; não há etapa de `docker volume create`
-e não use volume externo para esta migração.
+Os dados do PostgreSQL usam bind mount para `./dados/pg`, configurável via
+`PGDATA_DIR` no `.env` — sempre com `./` inicial ou caminho absoluto de um
+subdiretório. Não há etapa de criação manual de volume: o Compose cria o
+diretório automaticamente no primeiro `up`, vazio na VM nova, e o restore do
+dump preenche o banco. `docker compose down -v` não remove os dados — bind
+mounts sobrevivem por construção. O diretório pertence ao uid 999 (usuário
+postgres do container) com permissão 700. Não use volume externo para esta
+migração.
 
 ## 3. Restaurar o dump customizado
 
@@ -116,6 +122,7 @@ REHEARSAL_WEB_IMAGE={{ sistema_slug }}-web \
 sh ops/backup/ensaio_restore_local.sh
 ```
 
-O ensaio não usa `docker compose down`, prune, glob de recursos ou nomes da
-produção. Em caso de erro ou interrupção, o trap remove somente os recursos
+O ensaio usa um volume efêmero próprio criado via docker e não toca o
+diretório `./dados/pg` da stack. Ele não usa `docker compose down`, prune,
+glob de recursos ou nomes da produção. Em caso de erro ou interrupção, o trap remove somente os recursos
 efêmeros que ele criou; confira a saída antes de repetir.
