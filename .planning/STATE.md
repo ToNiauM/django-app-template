@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Phase 6 context gathered
-last_updated: "2026-08-19T08:28:08.628Z"
-last_activity: 2026-08-19 -- Phase 6 planning complete
+last_updated: "2026-08-19T08:40:59.723Z"
+last_activity: 2026-08-19
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 24
-  completed_plans: 21
+  completed_plans: 22
   percent: 83
 ---
 
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-17)
 
 **Core value:** Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de exemplo, Docker, backup) em minutos — restando ao time apenas modelar o domínio em `apps/`.
-**Current focus:** Milestone complete
+**Current focus:** Phase 06 — Customização Visual e Persistência de Dados
 
 ## Current Position
 
-Phase: 05
-Plan: Not started
+Phase: 06 (Customização Visual e Persistência de Dados) — EXECUTING
+Plan: 2 of 3
 Status: Ready to execute
-Last activity: 2026-08-19 -- Phase 6 planning complete
+Last activity: 2026-08-19
 
-Progress: [█████████░] 90%
+Progress: [█████████░] 92%
 
 ## Performance Metrics
 
@@ -68,6 +68,7 @@ Progress: [█████████░] 90%
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | Phase 05 P01 | 196min | 1 tasks | 5 files |
+| Phase 06 P01 | 8min | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -101,6 +102,9 @@ Recent decisions affecting current work:
 - [Phase 02-04]: SW hand-rolled com cache static-v1 restrito a /static/ + fallback offline; navegações nunca gravadas em cache (HTML autenticado jamais persiste no cliente)
 - [Phase ?]: O collectstatic recebe somente valores fictícios não secretos no build; o .env substitui-os em runtime.
 - [Phase ?]: O preflight usa o contrato focado de collectstatic; a matriz Copier integral roda separadamente por exceder 45 segundos.
+- [Phase 06-01]: Bind mount ${PGDATA_DIR:-./dados/pg} substitui o named volume pgdata — down -v não destrói mais o banco (D-73/D-76)
+- [Phase 06-01]: .gitignore fora do _exclude do copier.yml; .gitignore.jinja renderiza e protege .env e /dados/ no sistema gerado (D-74)
+- [Phase 06-01]: copier copy --vcs-ref=HEAD na rede de testes — com a tag v0.1.0 o Copier copiava a última tag em vez do estado atual do template
 
 ### Pending Todos
 
@@ -130,6 +134,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-19T07:53:21.932Z
+Last session: 2026-08-19T08:40:27.772Z
 Stopped at: Phase 6 context gathered
-Resume file: .planning/phases/06-customiza-o-visual-e-persist-ncia-de-dados/06-CONTEXT.md
+Resume file: None
