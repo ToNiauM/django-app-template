@@ -92,6 +92,14 @@ limpar() {
     fi
 
     unset NASCIMENTO_ADMIN_PASSWORD SECRET_KEY POSTGRES_PASSWORD
+    # O initdb grava dados/pg como uid 999 e o usuário do host não consegue
+    # removê-lo — sem esta limpeza via container root o rm -rf do TMP falha
+    # silenciosamente e acumula lixo em /tmp (a imagem postgres:17 já está
+    # local: o próprio tracer acabou de usá-la).
+    if [ -d "${DESTINO:-}/dados" ]; then
+        docker run --rm -v "${DESTINO}:/alvo" postgres:17 rm -rf /alvo/dados \
+            >/dev/null 2>&1 || true
+    fi
     if [ "${TMP}" = "${TMP_VALIDADO}" ] && [ -d "${TMP}" ]; then
         rm -rf "${TMP}"
     fi
@@ -119,7 +127,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
 PY
 )
 
-"${COPIER}" copy --defaults \
+# --vcs-ref=HEAD: com uma tag de release no repositório, o Copier copiaria por
+# padrão a última tag — o tracer precisa ensaiar o estado atual do template.
+"${COPIER}" copy --defaults --vcs-ref=HEAD \
     --data 'sistema_nome=Sistema Nascimento' \
     --data 'sistema_slug=nascimento' \
     --data 'sistema_hostname=nascimento.example.invalid' \
@@ -188,6 +198,21 @@ compose exec -T web python manage.py test core apps.exemplo --noinput || \
     falhar 'suíte Django da cópia gerada falhou'
 curl -fsS "http://127.0.0.1:${PORTA}/healthz" >/dev/null || falhar 'smoke /healthz falhou'
 curl -fsS "http://127.0.0.1:${PORTA}/login/" >/dev/null || falhar 'smoke /login/ falhou'
+
+# Prova direta do critério de sucesso 4 do roadmap: o superusuário criado antes
+# de `down -v` continua existindo depois — o bind mount em ./dados/pg torna a
+# operação historicamente destrutiva inofensiva por construção.
+[ -d "${DESTINO}/dados/pg" ] || falhar 'bind mount não materializou dados/pg no host'
+compose down --volumes || falhar 'docker compose down --volumes falhou'
+compose up -d db web || {
+    diagnosticar
+    falhar 'docker compose up -d db web após down -v falhou'
+}
+aguardar_web
+compose exec -T web python manage.py shell -c \
+    "from django.contrib.auth import get_user_model; get_user_model().objects.get(email='nascimento@example.invalid')" || \
+    falhar 'dados não sobreviveram a docker compose down -v && up -d'
+printf '%s\n' 'OK: dados sobreviveram a down --volumes + up -d'
 
 SUCESSO=true
 if [ "${MANTER}" = true ]; then
