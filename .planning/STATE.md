@@ -4,14 +4,14 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Phase 6 context gathered
-last_updated: "2026-08-19T11:49:53.480Z"
+last_updated: "2026-08-19T11:57:58.932Z"
 last_activity: 2026-08-19
 progress:
   total_phases: 6
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 24
-  completed_plans: 23
-  percent: 83
+  completed_plans: 24
+  percent: 100
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-17)
 ## Current Position
 
 Phase: 06 (customiza-o-visual-e-persist-ncia-de-dados) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
 Last activity: 2026-08-19
 
-Progress: [██████████] 96%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -70,6 +70,7 @@ Progress: [██████████] 96%
 | Phase 05 P01 | 196min | 1 tasks | 5 files |
 | Phase 06 P01 | 8min | 3 tasks | 8 files |
 | Phase 06 P02 | 9min | 3 tasks | 6 files |
+| Phase 06 P03 | 4min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -108,6 +109,8 @@ Recent decisions affecting current work:
 - [Phase 06-01]: copier copy --vcs-ref=HEAD na rede de testes — com a tag v0.1.0 o Copier copiava a última tag em vez do estado atual do template
 - [Phase 06-02]: Logos por arquivo fixo em core/static/img/ (logo-entidade.svg, logo-subsistema.svg) via {% static %} — trocar = substituir o arquivo, sem editar código (D-65); alt sempre via sistema_sigla (D-67)
 - [Phase 06-02]: Favicon reaproveita icon-192.png no base.html (D-72) — zero arquivo novo, elimina 302 de /favicon.ico; comentário XML dos SVGs sem hífen duplo (XML proíbe -- em comentário)
+- [Phase ?]: [Fase 06-03] Seção única 'Customização de marca' no README gerado absorve a antiga seção de ícones PWA — 5 pontos de marca num só lugar (D-77); PNG não é aceito como logo (contrato nome+extensão SVG fixos)
+- [Phase ?]: [Fase 06-03] Migração named volume → bind mount documentada como passo manual (cp -a /de/. /para/ com stack parada) — nenhum script (D-40); one-liner usa sistema_slug_pgdata interpolado no fonte Jinja
 
 ### Pending Todos
 
@@ -137,6 +140,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-19T11:49:47.932Z
+Last session: 2026-08-19T11:57:53.420Z
 Stopped at: Phase 6 context gathered
 Resume file: None

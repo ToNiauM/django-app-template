@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: App Exemplo** - CRUD de referência e dashboard ECharts como documentação viva (completed 2006-08-18)
 - [x] **Phase 4: Templatização Copier** - Sistema-modelo vira template parametrizado com `copier copy`/`copier update` e ops de produção (completed 2006-08-18)
 - [x] **Phase 5: Verificação e Documentação** - Fluxo de nascimento validado ponta a ponta e README completo (completed 2006-08-18)
-- [ ] **Phase 6: Customização Visual e Persistência de Dados** - Pontos de customização de marca no `core` (logo da entidade, logo do subsistema, logo/nome do PWA) e dados do banco persistidos no host sobrevivendo a `docker compose down -v`
+- [x] **Phase 6: Customização Visual e Persistência de Dados** - Pontos de customização de marca no `core` (logo da entidade, logo do subsistema, logo/nome do PWA) e dados do banco persistidos no host sobrevivendo a `docker compose down -v` (completed 2026-08-19)
 
 ## Phase Details
 
@@ -212,7 +212,7 @@ Plans:
 - [x] 06-02-PLAN.md — Logos de marca: placeholders SVG neutros em caminhos fixos, inserção via `{% static %}` no shell/login, favicon e regressão Django (test_logos.py)
 **Wave 3** *(blocked on Waves 1–2 — os verifies pesados de 06-02 rodam com a árvore de docs intocada)*
 
-- [ ] 06-03-PLAN.md — Documentação: seção "Customização de marca" no README gerado, etapa de logos no nascimento, notas de persistência e migração no runbook
+- [x] 06-03-PLAN.md — Documentação: seção "Customização de marca" no README gerado, etapa de logos no nascimento, notas de persistência e migração no runbook
 
 ## Progress
 
@@ -226,4 +226,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 3. App Exemplo | 3/3 | Complete    | 2006-08-18 |
 | 4. Templatização Copier | 7/7 | Complete    | 2006-08-18 |
 | 5. Verificação e Documentação | 3/3 | Complete   | 2006-08-18 |
-| 6. Customização Visual e Persistência de Dados | 2/3 | In Progress|  |
+| 6. Customização Visual e Persistência de Dados | 3/3 | Complete   | 2026-08-19 |
