@@ -113,49 +113,63 @@ oculta após a cópia: cada passo é consciente e auditável.
    backup entrar em operação, preencha-as diretamente no `.env`; nunca crie
    perguntas Copier, valores padrão reais ou commits para essas credenciais.
 
-9. **Inicie o repositório do sistema e faça o primeiro commit**, preservando o
-   `.copier-answers.yml` (sem credenciais) exigido pelos updates futuros:
+9. **(Opcional) Insira os logos oficiais.** Substitua
+   `core/static/img/logo-entidade.svg` (logo da entidade) e
+   `core/static/img/logo-subsistema.svg` (logo deste sistema) mantendo nome e
+   extensão; se quiser ícones PWA próprios, substitua os três
+   `core/static/img/icon-*.png` ou rode `python3 ops/gerar_icones_pwa.py`.
+   Os placeholders neutros funcionam — o passo pode ficar para depois; a
+   referência completa é a seção "Customização de marca" do README do
+   sistema gerado.
 
-   ```bash
-   git init
-   git add .
-   git commit -m "chore: inicia sistema gerado pelo Copier"
-   ```
+10. **Inicie o repositório do sistema e faça o primeiro commit**, preservando
+    o `.copier-answers.yml` (sem credenciais) exigido pelos updates futuros:
 
-10. **Valide a configuração resolvida do Compose:**
+    ```bash
+    git init
+    git add .
+    git commit -m "chore: inicia sistema gerado pelo Copier"
+    ```
+
+11. **Valide a configuração resolvida do Compose:**
 
     ```bash
     docker compose --env-file .env config -q
     ```
 
-11. **Suba banco e aplicação.** O serviço `backup` fica de fora até existirem
+12. **Suba banco e aplicação.** O serviço `backup` fica de fora até existirem
     credenciais R2 reais:
 
     ```bash
     docker compose up -d --build db web
     ```
 
-12. **Acompanhe a inicialização pelos logs:**
+    Os dados do banco ficam em `./dados/pg`, dentro do diretório do sistema
+    (bind mount), e sobrevivem a `docker compose down -v`. O diretório é
+    criado automaticamente no primeiro `up` e pertence ao uid 999 (usuário
+    postgres do container).
+
+13. **Acompanhe a inicialização pelos logs:**
 
     ```bash
     docker compose logs -f web
     ```
 
-13. **Aplique as migrações** (comando não interativo com `-T`, adequado a
+14. **Aplique as migrações** (comando não interativo com `-T`, adequado a
     scripts e automação):
 
     ```bash
     docker compose exec -T web python manage.py migrate --noinput
     ```
 
-14. **Crie o administrador.** Este comando é interativo: o operador digita
+15. **Crie o administrador.** Este comando é interativo: o operador digita
     e-mail e senha no terminal, por isso ele usa `exec` sem `-T`:
 
     ```bash
     docker compose exec web python manage.py createsuperuser
     ```
 
-15. **Confirme a saúde do processo web**, usando a porta respondida no Copier:
+16. **Confirme a saúde do processo web**, usando a porta respondida no Copier:
 
     ```bash
     curl -fsS http://127.0.0.1:<porta>/healthz
@@ -455,6 +469,8 @@ python3 -c "import secrets; print(secrets.token_urlsafe(32))"
 
 # colar os segredos no .env (SECRET_KEY, POSTGRES_PASSWORD e a mesma senha no DATABASE_URL)
 nano .env
+
+# (opcional) substituir core/static/img/logo-*.svg pelos logos oficiais
 
 # iniciar o repositório do sistema
 git init

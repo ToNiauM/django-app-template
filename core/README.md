@@ -1,6 +1,6 @@
 # `core/` — convenções não-óbvias
 
-Este documento registra 4 convenções do kernel `core/` que não são óbvias a
+Este documento registra 5 convenções do kernel `core/` que não são óbvias a
 partir da leitura do código sozinho — quebrá-las produz bugs silenciosos.
 
 ## 1. "Hoje" sempre via `timezone.localdate()`
@@ -79,3 +79,21 @@ sinais de save/delete por instância. Para operações em massa auditadas, usar
 `simple_history.utils.bulk_update_with_history(objetos, Modelo, campos,
 default_user=..., default_change_reason=...)`, que grava uma linha de
 histórico por objeto.
+
+## 5. Pontos de customização de marca — arquivos de nome fixo
+
+Os logos do core são arquivos estáticos de caminho fixo —
+`core/static/img/logo-entidade.svg` e `core/static/img/logo-subsistema.svg`
+— e os ícones PWA idem: `core/static/img/icon-192.png`, `icon-512.png` e
+`icon-512-maskable.png`. Customizar = **substituir o arquivo mantendo nome e
+extensão**. Nunca criar variável de caminho no `.env` nem embutir SVG inline
+em template: o nome fixo É o contrato, e `{% static %}` resolve o hashing do
+WhiteNoise automaticamente — qualquer indireção quebraria a garantia de
+"trocar a marca sem editar código". O nome do PWA vem de
+`SISTEMA_NOME`/`SISTEMA_SIGLA` no `.env`.
+
+O admin deliberadamente **não** exibe logo — a identidade dele é nome + cor
+via o override cirúrgico existente. Não "completar" o admin com logo.
+
+A lista canônica de todos os pontos de customização (logos, ícones, nome,
+cor) vive na seção "Customização de marca" do README do sistema.
