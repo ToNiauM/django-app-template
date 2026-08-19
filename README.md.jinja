@@ -27,6 +27,14 @@ hostname `{{ sistema_hostname }}` e a porta interna `{{ sistema_porta }}`.
    docker compose exec web python manage.py createsuperuser
    ```
 
+   Os dados do PostgreSQL vivem no host, em `./dados/pg` — um bind mount
+   criado automaticamente no primeiro `up`. Para usar outro caminho, defina
+   `PGDATA_DIR` no `.env`, sempre com `./` inicial ou caminho absoluto e
+   sempre apontando para um subdiretório (nunca a raiz de um disco montado).
+   `docker compose down -v` NÃO apaga esses dados. Troubleshooting: o
+   diretório pertence ao uid 999 (usuário postgres do container) com
+   permissão 700 — é esperado não conseguir listá-lo sem sudo.
+
 4. Confirme a saúde em `http://127.0.0.1:{{ sistema_porta }}/healthz`. Em
    produção, mantenha o bind em loopback e configure o proxy/TLS para
    `https://{{ sistema_hostname }}`.
@@ -59,17 +67,42 @@ Depois, revise o diff, execute as verificações do sistema e faça um commit. O
 update remove o diretório e seus pontos de integração sem exigir edição manual
 das configurações do núcleo.
 
-## Ícones PWA (opcional)
+## Customização de marca
 
-Após preencher `SISTEMA_SIGLA` e `COR_PRIMARIA` no `.env`, regenere os ícones
-placeholder quando desejar uma identidade visual própria:
+Todos os pontos de customização visual do sistema estão reunidos aqui — cada
+um tem um local único e nenhum exige editar código:
 
-```bash
-python3 ops/gerar_icones_pwa.py
-```
+- **Logo da entidade:** substitua `core/static/img/logo-entidade.svg`
+  mantendo nome e extensão.
+- **Logo do subsistema:** substitua `core/static/img/logo-subsistema.svg`,
+  também mantendo nome e extensão.
+- **Ícones do PWA:** substitua `core/static/img/icon-192.png`,
+  `core/static/img/icon-512.png` e `core/static/img/icon-512-maskable.png`
+  pela arte oficial, ou regenere os placeholders com:
 
-Os PNGs resultantes em `core/static/img/` são artefatos versionáveis. A
-regeneração é opcional e nunca acontece automaticamente durante `copier copy`.
+  ```bash
+  python3 ops/gerar_icones_pwa.py
+  ```
+
+  O script lê a sigla e a cor do `.env`. Os nomes de arquivo nunca mudam; os
+  PNGs resultantes em `core/static/img/` são artefatos versionáveis e a
+  regeneração nunca acontece automaticamente durante `copier copy`. O
+  favicon reaproveita `icon-192.png`.
+- **Nome do PWA:** preencha `SISTEMA_NOME` e `SISTEMA_SIGLA` no `.env` — os
+  valores refletem no manifest e na instalação sem tocar código.
+- **Cor primária:** `COR_PRIMARIA` no `.env` (formato `#RRGGBB`); a paleta
+  Tailwind deriva dela no build.
+
+Três notas importantes:
+
+1. Em produção, qualquer troca de arquivo estático só aparece após
+   `docker compose up -d --build` — o `collectstatic` roda no build da
+   imagem.
+2. Os logos são SVG por contrato. Se a arte só existe em PNG, exporte ou
+   converta para SVG a partir do vetor original — formato alternativo não é
+   aceito; o nome e a extensão fixos são o contrato.
+3. Use apenas SVG de fonte confiável, exportado pela própria equipe: o
+   arquivo estático é servido a todos os usuários.
 
 ## Atualizações do template
 
@@ -77,3 +110,18 @@ Mantenha `.copier-answers.yml` no Git. Antes de qualquer `copier update`,
 confirme `git status --short` sem saída, aplique a atualização, resolva
 marcadores de conflito se existirem, execute os testes e registre o resultado
 em um commit. Nunca coloque segredos no arquivo de respostas.
+
+Sistemas nascidos ANTES do layout de bind mount guardam os dados do banco no
+named volume `{{ sistema_slug }}_pgdata`. Se um `copier update` trouxe o novo
+`compose.yml`, migre os dados ANTES do primeiro `up`. O caminho canônico é
+dump + restore, descrito no runbook [`ops/MIGRACAO.md`](ops/MIGRACAO.md). Um
+atalho equivalente, com a stack parada (`docker compose down`, sem `-v`):
+
+```bash
+docker run --rm -v {{ sistema_slug }}_pgdata:/de -v "$(pwd)/dados/pg:/para" \
+  postgres:17 sh -c 'cp -a /de/. /para/'
+```
+
+Depois de validar o sistema funcionando, remova o volume antigo se quiser:
+`docker volume rm {{ sistema_slug }}_pgdata`. Nenhum script automatiza essa
+migração — o passo é consciente e auditável.
