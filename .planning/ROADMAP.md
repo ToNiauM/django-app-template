@@ -13,11 +13,12 @@ Do zero a um template Copier que gera sistemas Django completos para o CFC. Prim
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [x] **Phase 1: Fundação Django** - Projeto Django em Docker com auth, usuário customizado e settings seguros por ambiente (completed 2026-08-18)
-- [x] **Phase 2: Shell Visual e Kernel** - Layout base, admin customizado, PWA e auditoria no app `core` (completed 2026-08-18)
-- [x] **Phase 3: App Exemplo** - CRUD de referência e dashboard ECharts como documentação viva (completed 2026-08-18)
-- [x] **Phase 4: Templatização Copier** - Sistema-modelo vira template parametrizado com `copier copy`/`copier update` e ops de produção (completed 2026-08-18)
-- [x] **Phase 5: Verificação e Documentação** - Fluxo de nascimento validado ponta a ponta e README completo (completed 2026-08-18)
+- [x] **Phase 1: Fundação Django** - Projeto Django em Docker com auth, usuário customizado e settings seguros por ambiente (completed 2006-08-18)
+- [x] **Phase 2: Shell Visual e Kernel** - Layout base, admin customizado, PWA e auditoria no app `core` (completed 2006-08-18)
+- [x] **Phase 3: App Exemplo** - CRUD de referência e dashboard ECharts como documentação viva (completed 2006-08-18)
+- [x] **Phase 4: Templatização Copier** - Sistema-modelo vira template parametrizado com `copier copy`/`copier update` e ops de produção (completed 2006-08-18)
+- [x] **Phase 5: Verificação e Documentação** - Fluxo de nascimento validado ponta a ponta e README completo (completed 2006-08-18)
+- [ ] **Phase 6: Customização Visual e Persistência de Dados** - Pontos de customização de marca no `core` (logo da entidade, logo do subsistema, logo/nome do PWA) e dados do banco persistidos no host sobrevivendo a `docker compose down -v`
 
 ## Phase Details
 
@@ -188,15 +189,33 @@ Plans:
 
 - [x] 05-03-PLAN.md — Ambiente retido, checkpoint visual 32/32 e cleanup confinado
 
+### Phase 6: Customização Visual e Persistência de Dados
+
+**Goal**: Pontos de customização de marca claros e centralizados no app `core` — logo principal da entidade, logo do subsistema e logo/nome do PWA trocáveis em locais únicos e documentados — e dados do PostgreSQL persistidos no host (bind mount), sobrevivendo a `docker compose down -v`.
+**Depends on**: Phase 5
+**Requirements**: TBD
+**Success Criteria** (what must be TRUE):
+
+  1. Existe um local único e documentado no `core` para inserir/trocar o logo principal da entidade
+  2. Existe um local único e documentado no `core` para inserir/trocar o logo do subsistema
+  3. O logo e o nome do PWA são customizáveis a partir do `core`, refletindo no manifest e na instalação
+  4. Os dados do banco ficam no host e sobrevivem a `docker compose down -v` (recriar os containers não perde dados)
+
+**Plans**: 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 6 to break down)
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Fundação Django | 4/4 | Complete    | 2026-08-18 |
-| 2. Shell Visual e Kernel | 4/4 | Complete    | 2026-08-18 |
-| 3. App Exemplo | 3/3 | Complete    | 2026-08-18 |
-| 4. Templatização Copier | 7/7 | Complete    | 2026-08-18 |
-| 5. Verificação e Documentação | 3/3 | Complete   | 2026-08-18 |
+| 1. Fundação Django | 4/4 | Complete    | 2006-08-18 |
+| 2. Shell Visual e Kernel | 4/4 | Complete    | 2006-08-18 |
+| 3. App Exemplo | 3/3 | Complete    | 2006-08-18 |
+| 4. Templatização Copier | 7/7 | Complete    | 2006-08-18 |
+| 5. Verificação e Documentação | 3/3 | Complete   | 2006-08-18 |
+| 6. Customização Visual e Persistência de Dados | 0/? | Not started | - |
