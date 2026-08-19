@@ -201,7 +201,7 @@ Plans:
   3. O logo e o nome do PWA são customizáveis a partir do `core`, refletindo no manifest e na instalação
   4. Os dados do banco ficam no host e sobrevivem a `docker compose down -v` (recriar os containers não perde dados)
 
-**Plans**: 3 plans (2 waves)
+**Plans**: 3 plans (3 waves)
 
 Plans:
 **Wave 1**
@@ -210,6 +210,8 @@ Plans:
 **Wave 2** *(blocked on Wave 1 — o tracer corrigido é a verificação dos planos seguintes)*
 
 - [ ] 06-02-PLAN.md — Logos de marca: placeholders SVG neutros em caminhos fixos, inserção via `{% static %}` no shell/login, favicon e regressão Django (test_logos.py)
+**Wave 3** *(blocked on Waves 1–2 — os verifies pesados de 06-02 rodam com a árvore de docs intocada)*
+
 - [ ] 06-03-PLAN.md — Documentação: seção "Customização de marca" no README gerado, etapa de logos no nascimento, notas de persistência e migração no runbook
 
 ## Progress

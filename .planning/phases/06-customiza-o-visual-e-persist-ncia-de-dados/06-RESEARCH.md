@@ -401,14 +401,17 @@ docker compose up -d
 | A3 | SELinux exige `:z/:Z` em RHEL/Fedora | Pitfall 7 | Baixo: alvo declarado do template é Debian/Ubuntu |
 | A4 | Rendered `.gitignore.jinja` substitui o `.gitignore` verbatim do template na cópia (precedente README.md.jinja) | Pitfall 3 | Médio: se a colisão se comportar diferente, o teste de template detecta; validar com `copier copy` de fumaça no plano |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Migração de sistemas já nascidos (named volume → bind mount): documentar onde?**
    - What we know: nenhum sistema de produção usa o template ainda (Orçamento será o primeiro); o único ambiente vivo é o ensaio `--keep` da Fase 5 (efêmero, re-executável). A PCA não usa o template.
    - What's unclear: se vale gastar seção inteira de runbook para um cenário hoje hipotético.
    - Recommendation: nota curta na seção "Atualizações do template" do `README.md.jinja` com o one-liner de cópia (ver Code Examples) + reforço de que dump/restore é o caminho canônico (D-75). Não criar script (D-40).
+   - **RESOLVED:** recomendação adotada — nota de migração na seção "Atualizações do template" do `README.md.jinja`, com o one-liner de cópia e o reforço de que dump/restore é o caminho canônico; nenhum script (D-40). Implementado em 06-03 Task 1.
 2. **Favicon (discretion):** browsers pedem `/favicon.ico`; hoje a request cai no `LoginRequiredMiddleware` (302 ruidoso e inofensivo). Recomendação: adicionar `<link rel="icon" href="{% static 'img/icon-192.png' %}">` no `base.html` — zero arquivo novo, segue contrato existente. Decisão fica com o planner.
+   - **RESOLVED:** favicon adotado — `<link rel="icon" href="{% static 'img/icon-192.png' %}">` no `base.html` (reaproveita o ícone PWA, mesmo contrato de substituição D-72). Implementado em 06-02 Task 2.
 3. **PNG como formato alternativo de logo (discretion):** recomendação: NÃO aceitar — o contrato é nome+extensão fixos (`<img src>` aponta para `.svg`). Documentar uma linha: "tem só PNG? converta para SVG embrulhando com `<image>` ou exporte da arte vetorial original".
+   - **RESOLVED:** PNG NÃO é aceito como formato alternativo — o contrato permanece nome+extensão fixos (`.svg`); a documentação traz a nota SVG-only com orientação de conversão a partir do vetor original. Implementado em 06-03 Task 1.
 
 ## Environment Availability
 
