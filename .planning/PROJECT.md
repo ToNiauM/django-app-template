@@ -30,12 +30,15 @@ Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de ex
 - ✓ Suíte de testes do core e do app exemplo passa no sistema gerado (tracer `.template-tests/test_05_nascimento.sh`, 72 testes na cópia) — Fase 5
 - ✓ `README` do template documenta o nascimento completo, do `copier copy` ao proxy/DNS — Fase 5
 - ✓ `copier copy` + `.env` + `docker compose up -d` + `migrate` + `createsuperuser` produz sistema navegável sem editar código (prova automatizada + inspeção humana 32/32 do UI-SPEC) — Fase 5
+- ✓ Persistência do PostgreSQL por bind mount configurável (`PGDATA_DIR`, default `./dados/pg`), sobrevivendo a `docker compose down -v`, com `.gitignore` gerado e runbook de migração de named volume — Fase 6
+- ✓ `core/` — pontos únicos de customização de marca por arquivo fixo: `logo-entidade.svg` e `logo-subsistema.svg` nos templates via `{% static %}`, favicon via ícone PWA, regressão de contrato em `test_logos.py` — Fase 6
+- ✓ Seção única "Customização de marca" documentando os 5 pontos (logos, ícones/nome PWA, cor primária, nome/sigla) nos 4 documentos do template — Fase 6
 
 ### Ativos
 
 <!-- Escopo atual. Construindo em direção a estes. -->
 
-- Nenhum — milestone v1.0 concluído com a Fase 5 (2026-08-18). Próximo escopo será definido em novo planejamento.
+- Nenhum — Fase 6 (Customização Visual e Persistência de Dados) concluída em 2026-08-19; roadmap atual 100% executado. Próximo escopo será definido em novo planejamento.
 
 ### Fora de Escopo
 
@@ -96,4 +99,4 @@ Este documento evolui nas transições de fase e nos marcos do projeto.
 4. Atualizar Contexto com o estado atual
 
 ---
-*Última atualização: 2026-08-18 após conclusão da Fase 5 (Verificação e Documentação) — última fase do milestone v1.0*
+*Última atualização: 2026-08-19 após conclusão da Fase 6 (Customização Visual e Persistência de Dados) — última fase do roadmap atual*
