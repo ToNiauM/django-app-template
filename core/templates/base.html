@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="{% static 'dist/tailwind.css' %}">
   {# PWA (CORE-05): manifest por view (D-18) e cor de tema via context processor (D-17). #}
   <link rel="manifest" href="{% url 'core:manifest' %}">
+  {# Favicon reaproveita o ícone PWA existente (D-72): zero arquivo novo, mesmo contrato de substituição — e elimina o 302 ruidoso de /favicon.ico no LoginRequiredMiddleware. #}
+  <link rel="icon" href="{% static 'img/icon-192.png' %}">
   <meta name="theme-color" content="{{ cor_primaria }}">
   <script src="{% static 'vendor/htmx.min.js' %}" defer></script>
   <script src="{% static 'vendor/alpine.min.js' %}" defer></script>

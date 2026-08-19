@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}{# o load do base.html não é herdado pelos filhos #}
 
 {% block titulo %}{% block titulo_pagina_head %}Início{% endblock %} · {{ sistema_sigla }}{% endblock %}
 
@@ -36,6 +37,8 @@
         <path d="M4 6h16M4 12h16M4 18h16"/>
       </svg>
     </button>
+    {# Logo por arquivo fixo (D-65): trocar = substituir o arquivo em core/static/img/ mantendo o nome. #}
+    <img src="{% static 'img/logo-subsistema.svg' %}" alt="Logo de {{ sistema_sigla }}" class="h-6 w-6 flex-none">
     <span class="font-bold text-base truncate">{{ sistema_nome }}</span>
   </div>
 
@@ -47,6 +50,8 @@
          class="fixed inset-y-0 left-0 z-50 flex w-[232px] flex-col gap-1 border-r border-grid bg-page p-4 md:!flex">
 
     <div class="pb-4 px-2 flex flex-row items-start justify-between gap-2">
+      {# Logo por arquivo fixo (D-65): trocar = substituir o arquivo em core/static/img/ mantendo o nome. O logo complementa a sigla/nome, não os substitui (D-67). Como a aside É a gaveta no mobile, esta inserção cobre também o header da gaveta (D-68). #}
+      <img src="{% static 'img/logo-subsistema.svg' %}" alt="Logo de {{ sistema_sigla }}" class="h-8 w-8 flex-none">
       {# Identidade só via context processor (D-16) — nenhum nome hard-coded. #}
       <div class="flex flex-col gap-1 min-w-0">
         <div class="font-bold text-base leading-tight">
@@ -68,6 +73,8 @@
     {% include "core/_nav.html" %}
 
     <div class="mt-auto border-t border-grid pt-3 flex items-center gap-3">
+      {# Logo da entidade discretamente no rodapé (D-69) — presença da identidade "da casa" sem competir com os dados do usuário. Arquivo fixo (D-65): trocar = substituir em core/static/img/ mantendo o nome. #}
+      <img src="{% static 'img/logo-entidade.svg' %}" alt="Logo institucional" class="h-5 w-5 flex-none opacity-60">
       <div class="w-8 h-8 rounded-full bg-surface-2 border border-grid flex items-center justify-center text-sm font-semibold text-ink-2 flex-none">
         {{ usuario_atual.email|slice:":2"|upper }}
       </div>
