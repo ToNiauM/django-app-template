@@ -15,11 +15,14 @@ COPIER = ROOT / ".venv-template" / "bin" / "copier"
 
 
 def render(destination: Path) -> Path:
+    # --vcs-ref=HEAD: com uma tag de release no repositório, o Copier copiaria
+    # por padrão a última tag — o teste precisa do estado atual do template.
     subprocess.run(
         [
             str(COPIER),
             "copy",
             "--defaults",
+            "--vcs-ref=HEAD",
             "--data",
             "sistema_nome=Sistema Aurora",
             "--data",
@@ -67,7 +70,14 @@ class BackupComposeTemplateTests(unittest.TestCase):
             compose = json.loads(completed.stdout)
             self.assertEqual(compose["name"], "aurora")
             self.assertEqual(set(compose["services"]), {"db", "web", "backup"})
-            self.assertFalse(compose["volumes"]["pgdata"].get("external", False))
+            # D-73: os dados do banco vivem em bind mount do host — não existe
+            # mais bloco `volumes:` de topo, e o serviço db monta um diretório
+            # que sobrevive por construção a `docker compose down -v`.
+            self.assertNotIn("volumes", compose)
+            db_mount = compose["services"]["db"]["volumes"][0]
+            self.assertEqual(db_mount["type"], "bind")
+            self.assertEqual(db_mount["target"], "/var/lib/postgresql/data")
+            self.assertTrue(db_mount["source"].endswith("/dados/pg"), db_mount["source"])
             self.assertNotIn("ports", compose["services"]["db"])
             backup = compose["services"]["backup"]
             self.assertNotIn("ports", backup)
