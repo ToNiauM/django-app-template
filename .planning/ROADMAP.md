@@ -201,10 +201,16 @@ Plans:
   3. O logo e o nome do PWA são customizáveis a partir do `core`, refletindo no manifest e na instalação
   4. Os dados do banco ficam no host e sobrevivem a `docker compose down -v` (recriar os containers não perde dados)
 
-**Plans**: 0 plans
+**Plans**: 3 plans (2 waves)
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 6 to break down)
+**Wave 1**
+
+- [ ] 06-01-PLAN.md — Persistência no host: bind mount `${PGDATA_DIR:-./dados/pg}` no compose, `.gitignore` do sistema gerado (fix do `_exclude`), testes de template e tracer com prova de `down -v`
+**Wave 2** *(blocked on Wave 1 — o tracer corrigido é a verificação dos planos seguintes)*
+
+- [ ] 06-02-PLAN.md — Logos de marca: placeholders SVG neutros em caminhos fixos, inserção via `{% static %}` no shell/login, favicon e regressão Django (test_logos.py)
+- [ ] 06-03-PLAN.md — Documentação: seção "Customização de marca" no README gerado, etapa de logos no nascimento, notas de persistência e migração no runbook
 
 ## Progress
 
@@ -218,4 +224,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 3. App Exemplo | 3/3 | Complete    | 2006-08-18 |
 | 4. Templatização Copier | 7/7 | Complete    | 2006-08-18 |
 | 5. Verificação e Documentação | 3/3 | Complete   | 2006-08-18 |
-| 6. Customização Visual e Persistência de Dados | 0/? | Not started | - |
+| 6. Customização Visual e Persistência de Dados | 0/3 | Planned | - |
