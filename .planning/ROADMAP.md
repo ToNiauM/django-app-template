@@ -209,7 +209,7 @@ Plans:
 - [x] 06-01-PLAN.md — Persistência no host: bind mount `${PGDATA_DIR:-./dados/pg}` no compose, `.gitignore` do sistema gerado (fix do `_exclude`), testes de template e tracer com prova de `down -v`
 **Wave 2** *(blocked on Wave 1 — o tracer corrigido é a verificação dos planos seguintes)*
 
-- [ ] 06-02-PLAN.md — Logos de marca: placeholders SVG neutros em caminhos fixos, inserção via `{% static %}` no shell/login, favicon e regressão Django (test_logos.py)
+- [x] 06-02-PLAN.md — Logos de marca: placeholders SVG neutros em caminhos fixos, inserção via `{% static %}` no shell/login, favicon e regressão Django (test_logos.py)
 **Wave 3** *(blocked on Waves 1–2 — os verifies pesados de 06-02 rodam com a árvore de docs intocada)*
 
 - [ ] 06-03-PLAN.md — Documentação: seção "Customização de marca" no README gerado, etapa de logos no nascimento, notas de persistência e migração no runbook
@@ -226,4 +226,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 3. App Exemplo | 3/3 | Complete    | 2006-08-18 |
 | 4. Templatização Copier | 7/7 | Complete    | 2006-08-18 |
 | 5. Verificação e Documentação | 3/3 | Complete   | 2006-08-18 |
-| 6. Customização Visual e Persistência de Dados | 1/3 | In Progress|  |
+| 6. Customização Visual e Persistência de Dados | 2/3 | In Progress|  |

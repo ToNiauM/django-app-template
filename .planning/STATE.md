@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Phase 6 context gathered
-last_updated: "2026-08-19T08:40:59.723Z"
+last_updated: "2026-08-19T11:49:53.480Z"
 last_activity: 2026-08-19
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 24
-  completed_plans: 22
+  completed_plans: 23
   percent: 83
 ---
 
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-17)
 
 **Core value:** Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de exemplo, Docker, backup) em minutos — restando ao time apenas modelar o domínio em `apps/`.
-**Current focus:** Phase 06 — Customização Visual e Persistência de Dados
+**Current focus:** Phase 06 — customiza-o-visual-e-persist-ncia-de-dados
 
 ## Current Position
 
-Phase: 06 (Customização Visual e Persistência de Dados) — EXECUTING
+Phase: 06 (customiza-o-visual-e-persist-ncia-de-dados) — EXECUTING
 Plan: 2 of 3
 Status: Ready to execute
 Last activity: 2026-08-19
 
-Progress: [█████████░] 92%
+Progress: [██████████] 96%
 
 ## Performance Metrics
 
@@ -69,6 +69,7 @@ Progress: [█████████░] 92%
 |------|----------|-------|-------|
 | Phase 05 P01 | 196min | 1 tasks | 5 files |
 | Phase 06 P01 | 8min | 3 tasks | 8 files |
+| Phase 06 P02 | 9min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -105,6 +106,8 @@ Recent decisions affecting current work:
 - [Phase 06-01]: Bind mount ${PGDATA_DIR:-./dados/pg} substitui o named volume pgdata — down -v não destrói mais o banco (D-73/D-76)
 - [Phase 06-01]: .gitignore fora do _exclude do copier.yml; .gitignore.jinja renderiza e protege .env e /dados/ no sistema gerado (D-74)
 - [Phase 06-01]: copier copy --vcs-ref=HEAD na rede de testes — com a tag v0.1.0 o Copier copiava a última tag em vez do estado atual do template
+- [Phase 06-02]: Logos por arquivo fixo em core/static/img/ (logo-entidade.svg, logo-subsistema.svg) via {% static %} — trocar = substituir o arquivo, sem editar código (D-65); alt sempre via sistema_sigla (D-67)
+- [Phase 06-02]: Favicon reaproveita icon-192.png no base.html (D-72) — zero arquivo novo, elimina 302 de /favicon.ico; comentário XML dos SVGs sem hífen duplo (XML proíbe -- em comentário)
 
 ### Pending Todos
 
@@ -134,6 +137,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-19T08:40:27.772Z
+Last session: 2026-08-19T11:49:47.932Z
 Stopped at: Phase 6 context gathered
 Resume file: None
