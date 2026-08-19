@@ -8,3 +8,4 @@ core/static/dist/
 .venv-template/
 *.log
 .DS_Store
+/dados/

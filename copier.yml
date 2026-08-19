@@ -6,7 +6,10 @@ _answers_file: .copier-answers.yml
 _exclude:
   - .git
   - .gitattributes
-  - .gitignore
+  # .gitignore fica fora do _exclude: como o _exclude aplica ao caminho de
+  # DESTINO, mantê-lo aqui bloquearia o .gitignore.jinja renderizado. Sem a
+  # entrada, o .gitignore.jinja renderiza e substitui o .gitignore verbatim
+  # do template durante a cópia — mesmo mecanismo do README.md.jinja abaixo.
   - .planning
   - .template-tests
   - .venv

@@ -10,7 +10,15 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_INITDB_ARGS: "--locale-provider=icu --icu-locale=pt-BR --encoding=UTF8"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      # Bind mount em vez de named volume: `docker compose down -v` remove apenas
+      # named volumes e volumes anônimos — um bind mount sobrevive por construção
+      # (incidente de perda de dados que motivou esta decisão). O valor de
+      # PGDATA_DIR DEVE começar com `./` ou ser um caminho absoluto — sem o
+      # prefixo o Compose interpreta o valor como nome de volume, recriando o
+      # risco. O mount point /var/lib/postgresql/data é específico da imagem
+      # postgres:17 — em postgres>=18 o layout muda e um upgrade de major é uma
+      # migração deliberada via dump/restore, nunca uma troca de tag.
+      - ${PGDATA_DIR:-./dados/pg}:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
@@ -67,7 +75,3 @@ services:
       BACKUP_RETENCAO_DIARIA: ${BACKUP_RETENCAO_DIARIA}
       BACKUP_RETENCAO_SEMANAL: ${BACKUP_RETENCAO_SEMANAL}
       BACKUP_DIA_SEMANAL: ${BACKUP_DIA_SEMANAL}
-
-volumes:
-  # Gerenciado pelo Compose: um sistema gerado sobe sem criar volume no host.
-  pgdata:
