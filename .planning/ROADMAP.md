@@ -19,6 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Templatização Copier** - Sistema-modelo vira template parametrizado com `copier copy`/`copier update` e ops de produção (completed 2006-08-18)
 - [x] **Phase 5: Verificação e Documentação** - Fluxo de nascimento validado ponta a ponta e README completo (completed 2006-08-18)
 - [x] **Phase 6: Customização Visual e Persistência de Dados** - Pontos de customização de marca no `core` (logo da entidade, logo do subsistema, logo/nome do PWA) e dados do banco persistidos no host sobrevivendo a `docker compose down -v` (completed 2026-08-19)
+- [ ] **Phase 7: Herdar o design system do PCA** - O padrão visual do Sistema CFC (tokens em variáveis CSS, tema escuro, elevação, paleta de gráfico servida pelo servidor, classes de componente) sai do PCA e passa a nascer com todo sistema gerado
 
 ## Phase Details
 
@@ -214,10 +215,71 @@ Plans:
 
 - [x] 06-03-PLAN.md — Documentação: seção "Customização de marca" no README gerado, etapa de logos no nascimento, notas de persistência e migração no runbook
 
+### Phase 7: Herdar o design system do PCA
+
+**Goal**: Um sistema recém-nascido do template já vem com o design system do Sistema
+CFC inteiro — mesmos tokens, mesma elevação, mesmos tipos de gráfico do PCA — sem que
+o time do sistema derivado precise editar um único arquivo do `core`.
+**Mode:** mvp
+**Depends on:** Phase 6
+
+**Fonte do padrão**: `/opt/web/pca` — que não é derivado do template, é anterior a ele.
+O template foi extraído do PCA na Fase 1 e ficou para trás desde então. Esta fase
+recupera a distância. Procedência cromática em `/opt/web/pca/BRIEFING-RESKIN-CFC.md` §2
+(Resolução CFC nº 1.464/2014, Pantone 541 C e 132 C — não existe hex oficial, todo sRGB
+é derivação); medidas e contrastes nos `*-UI-SPEC.md` das fases 01, 02, 10 e 13 do PCA.
+
+**O que sobe do PCA**
+
+| Peça | Mecanismo no PCA | Hoje no template |
+|------|------------------|------------------|
+| Tokens de cor | variáveis CSS em `input.css`; Tailwind aponta com `var(--cor-*)` | hex derivado em build-time por `misturar()` no `tailwind.config.js.jinja` |
+| Tema escuro | `darkMode: ["selector", '[data-tema="escuro"]']` | não existe |
+| Superfícies | 3 degraus (`surface`, `surface-2`, `surface-3`), elevação por sombra | 2 degraus, sem elevação |
+| Raio | único de 2px, 6 chaves colapsadas | não declarado |
+| Tipografia | 6 degraus nomeados, 11/12/13/14/16/20px, teto em 20px | não declarada |
+| Fonte | pilha `system-ui` | não declarada |
+| Focus-ring | regra única `:focus-visible` em `@layer base` | não existe |
+| Classes de componente | `.results` `.module` `.form-row` `.btn` + 4 variações, com `safelist` | não existem |
+| Paleta de gráfico | servida pelo Django via `json_script`, consumida pelo ECharts | hex literal no template do app exemplo |
+| Rampa sequencial | `seq-300` / `seq-450` / `seq-600` | não existe |
+| Dourado institucional | `secundaria` #a07400 — forma e nunca texto (3,99:1 reprova AA de texto) | não existe |
+
+**O que NÃO sobe**: os 7 pares de token de status do PCA (`st-concluido`,
+`st-em-tramitacao`, `st-atrasado`…) são vocabulário do domínio dele. Sobe a *mecânica*
+do par fundo+texto e a disciplina CVD-safe; cada sistema declara os próprios status.
+
+**Decisão de rota (operador, 2026-08-23)**: o template herda **direto do PCA**, não do
+DividaAtiva. O DividaAtiva tem só um recorte do padrão (cor, raio, tipografia, fonte,
+focus-ring, de uma quick task de reskin) e receberá o resto pelo `copier update` desta
+versão — em vez de reimplementar à mão e conflitar consigo mesmo depois.
+
+**Requirements**: TBD (definir no planejamento)
+
+**Success criteria**
+
+1. Um sistema gerado do template, sem nenhuma edição manual, abre com os mesmos tokens,
+   espaçamento, raio e tipografia do PCA — conferível lado a lado.
+2. O tema escuro funciona no sistema gerado, inclusive nos gráficos do app exemplo,
+   porque a paleta chega do servidor e não está cravada no JS.
+3. Nenhum hex de cor sobra em template ou em JS de template; a fonte física dos valores
+   é `core/static/src/input.css`.
+4. `cor_primaria` continua sendo pergunta do Copier, e as novas decisões (raio, régua
+   tipográfica, fonte) entram como perguntas ou como padrão do template — o derivado
+   não precisa editar `tailwind.config.js` para nada.
+5. `copier update` de um sistema na v0.1.0 para esta versão traz o padrão sem exigir
+   resolução manual em arquivo que o derivado não tenha tocado.
+6. Os 77 testes do `core` e as 11 suítes de `.template-tests/` seguem verdes, incluindo
+   o ensaio A→B→C de `copier update`.
+
+**Nota de release**: o template está com 37 commits desde a tag `v0.1.0` — a Fase 6
+inteira ainda não chegou a nenhum sistema, porque o Copier lê a última tag e não o HEAD.
+Esta fase deve terminar com uma tag nova (`v0.2.0`), que entrega Fase 6 e Fase 7 juntas.
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -227,3 +289,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 4. Templatização Copier | 7/7 | Complete    | 2006-08-18 |
 | 5. Verificação e Documentação | 3/3 | Complete   | 2006-08-18 |
 | 6. Customização Visual e Persistência de Dados | 3/3 | Complete   | 2026-08-19 |
+| 7. Herdar o design system do PCA | 0/0 | Não planejada | - |

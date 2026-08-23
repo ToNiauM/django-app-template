@@ -78,6 +78,10 @@ Progress: [██████████] 100%
 ### Roadmap Evolution
 
 - Phase 6 added
+- Phase 7 added (2026-08-23): Herdar o design system do PCA — o padrão visual do Sistema CFC passa a nascer com todo sistema gerado. Pedido do operador.
+  - **Rota decidida**: o template herda **direto de `/opt/web/pca`**, não do DividaAtiva. Motivo: o PCA é anterior ao template (não tem `.copier-answers.yml`) e é a fonte real do padrão; o DividaAtiva tem só um recorte dele. Herdar do filho implicaria implementar o mesmo sistema duas vezes e conflitar com o próprio trabalho do filho no `copier update` seguinte.
+  - **Consequência para o DividaAtiva**: a Fase 8 de lá encolhe — deixa de reimplementar o design system à mão e passa a "rodar o `copier update` desta versão e adaptar o que é do domínio da dívida".
+  - **Pendência de release que esta fase carrega**: o repositório está com 37 commits desde a tag `v0.1.0`. Como o Copier lê a última tag e não o HEAD, a Fase 6 inteira (marca, logos, bind mount) nunca chegou a nenhum sistema derivado. A fase deve fechar com uma tag `v0.2.0` que entregue Fase 6 e Fase 7 juntas.
 
 ### Decisions
 
