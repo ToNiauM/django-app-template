@@ -1,7 +1,11 @@
 """Testes automatizados para o Dashboard Analítico e agregações ORM (EX-03 / D-30 / D-31)."""
 
+import json
+import re
 from decimal import Decimal
+from pathlib import Path
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -141,3 +145,48 @@ class DashboardAnaliticoTest(TestCase):
         self.assertEqual(kpis["taxa_conclusao"], Decimal("0.0"))
         self.assertEqual(len(resposta.context["dados_categoria"]), 0)
         self.assertEqual(len(resposta.context["dados_status"]), 0)
+
+    def test_dashboard_contexto_tem_paleta_graficos(self):
+        resposta = self.client.get(self.url_dashboard)
+        self.assertEqual(resposta.status_code, 200)
+        self.assertIn("paleta_graficos", resposta.context)
+
+    def test_paleta_graficos_rampa_status_tem_claro_e_escuro_com_4_cores_hex(self):
+        resposta = self.client.get(self.url_dashboard)
+        rampa = resposta.context["paleta_graficos"]["rampa_status"]
+
+        self.assertIn("claro", rampa)
+        self.assertIn("escuro", rampa)
+        self.assertEqual(len(rampa["claro"]), 4)
+        self.assertEqual(len(rampa["escuro"]), 4)
+        for cor in [*rampa["claro"], *rampa["escuro"]]:
+            self.assertRegex(cor, r"^#[0-9a-fA-F]{6}$")
+
+    def test_paleta_graficos_topo_da_rampa_clara_e_a_propria_marca(self):
+        resposta = self.client.get(self.url_dashboard)
+        rampa = resposta.context["paleta_graficos"]["rampa_status"]
+        self.assertEqual(rampa["claro"][0], settings.COR_PRIMARIA)
+
+    def test_paleta_graficos_listas_claro_e_escuro_sao_diferentes(self):
+        resposta = self.client.get(self.url_dashboard)
+        rampa = resposta.context["paleta_graficos"]["rampa_status"]
+        self.assertNotEqual(rampa["claro"], rampa["escuro"])
+
+    def test_paleta_graficos_chega_ao_html_por_json_script_valido(self):
+        resposta = self.client.get(self.url_dashboard)
+        self.assertContains(resposta, '<script id="paleta-graficos" type="application/json">')
+
+        html = resposta.content.decode()
+        match = re.search(
+            r'<script id="paleta-graficos" type="application/json">(.*?)</script>',
+            html,
+            re.DOTALL,
+        )
+        self.assertIsNotNone(match)
+        paleta = json.loads(match.group(1))
+        self.assertIn("rampa_status", paleta)
+
+    def test_views_py_nao_tem_hex_literal(self):
+        caminho_views = Path(__file__).resolve().parent.parent / "views.py"
+        conteudo = caminho_views.read_text(encoding="utf-8")
+        self.assertNotRegex(conteudo, r"#[0-9a-fA-F]{6}")
