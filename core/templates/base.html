@@ -5,6 +5,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   {# Default do título via context processor (D-16) — zero nome hard-coded. #}
   <title>{% block titulo %}{{ sistema_nome }}{% endblock %}</title>
+  <meta name="theme-color" id="meta-theme-cor" content="{{ cor_primaria }}">
+  {% comment %}
+    Script de tema (D-99) — síncrono, INLINE, sem defer, sem async e sem
+    carregar arquivo estático, escrito ANTES do <link> do Tailwind logo
+    abaixo: se rodasse depois (ou deferido, como htmx e Alpine), a primeira
+    pintura sairia sempre no tema claro e o usuário veria um flash branco
+    antes do escuro aparecer. É um script bloqueante curto — custo de
+    microssegundos, aceito de propósito para não ter esse flash.
+
+    Persistência é localStorage, NUNCA cookie: uma navegação servida pelo
+    cache do service worker (offline.html ou um asset já cacheado sob
+    /static/) não passa pelo servidor Django, então um cookie não seria
+    lido a tempo — localStorage é local ao navegador e já está disponível
+    antes de qualquer requisição de rede.
+
+    O content do <meta id="meta-theme-cor"> acima acompanha o tema (linha
+    "if (meta)" abaixo), mas o theme_color do MANIFEST (core/views.py,
+    travado por core/tests/test_pwa.py) NÃO muda — são dois valores
+    independentes: um descreve a cor da barra do navegador no instante
+    corrente, o outro é gravado uma única vez na instalação do PWA.
+
+    A cor escura vem de {{ cor_page_escuro }} (core.tema.COR_PAGE_ESCURO,
+    plano 07-04) e NUNCA de um hex literal aqui: a fonte física continua
+    sendo o bloco [data-tema="escuro"] de core/static/src/input.css, e um
+    hex literal neste arquivo seria a única ocorrência de core/templates e
+    reprovaria o gate do critério 3 no plano 07-06
+    (! grep -rnE "#[0-9a-fA-F]{6}" core/templates apps). Ler a variável CSS
+    também não serve: este script roda antes de qualquer folha de estilo
+    existir, e getComputedStyle devolveria string vazia nesse instante.
+  {% endcomment %}
+  <script>
+    window.aplicarTema = function (preferencia) {
+      var guardada = preferencia === "auto" || preferencia === "claro" || preferencia === "escuro"
+        ? preferencia
+        : "auto";
+      localStorage.setItem("tema", guardada);
+      var escuro = guardada === "escuro" ||
+        (guardada === "auto" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+      document.documentElement.setAttribute("data-tema", escuro ? "escuro" : "claro");
+      var meta = document.getElementById("meta-theme-cor");
+      if (meta) meta.setAttribute("content", escuro ? "{{ cor_page_escuro }}" : "{{ cor_primaria }}");
+      document.dispatchEvent(new CustomEvent("tema:alterado"));
+    };
+    window.aplicarTema(localStorage.getItem("tema") || "auto");
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () {
+      if ((localStorage.getItem("tema") || "auto") === "auto") window.aplicarTema("auto");
+    });
+  </script>
   <link rel="stylesheet" href="{% static 'dist/tailwind.css' %}">
   {% comment %}
     tema_css (core.context_processors.identidade) DEPOIS do <link> acima é
@@ -32,7 +80,6 @@
   <link rel="manifest" href="{% url 'core:manifest' %}">
   {# Favicon reaproveita o ícone PWA existente (D-72): zero arquivo novo, mesmo contrato de substituição — e elimina o 302 ruidoso de /favicon.ico no LoginRequiredMiddleware. #}
   <link rel="icon" href="{% static 'img/icon-192.png' %}">
-  <meta name="theme-color" content="{{ cor_primaria }}">
   <script src="{% static 'vendor/htmx.min.js' %}" defer></script>
   <script src="{% static 'vendor/alpine.min.js' %}" defer></script>
 </head>
@@ -74,6 +121,9 @@
     // nunca conteúdo autenticado. try/catch silencioso: falhar a limpeza
     // não pode impedir o logout.
     async function limparCachePwa() {
+      // A chave de tema em localStorage NÃO entra aqui: preferência visual
+      // não é dado de sessão, e apagá-la faria o usuário perder o tema
+      // escuro a cada logout (D-99, T-07-14).
       try {
         if ("caches" in window) {
           const chaves = await caches.keys();
