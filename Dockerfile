@@ -2,7 +2,10 @@ FROM node:20-alpine AS assets
 
 WORKDIR /build
 COPY tailwind.config.js ./
-COPY core/static/src/input.css ./core/static/src/input.css
+# core/static/src inteiro (não só input.css): input.css abre com
+# `@import "./dominio.css";` (Fase 7) — sem dominio.css no contexto de build
+# o postcss-import falha o estágio com exit 2.
+COPY core/static/src ./core/static/src
 # Os `content` globs do tailwind.config.js apontam para os templates. Sem eles
 # presentes aqui, o JIT varre zero arquivos, não encontra nenhuma classe em uso
 # e emite só o preflight (~4,7 KB) — a página sai sem estilo nenhum e o build

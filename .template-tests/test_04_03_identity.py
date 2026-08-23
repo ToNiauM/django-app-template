@@ -67,8 +67,9 @@ def render(destination: Path, *, color: str) -> Path:
 
 
 class RuntimeIdentityTemplateTests(unittest.TestCase):
-    def test_tailwind_color_is_the_only_build_interpolation(self) -> None:
-        self.assertTrue((ROOT / "tailwind.config.js.jinja").is_file())
+    def test_tailwind_config_e_verbatim_e_cor_so_entra_pelo_env(self) -> None:
+        self.assertFalse((ROOT / "tailwind.config.js.jinja").exists())
+        self.assertTrue((ROOT / "tailwind.config.js").is_file())
 
         with tempfile.TemporaryDirectory() as tempdir:
             root = Path(tempdir)
@@ -77,9 +78,20 @@ class RuntimeIdentityTemplateTests(unittest.TestCase):
 
             teal_tailwind = (teal / "tailwind.config.js").read_text(encoding="utf-8")
             amber_tailwind = (amber / "tailwind.config.js").read_text(encoding="utf-8")
-            self.assertIn('const COR_PRIMARIA = "#0f766e";', teal_tailwind)
-            self.assertIn('const COR_PRIMARIA = "#d97706";', amber_tailwind)
-            self.assertNotEqual(teal_tailwind, amber_tailwind)
+            # tailwind.config.js chega verbatim: as duas variantes são
+            # idênticas byte a byte, sem nenhum ponto de interpolação.
+            self.assertEqual(teal_tailwind, amber_tailwind)
+            self.assertNotIn("COR_PRIMARIA", teal_tailwind)
+            self.assertNotRegex(teal_tailwind, r"#[0-9a-fA-F]{6}")
+
+            # A cor continua sendo pergunta do Copier — agora com um único
+            # ponto de interpolação: .env.example.
+            teal_env = (teal / ".env.example").read_text(encoding="utf-8")
+            amber_env = (amber / ".env.example").read_text(encoding="utf-8")
+            self.assertNotEqual(teal_env, amber_env)
+            self.assertIn("COR_PRIMARIA=#0f766e", teal_env)
+            self.assertIn("COR_PRIMARIA=#d97706", amber_env)
+
             self.assertEqual(
                 (teal / "config/settings/base.py").read_text(encoding="utf-8"),
                 (amber / "config/settings/base.py").read_text(encoding="utf-8"),
