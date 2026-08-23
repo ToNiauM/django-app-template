@@ -61,13 +61,13 @@ Requisitos da entrega inicial. Cada um mapeia para fases do roadmap.
 
 ### Release (REL)
 
-- [ ] **REL-01**: `copier update` de um sistema na v0.1.0 para esta versão não exige resolução manual em arquivo que o derivado não tenha tocado; a fase fecha com a tag `v0.2.0`
+- [x] **REL-01**: `copier update` de um sistema na v0.1.0 para esta versão não exige resolução manual em arquivo que o derivado não tenha tocado; a fase fecha com a tag `v0.2.0`
 
 ### Qualidade (QA)
 
 - [x] **QA-01**: Template inclui suíte de testes do core e do app exemplo, e o sistema gerado passa essa suíte
 - [x] **QA-02**: Fluxo de nascimento completo funciona sem editar código: `copier copy` + preencher `.env` + `docker compose up -d` + `migrate` + `createsuperuser` produz sistema navegável (login, shell com navegação, CRUD e dashboard de exemplo)
-- [ ] **QA-03**: Os testes Django do `core` e do `apps.exemplo` e as 11 suítes de `.template-tests/` seguem verdes, incluindo o ensaio A→B→C de `copier update`
+- [x] **QA-03**: Os testes Django do `core` e do `apps.exemplo` e as 11 suítes de `.template-tests/` seguem verdes, incluindo o ensaio A→B→C de `copier update`
 
 ### Documentação (DOC)
 
@@ -134,8 +134,8 @@ Quais fases cobrem quais requisitos. Preenchido na criação do roadmap.
 | NAV-01 | Phase 7 | Pending |
 | NAV-02 | Phase 7 | Pending |
 | NAV-03 | Phase 7 | Pending |
-| REL-01 | Phase 7 | Pending |
-| QA-03 | Phase 7 | Pending |
+| REL-01 | Phase 7 | Complete |
+| QA-03 | Phase 7 | Complete |
 
 **Cobertura:**
 
