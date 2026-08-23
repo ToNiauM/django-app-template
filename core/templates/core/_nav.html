@@ -1,0 +1,19 @@
+{% load navegacao %}
+{% comment %}
+  Ponto de extensão da navegação (D-10, D-87, D-89).
+
+  ESTE ARQUIVO É DO NÚCLEO. Toda edição aqui vira conflito no próximo
+  `copier update`. Os itens do SEU domínio vão em
+  `core/templates/core/_nav_dominio.html`, que é seu e que o núcleo nunca
+  toca (protegido por `_skip_if_exists` no `copier.yml`).
+
+  Não existe registry dinâmico de menu por decisão (D-10) — a navegação do
+  núcleo é declarada aqui, e só; a extensão vem do include abaixo.
+
+  Sem boost do htmx na navegação (D-09): cada `<a href>` carrega a página
+  inteira — o componente Alpine do shell é montado uma única vez por página.
+{% endcomment %}
+<nav aria-label="Navegação principal" class="flex flex-col gap-1">
+  {% item_nav "core:shell" "Início" "casa" %}
+  {% include "core/_nav_dominio.html" %}
+</nav>

@@ -3,6 +3,16 @@ _envops:
   undefined: jinja2.StrictUndefined
 _templates_suffix: .jinja
 _answers_file: .copier-answers.yml
+# _skip_if_exists é obrigatório, não decorativo: são os arquivos que o
+# DERIVADO passa a ser dono. Sem esta lista, o primeiro `copier update` que
+# mude a resposta correspondente (ex.: incluir_app_exemplo) grava
+# `<<<<<<< before updating` DENTRO do arquivo do derivado — verificado com
+# Copier 9.17.1 real (Padrão 3/Pitfall 12 do 07-RESEARCH.md). Com o
+# `_skip_if_exists`, o `copier update` nunca reescreve o arquivo depois da
+# primeira cópia, mesmo quando o template muda o próprio conteúdo padrão.
+_skip_if_exists:
+  - core/templates/core/_nav_dominio.html
+  - core/static/src/dominio.css
 _exclude:
   - .git
   - .gitattributes

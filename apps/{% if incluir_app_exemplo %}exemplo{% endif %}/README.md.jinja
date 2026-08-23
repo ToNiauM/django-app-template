@@ -11,7 +11,9 @@ O app se conecta exclusivamente nestes três pontos:
 
 1. `config/settings/base.py` registra `apps.exemplo.apps.ExemploConfig`.
 2. `config/urls.py` inclui a rota `/exemplo/`.
-3. `core/templates/core/_nav.html` fornece os links Dashboard e Itens (CRUD).
+3. `core/templates/core/_nav_dominio.html` fornece os links Dashboard e Itens
+   (CRUD). Esse arquivo é do SEU sistema — remover os dois itens é apagar
+   duas linhas dele, sem tocar em nenhum arquivo do núcleo.
 
 ## Remover pelo Copier
 
