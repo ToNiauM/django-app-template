@@ -47,7 +47,7 @@ Requisitos da entrega inicial. Cada um mapeia para fases do roadmap.
 ### Design System (DS)
 
 - [x] **DS-01**: Sistema gerado nasce com os tokens de cor em variáveis CSS em `core/static/src/input.css`, e `tailwind.config.js` só aponta para elas via `var(--cor-*)`
-- [ ] **DS-02**: Sistema gerado tem tema escuro funcional por `[data-tema="escuro"]`, com escolha persistida em `localStorage` e sem flash de tema
+- [x] **DS-02**: Sistema gerado tem tema escuro funcional por `[data-tema="escuro"]`, com escolha persistida em `localStorage` e sem flash de tema
 - [x] **DS-03**: Régua física declarada: 3 degraus de superfície com elevação, raio único de 2px, 6 degraus tipográficos com teto de 20px, pilha `system-ui` e `:focus-visible` único em `@layer base`
 - [x] **DS-04**: Vocabulário de componente `.results` `.module` `.form-row` `.btn` (+4 variantes) declarado em `@layer components` e protegido por `safelist`
 - [ ] **DS-05**: Nenhum hex de cor em template ou em JS de template; a paleta do gráfico chega do servidor por `json_script` e o chrome é lido das variáveis CSS em runtime
@@ -126,7 +126,7 @@ Quais fases cobrem quais requisitos. Preenchido na criação do roadmap.
 | QA-02 | Phase 5 | Complete |
 | DOC-01 | Phase 5 | Complete |
 | DS-01 | Phase 7 | Complete |
-| DS-02 | Phase 7 | Pending |
+| DS-02 | Phase 7 | Complete |
 | DS-03 | Phase 7 | Complete |
 | DS-04 | Phase 7 | Complete |
 | DS-05 | Phase 7 | Pending |
