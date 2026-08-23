@@ -10,6 +10,8 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 from django_htmx.http import HttpResponseClientRedirect
 
+from core.tema import COR_PAGE_CLARO
+
 
 @login_not_required
 def healthz(request):
@@ -166,9 +168,12 @@ def manifest_view(request):
         "start_url": "/",
         "scope": "/",
         "display": "standalone",
-        # Mesmo hex do token `page` do Tailwind — neutro de template, não
-        # identidade (A3): não entra na regra dos dois touchpoints de D-17.
-        "background_color": "#f9f9f7",
+        # Vem de core.tema.COR_PAGE_CLARO, que espelha o --cor-page do
+        # bloco :root de input.css e está amarrado a ele por teste
+        # (core/tests/test_tema.py) — sem duplicata literal. Neutro de
+        # template, não identidade (A3): não entra na regra dos dois
+        # touchpoints de D-17.
+        "background_color": COR_PAGE_CLARO,
         "theme_color": settings.COR_PRIMARIA,
         "icons": [
             {
