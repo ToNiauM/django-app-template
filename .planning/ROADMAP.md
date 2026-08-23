@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Templatização Copier** - Sistema-modelo vira template parametrizado com `copier copy`/`copier update` e ops de produção (completed 2006-08-18)
 - [x] **Phase 5: Verificação e Documentação** - Fluxo de nascimento validado ponta a ponta e README completo (completed 2006-08-18)
 - [x] **Phase 6: Customização Visual e Persistência de Dados** - Pontos de customização de marca no `core` (logo da entidade, logo do subsistema, logo/nome do PWA) e dados do banco persistidos no host sobrevivendo a `docker compose down -v` (completed 2026-08-19)
-- [ ] **Phase 7: Herdar o design system do PCA** - O padrão visual do Sistema CFC (tokens em variáveis CSS, tema escuro, elevação, paleta de gráfico servida pelo servidor, classes de componente) sai do PCA e passa a nascer com todo sistema gerado
+- [ ] **Phase 7: Herdar o design system do PCA** - O padrão visual do Sistema CFC (tokens em variáveis CSS, tema escuro, elevação, paleta de gráfico servida pelo servidor, classes de componente) sai do PCA e passa a nascer com todo sistema gerado, e a navegação ganha o ponto de extensão que hoje obriga cada derivado a reescrever o `_nav.html`
 
 ## Phase Details
 
@@ -218,8 +218,8 @@ Plans:
 ### Phase 7: Herdar o design system do PCA
 
 **Goal**: Um sistema recém-nascido do template já vem com o design system do Sistema
-CFC inteiro — mesmos tokens, mesma elevação, mesmos tipos de gráfico do PCA — sem que
-o time do sistema derivado precise editar um único arquivo do `core`.
+CFC inteiro — mesmos tokens, mesma elevação, mesmos tipos de gráfico do PCA — e o
+derivado põe os próprios itens no menu **sem editar um único arquivo do `core`**.
 **Mode:** mvp
 **Depends on:** Phase 6
 
@@ -245,6 +245,30 @@ recupera a distância. Procedência cromática em `/opt/web/pca/BRIEFING-RESKIN-
 | Rampa sequencial | `seq-300` / `seq-450` / `seq-600` | não existe |
 | Dourado institucional | `secundaria` #a07400 — forma e nunca texto (3,99:1 reprova AA de texto) | não existe |
 
+**Encaixe da navegação (T-01 da auditoria de 2026-08-23)** — entra nesta fase por
+decisão do operador, junto com o design system:
+
+Hoje o `core/templates/core/_nav.html` não tem ponto de extensão. O DividaAtiva
+precisou apagar o link "Início" do template e colar sete blocos de doze linhas —
+79 linhas trocadas dentro de arquivo upstream, que viram conflito garantido em todo
+`copier update`. É o pior conflito aberto da família, e resolvê-lo **antes** da
+v0.2.0 é o que torna o update dos derivados viável.
+
+Duas peças:
+
+1. **Ponto de extensão** — `{% include "core/_nav_dominio.html" %}` no fim da nav, com
+   um stub vazio no template. O derivado sobrescreve esse arquivo e nunca toca o
+   `_nav.html`.
+2. **Inclusion tag do item** — hoje cada item repete doze linhas com a mesma string de
+   classes e a mesma lógica de estado ativo (`bg-brand-tint`, filete de 2px,
+   `aria-current="page"`). Vira `{% item_nav url rotulo icone prefixo %}`, uma linha
+   por item, com o tratamento visual do PCA garantido por construção.
+
+Resolve junto o **T-03** da mesma auditoria: os três itens do app exemplo (Início,
+Dashboard, Itens) saem do `_nav.html` base e passam a viver no mesmo mecanismo — o
+derivado deixa de precisar removê-los à mão, e "ter o exemplo" deixa de implicar
+"mostrar o exemplo no menu".
+
 **O que NÃO sobe**: os 7 pares de token de status do PCA (`st-concluido`,
 `st-em-tramitacao`, `st-atrasado`…) são vocabulário do domínio dele. Sobe a *mecânica*
 do par fundo+texto e a disciplina CVD-safe; cada sistema declara os próprios status.
@@ -267,9 +291,14 @@ versão — em vez de reimplementar à mão e conflitar consigo mesmo depois.
 4. `cor_primaria` continua sendo pergunta do Copier, e as novas decisões (raio, régua
    tipográfica, fonte) entram como perguntas ou como padrão do template — o derivado
    não precisa editar `tailwind.config.js` para nada.
-5. `copier update` de um sistema na v0.1.0 para esta versão traz o padrão sem exigir
+5. Um derivado põe os próprios itens no menu criando apenas
+   `core/templates/core/_nav_dominio.html` — o `_nav.html` do template fica intocado, e
+   um teste de contrato prova isso.
+6. O menu do app exemplo passa pelo mesmo encaixe: gerar com `incluir_app_exemplo=true`
+   e depois remover os itens do menu não exige editar nenhum arquivo upstream.
+7. `copier update` de um sistema na v0.1.0 para esta versão traz o padrão sem exigir
    resolução manual em arquivo que o derivado não tenha tocado.
-6. Os 77 testes do `core` e as 11 suítes de `.template-tests/` seguem verdes, incluindo
+8. Os 77 testes do `core` e as 11 suítes de `.template-tests/` seguem verdes, incluindo
    o ensaio A→B→C de `copier update`.
 
 **Nota de release**: o template está com 37 commits desde a tag `v0.1.0` — a Fase 6
