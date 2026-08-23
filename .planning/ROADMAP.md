@@ -208,9 +208,11 @@ Plans:
 **Wave 1**
 
 - [x] 06-01-PLAN.md — Persistência no host: bind mount `${PGDATA_DIR:-./dados/pg}` no compose, `.gitignore` do sistema gerado (fix do `_exclude`), testes de template e tracer com prova de `down -v`
+
 **Wave 2** *(blocked on Wave 1 — o tracer corrigido é a verificação dos planos seguintes)*
 
 - [x] 06-02-PLAN.md — Logos de marca: placeholders SVG neutros em caminhos fixos, inserção via `{% static %}` no shell/login, favicon e regressão Django (test_logos.py)
+
 **Wave 3** *(blocked on Waves 1–2 — os verifies pesados de 06-02 rodam com a árvore de docs intocada)*
 
 - [x] 06-03-PLAN.md — Documentação: seção "Customização de marca" no README gerado, etapa de logos no nascimento, notas de persistência e migração no runbook
@@ -259,6 +261,7 @@ Duas peças:
 1. **Ponto de extensão** — `{% include "core/_nav_dominio.html" %}` no fim da nav, com
    um stub vazio no template. O derivado sobrescreve esse arquivo e nunca toca o
    `_nav.html`.
+
 2. **Inclusion tag do item** — hoje cada item repete doze linhas com a mesma string de
    classes e a mesma lógica de estado ativo (`bg-brand-tint`, filete de 2px,
    `aria-current="page"`). Vira `{% item_nav url rotulo icone prefixo %}`, uma linha
@@ -285,20 +288,27 @@ REL-01, QA-03
 
 1. Um sistema gerado do template, sem nenhuma edição manual, abre com os mesmos tokens,
    espaçamento, raio e tipografia do PCA — conferível lado a lado.
+
 2. O tema escuro funciona no sistema gerado, inclusive nos gráficos do app exemplo,
    porque a paleta chega do servidor e não está cravada no JS.
+
 3. Nenhum hex de cor sobra em template ou em JS de template; a fonte física dos valores
    é `core/static/src/input.css`.
+
 4. `cor_primaria` continua sendo pergunta do Copier, e as novas decisões (raio, régua
    tipográfica, fonte) entram como perguntas ou como padrão do template — o derivado
    não precisa editar `tailwind.config.js` para nada.
+
 5. Um derivado põe os próprios itens no menu criando apenas
    `core/templates/core/_nav_dominio.html` — o `_nav.html` do template fica intocado, e
    um teste de contrato prova isso.
+
 6. O menu do app exemplo passa pelo mesmo encaixe: gerar com `incluir_app_exemplo=true`
    e depois remover os itens do menu não exige editar nenhum arquivo upstream.
+
 7. `copier update` de um sistema na v0.1.0 para esta versão traz o padrão sem exigir
    resolução manual em arquivo que o derivado não tenha tocado.
+
 8. Os 77 testes do `core` e as 11 suítes de `.template-tests/` seguem verdes, incluindo
    o ensaio A→B→C de `copier update`.
 
@@ -309,13 +319,36 @@ Esta fase deve terminar com uma tag nova (`v0.2.0`), que entrega Fase 6 e Fase 7
 **Plans:** 8 plans (8 ondas — a fase é serial: da onda 2 em diante cada plano muda o estado de build que o gate do seguinte mede)
 
 Plans:
+**Wave 1**
+
 - [ ] 07-01-PLAN.md — Rede de testes mede o working tree (`--vcs-ref=HEAD`) + banco de ensaio `ensaio_django.sh`
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 07-02-PLAN.md — `input.css` vira a fonte física dos tokens; `tailwind.config.js` verbatim; `dominio.css`
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 07-03-PLAN.md — Encaixe da navegação: `_nav_dominio.html`, `{% item_nav %}` e `_skip_if_exists`
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 07-04-PLAN.md — `core/tema.py`: a família de marca deriva de `COR_PRIMARIA` em runtime, com prova executável
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
 - [ ] 07-05-PLAN.md — Tema escuro: script síncrono, controle de 3 estados e elevação no `core`
+
+**Wave 6** *(blocked on Wave 5 completion)*
+
 - [ ] 07-06-PLAN.md — Gráficos sem hex, paleta servida pelo Django e elevação no app exemplo
+
+**Wave 7** *(blocked on Wave 6 completion)*
+
 - [ ] 07-07-PLAN.md — Régua tipográfica aplicada ocorrência a ocorrência, com gate executável
+
+**Wave 8** *(blocked on Wave 7 completion)*
+
 - [ ] 07-08-PLAN.md — Regressão completa, roteiro de atualização dos derivados, inspeção visual e tag `v0.2.0`
 
 ## Progress
