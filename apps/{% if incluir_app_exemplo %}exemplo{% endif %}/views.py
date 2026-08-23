@@ -2,12 +2,15 @@
 
 from decimal import Decimal
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Avg, Count, Q, Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+
+from core.tema import familia_marca
 
 from .forms import ItemExemploForm
 from .models import CategoriaChoices, ItemExemplo, StatusChoices
@@ -204,6 +207,35 @@ def dashboard_view(request):
         .order_by("status")
     )
 
+    # 4. Paleta semântica do donut — DADO, não estilo. O chrome do gráfico
+    # (eixo, grade, tooltip) é lido das variáveis CSS no cliente; só a
+    # paleta categórica do donut precisa vir do servidor, porque um
+    # template não consegue escolher matizes que sobrevivam a qualquer
+    # COR_PRIMARIA e continuem legíveis para daltônicos. A rampa é
+    # SEQUENCIAL (monocromática), derivada de settings.COR_PRIMARIA pela
+    # mesma familia_marca() que alimenta o <style> de base.html — as duas
+    # nunca divergem porque são a mesma função. Quatro cores porque
+    # StatusChoices tem quatro valores (models.py). Ordem do mais escuro
+    # ao mais claro no tema claro (e o equivalente no escuro): seq-600,
+    # seq-450, seq-300, brand-tint.
+    familia_clara = familia_marca(settings.COR_PRIMARIA)
+    paleta_graficos = {
+        "rampa_status": {
+            "claro": [
+                familia_clara["seq-600"],
+                familia_clara["seq-450"],
+                familia_clara["seq-300"],
+                familia_clara["brand-tint"],
+            ],
+            "escuro": [
+                familia_clara["seq-600:escuro"],
+                familia_clara["seq-450:escuro"],
+                familia_clara["seq-300:escuro"],
+                familia_clara["brand-tint:escuro"],
+            ],
+        }
+    }
+
     contexto = {
         "kpis": {
             "total_itens": total_itens,
@@ -230,6 +262,7 @@ def dashboard_view(request):
             }
             for item in dados_status
         ],
+        "paleta_graficos": paleta_graficos,
         "trilha": [
             {"rotulo": "Início", "url": reverse("core:shell")},
             {"rotulo": "Exemplo", "url": None},
