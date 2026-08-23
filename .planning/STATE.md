@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 07-03-PLAN.md
-last_updated: "2026-08-23T18:39:00.723Z"
+stopped_at: Completed 07-04-PLAN.md
+last_updated: "2026-08-23T19:05:37.079Z"
 last_activity: 2026-08-23
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 32
-  completed_plans: 27
-  percent: 84
+  completed_plans: 28
+  percent: 86
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-17)
 ## Current Position
 
 Phase: 07 (herdar-o-design-system-do-pca) — EXECUTING
-Plan: 4 of 8
+Plan: 5 of 8
 Status: Ready to execute
 Last activity: 2026-08-23
 
-Progress: [████████░░] 84%
+Progress: [█████████░] 88%
 
 ## Performance Metrics
 
@@ -75,6 +75,7 @@ Progress: [████████░░] 84%
 | Phase 07 P01 | 18min | 3 tasks | 5 files |
 | Phase 07 P02 | 25min | 3 tasks | 10 files |
 | Phase 07-herdar-o-design-system-do-pca P03 | 24min | 3 tasks | 12 files |
+| Phase 07-herdar-o-design-system-do-pca P04 | 35min | 4 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -127,6 +128,8 @@ Recent decisions affecting current work:
 - [Phase 07-03]: TDD literal na Task 1 — 6 testes de item_nav escritos e confirmados falhando (TemplateSyntaxError) antes da tag existir
 - [Phase 07-03]: test_copier_update.sh ganhou --no-tags no git clone (Rule 3) — repositório real já carrega a tag v0.1.0 da release, sem a flag o clone efêmero herdava essa tag e quebrava a criação da tag própria do ensaio
 - [Phase 07-03]: exigir_sem_exemplo() prova sobrevivência de _nav_dominio.html após update, não mais ausência de exemplo: nele — com _skip_if_exists o arquivo é do derivado e pode legitimamente conter exemplo: sem ser ressurreição do app
+- [Phase 07-04]: core/tema.py deriva a família de marca inteira (colorsys/misturar) em Python no boot, espelhando core/admin_site.py; COR_PAGE_CLARO/COR_PAGE_ESCURO amarrados a input.css por teste
+- [Phase 07-04]: test_07_cor_runtime.sh captura a porta do banco de ensaio uma única vez e nunca redescobre via ensaio_django.sh porta/subir após um up -d web — garantir_banco() ali faz um único curl sem retry e detona recriação completa se o serviço ainda está subindo
 
 ### Pending Todos
 
@@ -156,6 +159,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-23T18:39:00.652Z
-Stopped at: Completed 07-03-PLAN.md
+Last session: 2026-08-23T19:05:37.044Z
+Stopped at: Completed 07-04-PLAN.md
 Resume file: None
