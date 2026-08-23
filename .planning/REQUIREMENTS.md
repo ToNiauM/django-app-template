@@ -67,7 +67,7 @@ Requisitos da entrega inicial. Cada um mapeia para fases do roadmap.
 
 - [x] **QA-01**: Template inclui suíte de testes do core e do app exemplo, e o sistema gerado passa essa suíte
 - [x] **QA-02**: Fluxo de nascimento completo funciona sem editar código: `copier copy` + preencher `.env` + `docker compose up -d` + `migrate` + `createsuperuser` produz sistema navegável (login, shell com navegação, CRUD e dashboard de exemplo)
-- [x] **QA-03**: Os testes Django do `core` e do `apps.exemplo` e as 11 suítes de `.template-tests/` seguem verdes, incluindo o ensaio A→B→C de `copier update`
+- [x] **QA-03**: Os testes Django do `core` e do `apps.exemplo` e todas as suítes de `.template-tests/` seguem verdes, incluindo o ensaio A→B→C de `copier update`
 
 ### Documentação (DOC)
 

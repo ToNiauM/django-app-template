@@ -309,7 +309,7 @@ REL-01, QA-03
 7. `copier update` de um sistema na v0.1.0 para esta versão traz o padrão sem exigir
    resolução manual em arquivo que o derivado não tenha tocado.
 
-8. Os 77 testes do `core` e as 11 suítes de `.template-tests/` seguem verdes, incluindo
+8. Os 77 testes do `core` e todas as suítes de `.template-tests/` seguem verdes, incluindo
    o ensaio A→B→C de `copier update`.
 
 **Nota de release**: o template está com 39 commits desde a tag `v0.1.0` — a Fase 6

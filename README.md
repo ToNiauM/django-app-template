@@ -327,14 +327,26 @@ três camadas: contratos da fonte, ensaio real de nascimento e inspeção manual
 complementar.
 
 ```bash
+# Limpa o banco de ensaio deixado por rodadas anteriores no host
+.template-tests/ensaio_django.sh derrubar
+
 # Contratos da fonte: renderização, update e auditoria estática
 .template-tests/test_copier_copy.sh
 .template-tests/test_copier_update.sh
-python3 -m unittest discover -s .template-tests -p 'test_04_*.py'
+python3 -m unittest discover -s .template-tests -p 'test_*.py'
+
+# Prova de que COR_PRIMARIA resolve em runtime, sem rebuild
+.template-tests/test_07_cor_runtime.sh
+.template-tests/ensaio_django.sh derrubar
 
 # Ensaio real de nascimento: cópia descartável, boot e suíte Django
 .template-tests/test_05_nascimento.sh
 ```
+
+O primeiro `derrubar` evita que um banco de ensaio esquecido de uma rodada
+anterior dispute containers, portas ou espaço com as suítes seguintes; o
+segundo repete a limpeza porque `test_07_cor_runtime.sh` recria o banco para
+provar a resolução da cor em runtime.
 
 - `.template-tests/test_copier_copy.sh` cria somente destinos temporários,
   exercita as variantes com e sem o app exemplo, rejeita respostas inválidas e
@@ -348,6 +360,15 @@ python3 -m unittest discover -s .template-tests -p 'test_04_*.py'
 - Os contratos Python `test_04_*.py` fixam identidade, app exemplo opcional,
   backup, scripts de operação e o ambiente de `collectstatic` nas variantes
   renderizadas.
+- `.template-tests/test_07_tokens.py` prova o contrato dos tokens de design:
+  a fonte `system-ui`, a régua tipográfica com teto de 20px e a ausência de
+  classes mortas da paleta antiga.
+- `.template-tests/test_07_nav_extensao.py` prova o ponto de extensão da
+  navegação: um derivado põe os próprios itens em `_nav_dominio.html` sem
+  tocar em `_nav.html`.
+- `.template-tests/test_07_cor_runtime.sh` prova que `COR_PRIMARIA` resolve
+  em runtime — trocar o valor no `.env` e reiniciar o container muda a marca
+  sem exigir rebuild do CSS.
 - `.template-tests/test_05_nascimento.sh` é o ensaio real de nascimento: gera
   uma cópia descartável com o app exemplo, preenche um `.env` apenas com
   segredos efêmeros, valida a configuração do Compose, sobe somente os
@@ -356,6 +377,24 @@ python3 -m unittest discover -s .template-tests -p 'test_04_*.py'
   HTTP das rotas de saúde e de login e remove exclusivamente os recursos que
   criou. Com `--keep`, ele retém a cópia aprovada e informa destino, projeto
   Compose e URL para inspeção posterior.
+
+Todas as suítes que invocam `copier copy` usam `--vcs-ref=HEAD`: sem essa
+flag, o Copier renderizaria sempre a última tag publicada, e a regressão
+provaria o template de uma release passada, não o estado atual do checkout.
+
+### A ferramenta `ensaio_django.sh`
+
+`.template-tests/ensaio_django.sh` **não é suíte** — o nome não começa com
+`test_` de propósito, para que nenhum inventário a confunda com regressão.
+Ela existe porque o checkout do template não é, por si só, um projeto Django
+rodável: não há `compose.yml` (só `compose.yml.jinja`), nem
+`config/settings/base.py` (só `.py.jinja`), nem container `web`. É como se
+roda qualquer alvo Django contra uma cópia gerada, para desenvolvimento e
+depuração da Fase 07. Subcomandos: `subir`, `porta`, `url`, `destino`,
+`testar`, `executar`, `compor` e `derrubar`. O banco criado por `subir`
+**sobrevive** entre invocações de propósito — reúso é o que torna chamadas
+repetidas baratas — e `derrubar` é como se limpa o host inteiro (containers,
+volumes, `dados/` e o diretório da cópia).
 
 Nenhum desses comandos automatiza cliques nem regressão visual: o ensaio de
 nascimento prova comportamento via suíte Django e alcance HTTP. A inspeção
@@ -378,14 +417,20 @@ completa da seção [Regressão do template](#regressão-do-template) verde.
 
 ```bash
 # criar a tag anotada da release
-git tag -a v0.1.0 -m "descrição da release"
+git tag -a v0.2.0 -m "descrição da release"
 
 # listar as tags existentes
 git tag
 
 # inspecionar o conteúdo de uma tag
-git show v0.1.0 --stat
+git show v0.2.0 --stat
 ```
+
+A `v0.2.0` entrega as Fases 6 e 7 juntas: marca por arquivo fixo e
+persistência em bind mount (Fase 6); design system com tokens de cor em
+variáveis CSS, tema escuro, elevação, raio único, régua tipográfica, fonte
+`system-ui`, focus-ring, classes de componente e o ponto de extensão da
+navegação (Fase 7).
 
 Sem `--vcs-ref`, `copier copy` e `copier update` renderizam sempre a **última
 tag** (ordenada pelo algoritmo PEP 440), nunca o HEAD — é por isso que
@@ -429,6 +474,40 @@ de respostas manualmente nem reinicie o update sobre uma árvore suja.
 
 Antes de criar a tag, execute a regressão completa descrita em
 `## Regressão do template`, incluindo o ensaio de nascimento.
+
+### Atualizando um sistema que nasceu na v0.1.0
+
+Um derivado que fez reskin à mão antes desta release editou exatamente os
+três arquivos que a `v0.2.0` reescreve inteiros. O conflito no `copier
+update` é **certo** e não viola o contrato de update sem resolução manual:
+esse contrato vale para arquivo que o derivado **não** tenha tocado, e o que
+o derivado escreveu à mão é exatamente o que o núcleo passa a entregar.
+
+| Arquivo | O que o derivado fez | Resolução |
+|---|---|---|
+| `core/templates/core/_nav.html` | apagou o item "Início", colou os itens do domínio | `git checkout --theirs` e recriar os itens em `core/templates/core/_nav_dominio.html`, uma linha por item com `{% item_nav %}` |
+| `tailwind.config.js` | fixou a cor de marca no arquivo e acrescentou `borderRadius`/`fontSize`/`fontFamily` à mão | `git checkout --theirs`; a cor fixada à mão vai para `COR_PRIMARIA` no `.env`, **não** para o config — o config passa a ser verbatim e é reescrito a cada update |
+| `core/static/src/input.css` | acrescentou o `@layer base { :focus-visible }` no topo | `git checkout --theirs`; qualquer token próprio de estado migra para `core/static/src/dominio.css`, que o update nunca toca |
+
+O `_skip_if_exists` do `copier.yml` protege `core/templates/core/_nav_dominio.html`
+e `core/static/src/dominio.css`: uma vez criados pelo derivado, o `copier
+update` nunca mais os reescreve, mesmo quando o template muda o próprio
+conteúdo padrão desses arquivos.
+
+Roteiro completo, na ordem:
+
+1. Árvore limpa e uma branch de atualização.
+2. `copier update --vcs-ref v0.2.0`.
+3. Resolver os três arquivos da tabela acima ficando com a versão do
+   template (`git checkout --theirs`).
+4. Recriar o menu do domínio em `_nav_dominio.html`, um `{% item_nav %}` por
+   item.
+5. Mover qualquer token de estado próprio do derivado para
+   `core/static/src/dominio.css`.
+6. Transportar a cor de marca fixada à mão para `COR_PRIMARIA` no `.env`.
+7. `docker compose up -d --build` — o CSS é artefato de build, o rebuild é
+   obrigatório.
+8. Rodar `manage.py test` do próprio sistema derivado.
 
 ## Resumo: nascimento completo em comandos
 
