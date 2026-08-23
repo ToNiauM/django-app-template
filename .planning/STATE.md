@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 07-05-PLAN.md
-last_updated: "2026-08-23T19:44:02.671Z"
+stopped_at: Completed 07-07-PLAN.md
+last_updated: "2026-08-23T20:01:28.898Z"
 last_activity: 2026-08-23
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 32
-  completed_plans: 30
+  completed_plans: 31
   percent: 86
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-17)
 ## Current Position
 
 Phase: 07 (herdar-o-design-system-do-pca) — EXECUTING
-Plan: 7 of 8
+Plan: 8 of 8
 Status: Ready to execute
 Last activity: 2026-08-23
 
-Progress: [█████████░] 94%
+Progress: [██████████] 97%
 
 ## Performance Metrics
 
@@ -78,6 +78,7 @@ Progress: [█████████░] 94%
 | Phase 07-herdar-o-design-system-do-pca P04 | 35min | 4 tasks | 7 files |
 | Phase 07-herdar-o-design-system-do-pca P05 | 40min | 3 tasks | 4 files |
 | Phase 07-herdar-o-design-system-do-pca P06 | 70min | 3 tasks | 7 files |
+| Phase 07-herdar-o-design-system-do-pca P07 | 45min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -137,6 +138,9 @@ Recent decisions affecting current work:
 - [Phase 07-06]: paleta_graficos servido por json_script, derivado de core.tema.familia_marca(COR_PRIMARIA) — rampa sequencial (seq-600/seq-450/seq-300/brand-tint), nos dois temas, mesma função que alimenta o <style> de base.html
 - [Phase 07-06]: chrome de gráfico (eixo/grade/tooltip/borda) lido de getComputedStyle em runtime via lerVarCss() — montarGraficos() faz dispose()+init() e é chamada de novo no evento tema:alterado, reconstruindo os gráficos sem reload de página
 - [Phase 07-06]: json_script:"paleta-graficos" acrescentado a dashboard.html já na Task 1 (TDD), não só na Task 2 — o comportamento 6/6 exigia o HTML renderizado desde a GREEN da própria Task 1
+- [Phase ?]: [Phase 07-07]: Regex de leitura de fontSize (herdado de 07-02) corrigido para casar chaves entre aspas ('"2xl":') — bug pré-existente revelado pela prova negativa exigida pela Task 2, sem o qual o gate da régua tipográfica passaria em falso positivo silencioso
+- [Phase ?]: [Phase 07-07]: Botão adota text-base (13px), não text-sm — paridade com o vocabulário .btn (text-[13px]) do input.css; aplicado a 6 sítios (Gerenciar itens, Novo item, Cancelar/Salvar item, Cancelar/Sim-excluir, 3 botões de tema do shell)
+- [Phase ?]: [Phase 07-07]: Título de seção (h2) que ficava do mesmo tamanho do corpo em 13px promovido a text-lg (16px) — aplicado aos 2 títulos de gráfico do dashboard e aos 2 títulos de modal
 
 ### Pending Todos
 
@@ -166,6 +170,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-23T19:44:02.633Z
-Stopped at: Completed 07-05-PLAN.md
+Last session: 2026-08-23T20:01:28.860Z
+Stopped at: Completed 07-07-PLAN.md
 Resume file: None

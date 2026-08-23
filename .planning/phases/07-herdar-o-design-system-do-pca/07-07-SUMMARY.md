@@ -236,3 +236,13 @@ None — nenhuma configuração de serviço externo necessária.
   `ui_safety_gate: true`) é o próximo — esta task deixa o T-07-21 do threat model (piso de
   11px legível) pronto para essa inspeção visual: nenhum corpo de texto ficou em 11px,
   só metadado/legenda/badge, conforme o critério de `<interfaces>`.
+
+## Self-Check: PASSED
+
+- `apps/{% if incluir_app_exemplo %}exemplo{% endif %}/templates/exemplo/dashboard.html` — FOUND
+- `.template-tests/test_07_tokens.py` — FOUND
+- `.planning/phases/07-herdar-o-design-system-do-pca/07-07-SUMMARY.md` — FOUND
+- Commit `3817483` (Task 1) — FOUND
+- Commit `f7906cf` (Task 2) — FOUND
+- Commit `4a4e863` (Task 3) — FOUND
+- Commit `fc553ce` (SUMMARY) — FOUND
