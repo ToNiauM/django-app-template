@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 07-02-PLAN.md
-last_updated: "2026-08-23T18:08:58.531Z"
+stopped_at: Completed 07-03-PLAN.md
+last_updated: "2026-08-23T18:39:00.723Z"
 last_activity: 2026-08-23
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 32
-  completed_plans: 26
-  percent: 81
+  completed_plans: 27
+  percent: 84
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-17)
 ## Current Position
 
 Phase: 07 (herdar-o-design-system-do-pca) — EXECUTING
-Plan: 3 of 8
+Plan: 4 of 8
 Status: Ready to execute
 Last activity: 2026-08-23
 
-Progress: [████████░░] 81%
+Progress: [████████░░] 84%
 
 ## Performance Metrics
 
@@ -74,6 +74,7 @@ Progress: [████████░░] 81%
 | Phase 06 P03 | 4min | 3 tasks | 4 files |
 | Phase 07 P01 | 18min | 3 tasks | 5 files |
 | Phase 07 P02 | 25min | 3 tasks | 10 files |
+| Phase 07-herdar-o-design-system-do-pca P03 | 24min | 3 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -123,6 +124,9 @@ Recent decisions affecting current work:
 - [Phase 07-02]: input.css vira a fonte física dos tokens de cor (21 claros/18 overrides escuros em hex plano); tailwind.config.js chega verbatim ao sistema gerado, sem sufixo .jinja e sem interpolação
 - [Phase 07-02]: dominio.css nasce como stub _skip_if_exists: o derivado declara os próprios tokens de estado (par --cor-<estado>/-tx), nunca copiados de outro sistema
 - [Phase 07-02]: bg-ink/40, shadow-xs e backdrop-blur-xs corrigidos nos templates do app exemplo: nenhuma das três gera regra no Tailwind 3.4.17 depois da migração de cores para var(--cor-*) (confirmado por build real)
+- [Phase 07-03]: TDD literal na Task 1 — 6 testes de item_nav escritos e confirmados falhando (TemplateSyntaxError) antes da tag existir
+- [Phase 07-03]: test_copier_update.sh ganhou --no-tags no git clone (Rule 3) — repositório real já carrega a tag v0.1.0 da release, sem a flag o clone efêmero herdava essa tag e quebrava a criação da tag própria do ensaio
+- [Phase 07-03]: exigir_sem_exemplo() prova sobrevivência de _nav_dominio.html após update, não mais ausência de exemplo: nele — com _skip_if_exists o arquivo é do derivado e pode legitimamente conter exemplo: sem ser ressurreição do app
 
 ### Pending Todos
 
@@ -152,6 +156,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-23T18:08:58.469Z
-Stopped at: Completed 07-02-PLAN.md
+Last session: 2026-08-23T18:39:00.652Z
+Stopped at: Completed 07-03-PLAN.md
 Resume file: None

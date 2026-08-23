@@ -55,9 +55,9 @@ Requisitos da entrega inicial. Cada um mapeia para fases do roadmap.
 
 ### Navegação (NAV)
 
-- [ ] **NAV-01**: `core/templates/core/_nav.html` fica intocado por qualquer derivado; itens de domínio entram apenas por `core/templates/core/_nav_dominio.html`, provado por teste de contrato
-- [ ] **NAV-02**: Item de navegação vira `{% item_nav %}` — uma linha por item, com o tratamento de estado ativo do padrão por construção
-- [ ] **NAV-03**: Itens do app exemplo saem do `_nav.html` base; gerar com `incluir_app_exemplo=true` e depois remover os itens não exige editar arquivo upstream
+- [x] **NAV-01**: `core/templates/core/_nav.html` fica intocado por qualquer derivado; itens de domínio entram apenas por `core/templates/core/_nav_dominio.html`, provado por teste de contrato
+- [x] **NAV-02**: Item de navegação vira `{% item_nav %}` — uma linha por item, com o tratamento de estado ativo do padrão por construção
+- [x] **NAV-03**: Itens do app exemplo saem do `_nav.html` base; gerar com `incluir_app_exemplo=true` e depois remover os itens não exige editar arquivo upstream
 
 ### Release (REL)
 
@@ -131,9 +131,9 @@ Quais fases cobrem quais requisitos. Preenchido na criação do roadmap.
 | DS-04 | Phase 7 | Complete |
 | DS-05 | Phase 7 | Pending |
 | DS-06 | Phase 7 | Complete |
-| NAV-01 | Phase 7 | Pending |
-| NAV-02 | Phase 7 | Pending |
-| NAV-03 | Phase 7 | Pending |
+| NAV-01 | Phase 7 | Complete |
+| NAV-02 | Phase 7 | Complete |
+| NAV-03 | Phase 7 | Complete |
 | REL-01 | Phase 7 | Complete |
 | QA-03 | Phase 7 | Complete |
 
