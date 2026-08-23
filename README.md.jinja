@@ -90,14 +90,33 @@ um tem um local único e nenhum exige editar código:
   favicon reaproveita `icon-192.png`.
 - **Nome do PWA:** preencha `SISTEMA_NOME` e `SISTEMA_SIGLA` no `.env` — os
   valores refletem no manifest e na instalação sem tocar código.
-- **Cor primária:** `COR_PRIMARIA` no `.env` (formato `#RRGGBB`); a paleta
-  Tailwind deriva dela no build.
+- **Cor primária:** `COR_PRIMARIA` no `.env` (formato `#RRGGBB`) é a única
+  entrada da identidade cromática do sistema. Dela o sistema deriva, no
+  boot, a família de marca inteira — o tom de hover, o tom pressionado, o
+  fundo tênue do item de menu ativo e a rampa de cores dos gráficos —,
+  tanto no tema claro quanto no escuro. Trocar o valor e **recriar** o
+  container (`docker compose up -d web`) é suficiente, **sem rebuild de
+  imagem**: as cores resolvem em runtime, não em tempo de build. `docker
+  compose restart web` **não serve** — ele religa o mesmo container, e o
+  ambiente de um container é fixado na *criação*, não na religada; o
+  `env_file` não é relido e a cor antiga continua valendo (e não há `.env`
+  dentro do container para servir de fallback). `up -d` **sem** a flag de
+  build **recria** o container a partir da imagem que já existe — é
+  recriação, não reconstrução, e é por isso que basta.
+
+  Os valores que não são parametrizados ficam em dois arquivos:
+  `core/static/src/input.css` é a fonte física dos tokens neutros
+  (superfícies, texto, grade, alertas) e `core/static/src/dominio.css` é o
+  arquivo do próprio sistema para os tokens de estado do domínio.
+  `tailwind.config.js` não precisa ser editado para nada — ele é reescrito
+  a cada `copier update`.
 
 Três notas importantes:
 
-1. Em produção, qualquer troca de arquivo estático só aparece após
-   `docker compose up -d --build` — o `collectstatic` roda no build da
-   imagem.
+1. Em produção, qualquer troca de **arquivo** estático (logos, ícones, CSS
+   de fonte) só aparece após `docker compose up -d --build` — o
+   `collectstatic` roda no build da imagem. `COR_PRIMARIA` é a exceção: é
+   runtime, e se contenta com `docker compose up -d web`, sem rebuild.
 2. Os logos são SVG por contrato. Se a arte só existe em PNG, exporte ou
    converta para SVG a partir do vetor original — formato alternativo não é
    aceito; o nome e a extensão fixos são o contrato.
