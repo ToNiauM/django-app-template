@@ -185,13 +185,19 @@ exigir_variante() {
     ! grep -Eq '_commit: v0\.1\.0(,|$)' "${destino}/.copier-answers.yml" || \
         falhar 'árvore gerada registrou _commit: v0.1.0 — falta --vcs-ref=HEAD'
 
+    # _nav.html é do núcleo, estático, byte a byte igual nas duas variantes
+    # (D-89, critério 5): nunca pode carregar acoplamento com o app exemplo,
+    # em nenhuma delas — o encaixe vive só em _nav_dominio.html.
+    ! grep -Fq 'exemplo:' "${destino}/core/templates/core/_nav.html" || \
+        falhar 'nav do núcleo acoplada ao app exemplo'
+
     if [ "${exemplo}" = true ]; then
         [ -d "${destino}/apps/exemplo" ] || falhar 'app exemplo ausente na variante true'
         grep -Fq 'apps.exemplo.apps.ExemploConfig' "${destino}/config/settings/base.py" || \
             falhar 'settings não integra app exemplo'
         grep -Fq 'apps.exemplo.urls' "${destino}/config/urls.py" || \
             falhar 'urls não integra app exemplo'
-        grep -Fq 'exemplo:' "${destino}/core/templates/core/_nav.html" || \
+        grep -Fq 'exemplo:' "${destino}/core/templates/core/_nav_dominio.html" || \
             falhar 'navegação não integra app exemplo'
     else
         [ ! -e "${destino}/apps/exemplo" ] || falhar 'app exemplo chegou na variante false'
@@ -199,7 +205,7 @@ exigir_variante() {
             falhar 'settings manteve acoplamento do exemplo'
         ! grep -Fq 'apps.exemplo' "${destino}/config/urls.py" || \
             falhar 'urls manteve acoplamento do exemplo'
-        ! grep -Fq 'exemplo:' "${destino}/core/templates/core/_nav.html" || \
+        ! grep -Fq 'exemplo:' "${destino}/core/templates/core/_nav_dominio.html" || \
             falhar 'navegação manteve acoplamento do exemplo'
     fi
 }

@@ -90,24 +90,45 @@ class OptionalExampleAppTemplateTests(unittest.TestCase):
             without_example = render(root / "sem-exemplo", incluir_app_exemplo=False)
             with_example = render(root / "com-exemplo", incluir_app_exemplo=True)
 
-            nav_without = (without_example / "core/templates/core/_nav.html").read_text(
-                encoding="utf-8"
+            nav_without = (without_example / "core/templates/core/_nav.html").read_bytes()
+            nav_with = (with_example / "core/templates/core/_nav.html").read_bytes()
+
+            # Critério 5: _nav.html é do núcleo, estático — byte a byte
+            # idêntico nas duas variantes, independente de incluir_app_exemplo.
+            self.assertEqual(
+                nav_with,
+                nav_without,
+                "_nav.html divergiu entre as variantes — deixou de ser estático",
             )
-            nav_with = (with_example / "core/templates/core/_nav.html").read_text(
-                encoding="utf-8"
-            )
+
+            nav_texto = nav_without.decode("utf-8")
+            self.assertIn("core:shell", nav_texto)
+            self.assertIn("core/_nav_dominio.html", nav_texto)
+            self.assertNotIn("exemplo:", nav_texto)
+            self.assertNotIn("Dashboard", nav_texto)
+            self.assertNotIn("Itens (CRUD)", nav_texto)
+
+            dominio_without = (
+                without_example / "core/templates/core/_nav_dominio.html"
+            ).read_text(encoding="utf-8")
+            dominio_with = (
+                with_example / "core/templates/core/_nav_dominio.html"
+            ).read_text(encoding="utf-8")
+
+            # Variante false: o stub existe e não carrega nenhum item do exemplo.
+            self.assertNotIn("exemplo:", dominio_without)
+
+            # Variante true: o stub chega semeado com os dois itens do exemplo.
+            self.assertIn("exemplo:dashboard", dominio_with)
+            self.assertIn("exemplo:item_listar", dominio_with)
+            self.assertIn("Dashboard", dominio_with)
+            self.assertIn("Itens (CRUD)", dominio_with)
+
             readme = (with_example / "apps/exemplo/README.md").read_text(encoding="utf-8")
 
-            self.assertIn("core:shell", nav_without)
-            self.assertNotIn("exemplo:", nav_without)
-            self.assertNotIn("Dashboard", nav_without)
-            self.assertNotIn("Itens (CRUD)", nav_without)
-            self.assertIn("exemplo:dashboard", nav_with)
-            self.assertIn("exemplo:item_listar", nav_with)
-            self.assertIn("Dashboard", nav_with)
-            self.assertIn("Itens (CRUD)", nav_with)
             self.assertIn("Sistema Núcleo", readme)
             self.assertIn("copier update --data incluir_app_exemplo=false", readme)
+            self.assertIn("_nav_dominio.html", readme)
             self.assertNotRegex(readme, r"(?i)\b(?:pca|cfc\.org\.br|orcamento\.cfc\.org\.br|dominio-da-vps)\b")
 
 

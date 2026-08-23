@@ -46,8 +46,21 @@ exigir_sem_exemplo() {
         falhar 'settings ressuscitou o app exemplo'
     ! grep -Fq 'apps.exemplo' "${DESTINO}/config/urls.py" || \
         falhar 'urls ressuscitou o app exemplo'
+    # _nav.html é do núcleo e nunca teve 'exemplo:' — mas isto sozinho não
+    # prova mais o opt-out (D-89): quem carrega os itens do domínio agora é
+    # _nav_dominio.html, do derivado.
     ! grep -Fq 'exemplo:' "${DESTINO}/core/templates/core/_nav.html" || \
         falhar 'nav ressuscitou o app exemplo'
+    # _nav_dominio.html é do derivado; _skip_if_exists garante que o
+    # `copier update` NUNCA o reescreve. Se este arquivo algum dia contiver
+    # 'exemplo:' isso NÃO é ressurreição do app: o item já estava lá antes
+    # (escrito pelo derivado ou semeado na primeira cópia), o núcleo não o
+    # tocou, e o item some sozinho em runtime porque reverse() levanta
+    # NoReverseMatch quando a rota deixa de existir (item_nav trata isso,
+    # T-07-08). A garantia deste teste é que o arquivo do derivado
+    # SOBREVIVE ao update, não que ele fique livre de 'exemplo:'.
+    [ -f "${DESTINO}/core/templates/core/_nav_dominio.html" ] || \
+        falhar '_nav_dominio.html do derivado foi apagado pelo update'
 }
 
 assert_no_conflict_markers() {
@@ -58,7 +71,12 @@ assert_no_conflict_markers() {
 }
 
 exigir_copier
-git clone -q --no-hardlinks "${ROOT}" "${TEMPLATE}"
+# --no-tags: o repositório real já carrega a tag v0.1.0 da release. Sem esta
+# flag, `git clone` traz essa tag para o clone efêmero e a criação de
+# `v0.1.0` própria do ensaio (linha abaixo) falha com "tag already exists" —
+# o ensaio precisa das suas PRÓPRIAS tags, isoladas de qualquer tag real do
+# repositório de origem.
+git clone -q --no-hardlinks --no-tags "${ROOT}" "${TEMPLATE}"
 git -C "${TEMPLATE}" config user.name 'Copier rehearsal'
 git -C "${TEMPLATE}" config user.email 'copier-rehearsal@example.invalid'
 git -C "${TEMPLATE}" tag v0.1.0
@@ -82,6 +100,15 @@ test -z "$(git -C "$DESTINO" status --porcelain)" || falhar 'estado A não ficou
 COMMIT_A=$(commit_resposta)
 [ -n "${COMMIT_A}" ] || falhar 'estado A não registrou _commit'
 
+# O derivado escreve o PRÓPRIO item de menu antes do update — é o cenário
+# real do critério 7 (D-89): o autor do sistema gerado edita o arquivo que é
+# dele, nunca _nav.html.
+printf '{%% load navegacao %%}\n{%% item_nav "core:shell" "Painel" "casa" %%}\n' \
+    > "${DESTINO}/core/templates/core/_nav_dominio.html"
+preparar_commit_destino
+git -C "$DESTINO" commit -qm 'test: derivado declara o próprio menu'
+test -z "$(git -C "$DESTINO" status --porcelain)" || falhar 'commit do menu do derivado não ficou limpo'
+
 printf '\nAtualização contratual B: núcleo entregue pelo Copier.\n' >> "${TEMPLATE}/core/README.md"
 git -C "${TEMPLATE}" add core/README.md
 git -C "${TEMPLATE}" commit -qm 'test: mudança de núcleo B'
@@ -95,6 +122,8 @@ COMMIT_B=$(commit_resposta)
 [ -n "${COMMIT_B}" ] && [ "${COMMIT_A}" != "${COMMIT_B}" ] || \
     falhar '_commit não avançou de A para B'
 exigir_sem_exemplo
+grep -Fq 'Painel' "${DESTINO}/core/templates/core/_nav_dominio.html" || \
+    falhar 'update apagou os itens do derivado'
 assert_no_conflict_markers "$DESTINO"
 preparar_commit_destino
 git -C "$DESTINO" commit -qm 'test: estado B atualizado sem exemplo'
@@ -113,6 +142,8 @@ COMMIT_C=$(commit_resposta)
 [ -n "${COMMIT_C}" ] && [ "${COMMIT_B}" != "${COMMIT_C}" ] || \
     falhar '_commit não avançou de B para C'
 exigir_sem_exemplo
+grep -Fq 'Painel' "${DESTINO}/core/templates/core/_nav_dominio.html" || \
+    falhar 'update apagou os itens do derivado'
 assert_no_conflict_markers "$DESTINO"
 preparar_commit_destino
 git -C "$DESTINO" commit -qm 'test: estado C atualizado sem ressurreição'
