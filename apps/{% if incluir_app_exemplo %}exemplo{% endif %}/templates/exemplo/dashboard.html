@@ -9,7 +9,7 @@
   {% include "core/_breadcrumbs.html" with trilha=trilha %}
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-2">
     <div>
-      <h1 class="text-2xl font-semibold tracking-tight text-ink">Dashboard Analítico</h1>
+      <h1 class="text-xl font-semibold tracking-tight text-ink">Dashboard Analítico</h1>
       <p class="text-sm font-normal text-ink-2 mt-1">Visão consolidada calculada 100% via ORM no PostgreSQL.</p>
     </div>
     <div>
@@ -36,28 +36,28 @@
   <!-- Total de Itens -->
   <div class="rounded-sm border border-grid bg-surface p-4 flex flex-col justify-between shadow-sm dark:bg-surface-2 dark:shadow-none">
     <span class="text-xs font-semibold uppercase tracking-wider text-muted">Total de Itens</span>
-    <span class="text-2xl font-semibold tracking-tight text-ink mt-2 font-mono">{{ kpis.total_itens }}</span>
+    <span class="text-xl font-semibold tracking-tight text-ink mt-2 font-mono">{{ kpis.total_itens }}</span>
     <span class="text-xs font-normal text-ink-2 mt-1">Registros ativos no sistema</span>
   </div>
 
   <!-- Valor Acumulado -->
   <div class="rounded-sm border border-grid bg-surface p-4 flex flex-col justify-between shadow-sm dark:bg-surface-2 dark:shadow-none">
     <span class="text-xs font-semibold uppercase tracking-wider text-muted">Valor Acumulado</span>
-    <span class="text-2xl font-semibold tracking-tight text-ink mt-2 font-mono">R$ {{ kpis.valor_total|moeda }}</span>
+    <span class="text-xl font-semibold tracking-tight text-ink mt-2 font-mono">R$ {{ kpis.valor_total|moeda }}</span>
     <span class="text-xs font-normal text-ink-2 mt-1">Soma monetária total</span>
   </div>
 
   <!-- Taxa de Conclusão -->
   <div class="rounded-sm border border-grid bg-surface p-4 flex flex-col justify-between shadow-sm dark:bg-surface-2 dark:shadow-none">
     <span class="text-xs font-semibold uppercase tracking-wider text-muted">Taxa de Conclusão</span>
-    <span class="text-2xl font-semibold tracking-tight text-ink mt-2 font-mono">{{ kpis.taxa_conclusao|floatformat:1 }}%</span>
+    <span class="text-xl font-semibold tracking-tight text-ink mt-2 font-mono">{{ kpis.taxa_conclusao|floatformat:1 }}%</span>
     <span class="text-xs font-normal text-ink-2 mt-1">{{ kpis.concluidos }} de {{ kpis.total_itens }} concluídos</span>
   </div>
 
   <!-- Valor Médio -->
   <div class="rounded-sm border border-grid bg-surface p-4 flex flex-col justify-between shadow-sm dark:bg-surface-2 dark:shadow-none">
     <span class="text-xs font-semibold uppercase tracking-wider text-muted">Valor Médio</span>
-    <span class="text-2xl font-semibold tracking-tight text-ink mt-2 font-mono">R$ {{ kpis.valor_medio|moeda }}</span>
+    <span class="text-xl font-semibold tracking-tight text-ink mt-2 font-mono">R$ {{ kpis.valor_medio|moeda }}</span>
     <span class="text-xs font-normal text-ink-2 mt-1">Média por registro ativo</span>
   </div>
 </div>
