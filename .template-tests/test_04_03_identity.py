@@ -110,7 +110,12 @@ class RuntimeIdentityTemplateTests(unittest.TestCase):
         for key in ("SISTEMA_NOME", "SISTEMA_SIGLA", "COR_PRIMARIA"):
             self.assertIn(f'{key} = env("{key}")', settings)
         self.assertIn('re.fullmatch(r"#[0-9a-fA-F]{6}", COR_PRIMARIA)', settings)
-        self.assertIn('const corBrand = "{{ cor_primaria }}";', dashboard)
+        # A marca não chega mais por interpolação direta: o dashboard lê a
+        # paleta semântica de um json_script servido pelo Django (Fase 7
+        # plano 06) e o chrome do gráfico das variáveis CSS em runtime.
+        self.assertIn('json_script:"paleta-graficos"', dashboard)
+        self.assertNotIn("cor_primaria", dashboard)
+        self.assertNotRegex(dashboard, r"#[0-9a-fA-F]{6}")
         self.assertNotIn("default:", dashboard)
 
     def test_runtime_scripts_are_neutral_and_generated_tree_has_no_identity_leaks(self) -> None:

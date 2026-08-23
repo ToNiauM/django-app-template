@@ -95,117 +95,155 @@ document.addEventListener("DOMContentLoaded", function() {
   const urlListar = "{% url 'exemplo:item_listar' %}";
   const elCatData = document.getElementById("dados-categoria");
   const elStatusData = document.getElementById("dados-status");
+  const elPaletaData = document.getElementById("paleta-graficos");
 
-  if (!elCatData || !elStatusData || typeof echarts === "undefined") {
+  if (!elCatData || !elStatusData || !elPaletaData || typeof echarts === "undefined") {
     return;
   }
 
   const rawCat = JSON.parse(elCatData.textContent || "[]");
   const rawStatus = JSON.parse(elStatusData.textContent || "[]");
+  // `paleta_graficos` é dado de servidor (json_script, T-07-17) — a
+  // rampa sequencial da marca, nos dois temas. O CHROME do gráfico (eixo,
+  // grade, tooltip) NÃO vem daqui: é lido em runtime das variáveis CSS do
+  // documento (lerVarCss), a mesma fonte que alimenta o <style> de
+  // base.html e o data-tema do script de tema — assim o gráfico nunca
+  // pode divergir do restante da página.
+  const PALETA = JSON.parse(elPaletaData.textContent);
 
-  // `cor_primaria` é obrigatória no context processor de identidade.
-  const corBrand = "{{ cor_primaria }}";
-  const paletaCores = [corBrand, "#0284c7", "#0d9488", "#f59e0b", "#6366f1", "#8b5cf6"];
+  function lerVarCss(nome) {
+    return getComputedStyle(document.documentElement).getPropertyValue(nome).trim();
+  }
 
-  // 1. Gráfico de Barras: Valor por Categoria
+  function temaAtual() {
+    return document.documentElement.getAttribute("data-tema") === "escuro" ? "escuro" : "claro";
+  }
+
   const elCat = document.getElementById("grafico-categoria");
-  let chartCat = null;
-  if (elCat) {
-    chartCat = echarts.init(elCat);
-    chartCat.setOption({
-      tooltip: {
-        trigger: "axis",
-        axisPointer: { type: "shadow" },
-        backgroundColor: "#fcfcfb",
-        borderColor: "#e4e2dd",
-        borderWidth: 1,
-        textStyle: { color: "#0b0b0b", fontSize: 12 },
-        formatter: function(params) {
-          if (!params || !params.length) return "";
-          const p = params[0];
-          const valorFormatado = p.value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-          return `<strong>${p.name}</strong><br/>Total: R$ ${valorFormatado}<br/>Qtd: ${rawCat[p.dataIndex]?.qtd || 0} itens`;
-        }
-      },
-      grid: { left: "4%", right: "4%", bottom: "10%", top: "6%", containLabel: true },
-      xAxis: {
-        type: "category",
-        data: rawCat.map(d => d.categoria),
-        axisLine: { lineStyle: { color: "#e4e2dd" } },
-        axisLabel: { color: "#52514e", fontSize: 12 }
-      },
-      yAxis: {
-        type: "value",
-        splitLine: { lineStyle: { color: "#f3f2ef" } },
-        axisLabel: {
-          color: "#52514e",
-          fontSize: 12,
-          formatter: function(val) {
-            if (val >= 1000000) return (val / 1000000).toFixed(1) + "M";
-            if (val >= 1000) return (val / 1000).toFixed(0) + "k";
-            return val;
-          }
-        }
-      },
-      series: [{
-        name: "Valor Total",
-        type: "bar",
-        data: rawCat.map(d => d.total_valor),
-        itemStyle: { color: corBrand, borderRadius: [2, 2, 0, 0] }
-      }]
-    });
-
-    chartCat.on("click", function(params) {
-      const item = rawCat[params.dataIndex];
-      if (item && item.categoria_raw) {
-        window.location.href = urlListar + "?categoria=" + encodeURIComponent(item.categoria_raw);
-      }
-    });
-  }
-
-  // 2. Gráfico Donut: Distribuição por Status
   const elStatus = document.getElementById("grafico-status");
+  let chartCat = null;
   let chartStatus = null;
-  if (elStatus) {
-    chartStatus = echarts.init(elStatus);
-    chartStatus.setOption({
-      tooltip: {
-        trigger: "item",
-        backgroundColor: "#fcfcfb",
-        borderColor: "#e4e2dd",
-        borderWidth: 1,
-        textStyle: { color: "#0b0b0b", fontSize: 12 },
-        formatter: function(params) {
-          const valorFormatado = (params.data?.totalValor || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-          return `<strong>${params.name}</strong><br/>Qtd: ${params.value} itens (${params.percent}%)<br/>Valor: R$ ${valorFormatado}`;
-        }
-      },
-      legend: { bottom: "0", textStyle: { color: "#52514e", fontSize: 12 } },
-      color: paletaCores,
-      series: [{
-        name: "Status",
-        type: "pie",
-        radius: ["45%", "70%"],
-        avoidLabelOverlap: true,
-        itemStyle: { borderColor: "#fcfcfb", borderWidth: 2 },
-        label: { show: false },
-        data: rawStatus.map(d => ({
-          name: d.rotulo,
-          value: d.qtd,
-          statusKey: d.status,
-          totalValor: d.total_valor
-        }))
-      }]
-    });
 
-    chartStatus.on("click", function(params) {
-      if (params.data && params.data.statusKey) {
-        window.location.href = urlListar + "?status=" + encodeURIComponent(params.data.statusKey);
-      }
-    });
+  // Constrói (ou reconstrói) as duas instâncias ECharts lendo o chrome e a
+  // paleta do tema ATUAL a cada chamada — disparada na carga e de novo a
+  // cada troca de tema (evento do script síncrono de base.html), sem
+  // recarregar a página. dispose() antes de init() porque o ECharts
+  // mantém as opções antigas se só chamarmos setOption de novo na
+  // mesma instância.
+  function montarGraficos() {
+    const corBrand = lerVarCss("--cor-brand");
+    const corSurface = lerVarCss("--cor-surface");
+    const corGrid = lerVarCss("--cor-grid");
+    const corInk = lerVarCss("--cor-ink");
+    const corInk2 = lerVarCss("--cor-ink-2");
+    const corSurface2 = lerVarCss("--cor-surface-2");
+    const paletaStatus = PALETA.rampa_status[temaAtual()];
+
+    // 1. Gráfico de Barras: Valor por Categoria
+    if (elCat) {
+      if (chartCat) chartCat.dispose();
+      chartCat = echarts.init(elCat);
+      chartCat.setOption({
+        tooltip: {
+          trigger: "axis",
+          axisPointer: { type: "shadow" },
+          backgroundColor: corSurface,
+          borderColor: corGrid,
+          borderWidth: 1,
+          textStyle: { color: corInk, fontSize: 12 },
+          formatter: function(params) {
+            if (!params || !params.length) return "";
+            const p = params[0];
+            const valorFormatado = p.value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            return `<strong>${p.name}</strong><br/>Total: R$ ${valorFormatado}<br/>Qtd: ${rawCat[p.dataIndex]?.qtd || 0} itens`;
+          }
+        },
+        grid: { left: "4%", right: "4%", bottom: "10%", top: "6%", containLabel: true },
+        xAxis: {
+          type: "category",
+          data: rawCat.map(d => d.categoria),
+          axisLine: { lineStyle: { color: corGrid } },
+          axisLabel: { color: corInk2, fontSize: 12 }
+        },
+        yAxis: {
+          type: "value",
+          splitLine: { lineStyle: { color: corSurface2 } },
+          axisLabel: {
+            color: corInk2,
+            fontSize: 12,
+            formatter: function(val) {
+              if (val >= 1000000) return (val / 1000000).toFixed(1) + "M";
+              if (val >= 1000) return (val / 1000).toFixed(0) + "k";
+              return val;
+            }
+          }
+        },
+        series: [{
+          name: "Valor Total",
+          type: "bar",
+          data: rawCat.map(d => d.total_valor),
+          itemStyle: { color: corBrand, borderRadius: [2, 2, 0, 0] }
+        }]
+      });
+
+      chartCat.on("click", function(params) {
+        const item = rawCat[params.dataIndex];
+        if (item && item.categoria_raw) {
+          window.location.href = urlListar + "?categoria=" + encodeURIComponent(item.categoria_raw);
+        }
+      });
+    }
+
+    // 2. Gráfico Donut: Distribuição por Status
+    if (elStatus) {
+      if (chartStatus) chartStatus.dispose();
+      chartStatus = echarts.init(elStatus);
+      chartStatus.setOption({
+        tooltip: {
+          trigger: "item",
+          backgroundColor: corSurface,
+          borderColor: corGrid,
+          borderWidth: 1,
+          textStyle: { color: corInk, fontSize: 12 },
+          formatter: function(params) {
+            const valorFormatado = (params.data?.totalValor || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            return `<strong>${params.name}</strong><br/>Qtd: ${params.value} itens (${params.percent}%)<br/>Valor: R$ ${valorFormatado}`;
+          }
+        },
+        legend: { bottom: "0", textStyle: { color: corInk2, fontSize: 12 } },
+        color: paletaStatus,
+        series: [{
+          name: "Status",
+          type: "pie",
+          radius: ["45%", "70%"],
+          avoidLabelOverlap: true,
+          itemStyle: { borderColor: corSurface, borderWidth: 2 },
+          label: { show: false },
+          data: rawStatus.map(d => ({
+            name: d.rotulo,
+            value: d.qtd,
+            statusKey: d.status,
+            totalValor: d.total_valor
+          }))
+        }]
+      });
+
+      chartStatus.on("click", function(params) {
+        if (params.data && params.data.statusKey) {
+          window.location.href = urlListar + "?status=" + encodeURIComponent(params.data.statusKey);
+        }
+      });
+    }
   }
 
-  // Redimensionamento responsivo global
+  montarGraficos();
+
+  document.addEventListener("tema:alterado", function () {
+    montarGraficos();
+  });
+
+  // Redimensionamento responsivo global — continua funcionando com as
+  // instâncias correntes, sempre que montarGraficos() as recriar.
   window.addEventListener("resize", function() {
     if (chartCat) chartCat.resize();
     if (chartStatus) chartStatus.resize();
