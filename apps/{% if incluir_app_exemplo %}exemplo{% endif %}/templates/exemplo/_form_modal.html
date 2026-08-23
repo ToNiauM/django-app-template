@@ -2,7 +2,7 @@
 <div x-data="{ aberto: true, fechar() { this.aberto = false; $el.closest('#modal-container').innerHTML = ''; } }"
      x-show="aberto"
      @keydown.escape.window="fechar()"
-     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/40 backdrop-blur-xs transition-opacity"
+     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-opacity"
      role="dialog"
      aria-modal="true"
      aria-labelledby="modal-titulo">
@@ -132,7 +132,7 @@
           Cancelar
         </button>
         <button type="submit"
-                class="rounded-sm bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover transition-colors shadow-xs">
+                class="rounded-sm bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover transition-colors shadow-sm">
           Salvar item
         </button>
       </div>
