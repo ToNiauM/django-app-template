@@ -278,7 +278,8 @@ DividaAtiva. O DividaAtiva tem só um recorte do padrão (cor, raio, tipografia,
 focus-ring, de uma quick task de reskin) e receberá o resto pelo `copier update` desta
 versão — em vez de reimplementar à mão e conflitar consigo mesmo depois.
 
-**Requirements**: TBD (definir no planejamento)
+**Requirements**: DS-01, DS-02, DS-03, DS-04, DS-05, DS-06, NAV-01, NAV-02, NAV-03,
+REL-01, QA-03
 
 **Success criteria**
 
@@ -301,9 +302,21 @@ versão — em vez de reimplementar à mão e conflitar consigo mesmo depois.
 8. Os 77 testes do `core` e as 11 suítes de `.template-tests/` seguem verdes, incluindo
    o ensaio A→B→C de `copier update`.
 
-**Nota de release**: o template está com 37 commits desde a tag `v0.1.0` — a Fase 6
+**Nota de release**: o template está com 39 commits desde a tag `v0.1.0` — a Fase 6
 inteira ainda não chegou a nenhum sistema, porque o Copier lê a última tag e não o HEAD.
 Esta fase deve terminar com uma tag nova (`v0.2.0`), que entrega Fase 6 e Fase 7 juntas.
+
+**Plans:** 8 plans (7 ondas)
+
+Plans:
+- [ ] 07-01-PLAN.md — Rede de testes de `.template-tests/` passa a medir o working tree (`--vcs-ref=HEAD`)
+- [ ] 07-02-PLAN.md — `input.css` vira a fonte física dos tokens; `tailwind.config.js` verbatim; `dominio.css`
+- [ ] 07-03-PLAN.md — Encaixe da navegação: `_nav_dominio.html`, `{% item_nav %}` e `_skip_if_exists`
+- [ ] 07-04-PLAN.md — `core/tema.py`: a família de marca deriva de `COR_PRIMARIA` em runtime
+- [ ] 07-05-PLAN.md — Tema escuro: script síncrono, controle de 3 estados e elevação no `core`
+- [ ] 07-06-PLAN.md — Gráficos sem hex, paleta servida pelo Django e elevação no app exemplo
+- [ ] 07-07-PLAN.md — Régua tipográfica aplicada ocorrência a ocorrência, com gate executável
+- [ ] 07-08-PLAN.md — Regressão completa, roteiro de atualização dos derivados, inspeção visual e tag `v0.2.0`
 
 ## Progress
 
@@ -318,4 +331,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Templatização Copier | 7/7 | Complete    | 2006-08-18 |
 | 5. Verificação e Documentação | 3/3 | Complete   | 2006-08-18 |
 | 6. Customização Visual e Persistência de Dados | 3/3 | Complete   | 2026-08-19 |
-| 7. Herdar o design system do PCA | 0/0 | Não planejada | - |
+| 7. Herdar o design system do PCA | 0/8 | Planejada | - |

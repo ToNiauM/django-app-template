@@ -44,10 +44,30 @@ Requisitos da entrega inicial. Cada um mapeia para fases do roadmap.
 - [x] **INF-03**: Sistema gerado inclui `ops/` com script de backup do banco e exemplo de vhost nginx
 - [x] **INF-04**: App escuta só em `127.0.0.1` atrás do proxy; migração completa = dump + `.env` + `docker compose up -d` + `migrate` + proxy/DNS, sem nenhuma dependência do host
 
+### Design System (DS)
+
+- [ ] **DS-01**: Sistema gerado nasce com os tokens de cor em variáveis CSS em `core/static/src/input.css`, e `tailwind.config.js` só aponta para elas via `var(--cor-*)`
+- [ ] **DS-02**: Sistema gerado tem tema escuro funcional por `[data-tema="escuro"]`, com escolha persistida em `localStorage` e sem flash de tema
+- [ ] **DS-03**: Régua física declarada: 3 degraus de superfície com elevação, raio único de 2px, 6 degraus tipográficos com teto de 20px, pilha `system-ui` e `:focus-visible` único em `@layer base`
+- [ ] **DS-04**: Vocabulário de componente `.results` `.module` `.form-row` `.btn` (+4 variantes) declarado em `@layer components` e protegido por `safelist`
+- [ ] **DS-05**: Nenhum hex de cor em template ou em JS de template; a paleta do gráfico chega do servidor por `json_script` e o chrome é lido das variáveis CSS em runtime
+- [ ] **DS-06**: `cor_primaria` continua sendo pergunta do Copier e é a única entrada da família de marca nos dois temas; o derivado nunca edita `tailwind.config.js`
+
+### Navegação (NAV)
+
+- [ ] **NAV-01**: `core/templates/core/_nav.html` fica intocado por qualquer derivado; itens de domínio entram apenas por `core/templates/core/_nav_dominio.html`, provado por teste de contrato
+- [ ] **NAV-02**: Item de navegação vira `{% item_nav %}` — uma linha por item, com o tratamento de estado ativo do padrão por construção
+- [ ] **NAV-03**: Itens do app exemplo saem do `_nav.html` base; gerar com `incluir_app_exemplo=true` e depois remover os itens não exige editar arquivo upstream
+
+### Release (REL)
+
+- [ ] **REL-01**: `copier update` de um sistema na v0.1.0 para esta versão não exige resolução manual em arquivo que o derivado não tenha tocado; a fase fecha com a tag `v0.2.0`
+
 ### Qualidade (QA)
 
 - [x] **QA-01**: Template inclui suíte de testes do core e do app exemplo, e o sistema gerado passa essa suíte
 - [x] **QA-02**: Fluxo de nascimento completo funciona sem editar código: `copier copy` + preencher `.env` + `docker compose up -d` + `migrate` + `createsuperuser` produz sistema navegável (login, shell com navegação, CRUD e dashboard de exemplo)
+- [ ] **QA-03**: Os testes Django do `core` e do `apps.exemplo` e as 11 suítes de `.template-tests/` seguem verdes, incluindo o ensaio A→B→C de `copier update`
 
 ### Documentação (DOC)
 
@@ -105,13 +125,24 @@ Quais fases cobrem quais requisitos. Preenchido na criação do roadmap.
 | QA-01 | Phase 5 | Complete |
 | QA-02 | Phase 5 | Complete |
 | DOC-01 | Phase 5 | Complete |
+| DS-01 | Phase 7 | Pending |
+| DS-02 | Phase 7 | Pending |
+| DS-03 | Phase 7 | Pending |
+| DS-04 | Phase 7 | Pending |
+| DS-05 | Phase 7 | Pending |
+| DS-06 | Phase 7 | Pending |
+| NAV-01 | Phase 7 | Pending |
+| NAV-02 | Phase 7 | Pending |
+| NAV-03 | Phase 7 | Pending |
+| REL-01 | Phase 7 | Pending |
+| QA-03 | Phase 7 | Pending |
 
 **Cobertura:**
 
-- Requisitos v1: 25 no total
-- Mapeados em fases: 25
+- Requisitos v1: 36 no total (25 da entrega inicial + 11 da Fase 7)
+- Mapeados em fases: 36
 - Não mapeados: 0 ✓
 
 ---
 *Requisitos definidos em: 2026-08-17*
-*Última atualização: 2026-08-17 após definição inicial*
+*Última atualização: 2026-08-23 — famílias DS, NAV e REL acrescentadas no planejamento da Fase 7*
