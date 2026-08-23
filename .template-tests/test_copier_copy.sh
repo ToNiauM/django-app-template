@@ -175,6 +175,16 @@ exigir_variante() {
     auditar_neutralidade "${destino}"
     exigir_operacao "${destino}" "${exemplo}" "${slug}"
 
+    # Guarda anti-v0.1.0: se a árvore gerada não vem do working tree (--vcs-ref=HEAD
+    # ausente ou quebrado), o Copier renderiza a última tag e estas duas asserções
+    # falham ruidosamente em vez de o gate passar em silêncio medindo versão antiga.
+    [ -f "${destino}/core/static/img/logo-entidade.svg" ] || \
+        falhar 'árvore gerada não tem o logo da Fase 6: a suíte está renderizando uma tag antiga, não o HEAD'
+    # -F faria substring: '_commit: v0.1.0' também bate em 'v0.1.0-48-g3014d27' (o
+    # describe correto do HEAD). -E ancora no separador/fim para exigir a tag exata.
+    ! grep -Eq '_commit: v0\.1\.0(,|$)' "${destino}/.copier-answers.yml" || \
+        falhar 'árvore gerada registrou _commit: v0.1.0 — falta --vcs-ref=HEAD'
+
     if [ "${exemplo}" = true ]; then
         [ -d "${destino}/apps/exemplo" ] || falhar 'app exemplo ausente na variante true'
         grep -Fq 'apps.exemplo.apps.ExemploConfig' "${destino}/config/settings/base.py" || \
