@@ -6,6 +6,28 @@
   {# Default do título via context processor (D-16) — zero nome hard-coded. #}
   <title>{% block titulo %}{{ sistema_nome }}{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'dist/tailwind.css' %}">
+  {% comment %}
+    tema_css (core.context_processors.identidade) DEPOIS do <link> acima é
+    funcional, não estético: :root deste <style> e :root de input.css têm a
+    MESMA especificidade, então quem vence é quem vem depois na ordem de
+    declaração. É assim que COR_PRIMARIA do .env sobrescreve o default da
+    família de marca nos dois temas, em runtime, sem tocar em CSS compilado.
+
+    O |safe é seguro porque COR_PRIMARIA é validada como #RRGGBB no boot
+    (config/settings/base.py levanta ImproperlyConfigured caso contrário) e
+    todo valor de core.tema.css_da_marca() sai de formatação hexadecimal,
+    nunca da string de entrada crua (T-07-10).
+
+    Trocar COR_PRIMARIA no .env e recriar o container com
+    `docker compose up -d web` basta: as cores resolvem em runtime por
+    variável CSS, sem rebuild de imagem. `restart` NÃO serve — não relê o
+    env_file (o ambiente de um container é fixado na criação).
+
+    cor_page_escuro (mesmo context processor) é o canal para o script de
+    tema do plano 07-05: ele consome essa variável no <meta theme-color>
+    do tema escuro, porque roda antes de qualquer CSS (D-99).
+  {% endcomment %}
+  <style>{{ tema_css|safe }}</style>
   {# PWA (CORE-05): manifest por view (D-18) e cor de tema via context processor (D-17). #}
   <link rel="manifest" href="{% url 'core:manifest' %}">
   {# Favicon reaproveita o ícone PWA existente (D-72): zero arquivo novo, mesmo contrato de substituição — e elimina o 302 ruidoso de /favicon.ico no LoginRequiredMiddleware. #}
