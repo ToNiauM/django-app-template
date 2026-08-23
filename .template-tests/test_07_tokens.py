@@ -122,7 +122,9 @@ class TokensFonteTests(unittest.TestCase):
         config = TAILWIND_CONFIG.read_text(encoding="utf-8")
 
         font_size_block = _extract_block(config, "fontSize:")
-        font_size_keys = set(re.findall(r"^\s*([a-zA-Z0-9]+):", font_size_block, re.MULTILINE))
+        font_size_keys = set(
+            re.findall(r'^\s*"?([a-zA-Z0-9]+)"?:', font_size_block, re.MULTILINE)
+        )
         self.assertEqual(font_size_keys, {"xs", "sm", "base", "md", "lg", "xl"})
         self.assertNotIn("2xl", font_size_keys)
 
@@ -195,6 +197,50 @@ class TokensFonteTests(unittest.TestCase):
 
         self.assertEqual(ocorrencias_texto, [])
         self.assertEqual(ocorrencias_fora_do_contrato, [])
+
+    def test_templates_so_usam_as_seis_chaves_da_regua_tipografica(self) -> None:
+        """A régua tipográfica (07-02) só vale se nenhum template puder
+        escapar dela. `.btn` usa `text-[13px]` dentro de
+        `core/static/src/input.css` de propósito — é a única exceção a
+        tamanho arbitrário permitida no vocabulário de componente do padrão,
+        e vive no CSS, não em template; este gate varre só **templates**
+        (`core/templates/**/*.html` e `apps/**/*.html`).
+        """
+        config = TAILWIND_CONFIG.read_text(encoding="utf-8")
+        font_size_block = _extract_block(config, "fontSize:")
+        chaves_da_regua = set(
+            re.findall(r'^\s*"?([a-zA-Z0-9]+)"?:', font_size_block, re.MULTILINE)
+        )
+        self.assertEqual(chaves_da_regua, {"xs", "sm", "base", "md", "lg", "xl"})
+
+        # Todo sufixo de tamanho que o Tailwind reconhece nativamente — usado
+        # só para decidir se um match de `text-<sufixo>` é candidato a
+        # tamanho de fonte (e portanto tem que estar na régua) ou é uma
+        # classe de outro vocabulário (cor, alinhamento) e deve ser ignorada.
+        TAMANHOS_TAILWIND_CONHECIDOS = {
+            "xs", "sm", "base", "md", "lg", "xl",
+            "2xl", "3xl", "4xl", "5xl", "6xl", "7xl", "8xl", "9xl",
+        }
+        TEXT_CLASS_RE = re.compile(r"\btext-([a-z0-9]+|\[[^\]]+\])\b")
+
+        ofensores = []
+        for path in _iter_template_files():
+            texto = path.read_text(encoding="utf-8", errors="ignore")
+            for numero_linha, linha in enumerate(texto.splitlines(), start=1):
+                for match in TEXT_CLASS_RE.finditer(linha):
+                    sufixo = match.group(1)
+                    e_valor_arbitrario = sufixo.startswith("[")
+                    e_tamanho_conhecido = sufixo in TAMANHOS_TAILWIND_CONHECIDOS
+                    if not (e_valor_arbitrario or e_tamanho_conhecido):
+                        # cor (ink, ink-2, muted, brand, white, emerald-800…)
+                        # ou alinhamento (left, center) — fora do escopo
+                        continue
+                    if sufixo not in chaves_da_regua:
+                        ofensores.append(
+                            f"{path.relative_to(ROOT)}:{numero_linha} text-{sufixo}"
+                        )
+
+        self.assertEqual(ofensores, [], "\n".join(ofensores))
 
 
 if __name__ == "__main__":
