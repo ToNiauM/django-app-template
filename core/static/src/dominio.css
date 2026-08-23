@@ -1,0 +1,32 @@
+/* core/static/src/dominio.css — stub enviado uma única vez pelo template
+   (protegido por `_skip_if_exists` no copier.yml); a partir daqui o sistema
+   gerado é dono deste arquivo. Aqui vivem só os tokens de ESTADO do domínio
+   — vocabulário próprio de cada sistema (ex.: "concluído", "atrasado",
+   "em análise"), nunca copiado de outro sistema.
+
+   CONTRATO dos tokens de estado:
+
+   1. Cada estado declara um PAR de variáveis:
+        --cor-<estado>       — o matiz (preenchimento, dot, badge)
+        --cor-<estado>-tx    — o par de TEXTO correspondente
+      No tema claro os dois valores podem coincidir. No tema escuro, só a
+      variante `-tx` costuma precisar de um par clareado — o matiz puro do
+      claro reprova contraste de texto sobre a superfície escura.
+
+   2. A ponte entre dado (`data-*`) e cor fica FORA de qualquer `@layer`:
+
+        .status-dot[data-estado="x"] { background: theme("colors.st-x"); }
+
+      Dentro de `@layer` o Tailwind poda a regra no purge — `data-*` é um
+      valor resolvido em runtime, o JIT não o enxerga no conteúdo varrido em
+      build-time.
+
+   3. Piso de contraste, nos DOIS temas: 4,5:1 para texto, 3:1 para o
+      elemento gráfico (dot, borda, ícone). Valide os matizes escolhidos
+      também para daltonismo (protanopia/deuteranopia/tritanopia) antes de
+      fixá-los — o padrão de referência da família faz essa validação para
+      os próprios estados dela; os estados deste sistema são outros e
+      precisam da mesma checagem.
+
+   Nenhum nome de estado concreto (`st-*`) é declarado aqui: são vocabulário
+   de domínio, e cada sistema gerado tem os seus. */
