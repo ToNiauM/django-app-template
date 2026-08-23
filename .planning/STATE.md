@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed 07-05-PLAN.md
-last_updated: "2026-08-23T19:25:54.690Z"
+last_updated: "2026-08-23T19:44:02.671Z"
 last_activity: 2026-08-23
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 32
-  completed_plans: 29
+  completed_plans: 30
   percent: 86
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-17)
 ## Current Position
 
 Phase: 07 (herdar-o-design-system-do-pca) — EXECUTING
-Plan: 6 of 8
+Plan: 7 of 8
 Status: Ready to execute
 Last activity: 2026-08-23
 
-Progress: [█████████░] 91%
+Progress: [█████████░] 94%
 
 ## Performance Metrics
 
@@ -77,6 +77,7 @@ Progress: [█████████░] 91%
 | Phase 07-herdar-o-design-system-do-pca P03 | 24min | 3 tasks | 12 files |
 | Phase 07-herdar-o-design-system-do-pca P04 | 35min | 4 tasks | 7 files |
 | Phase 07-herdar-o-design-system-do-pca P05 | 40min | 3 tasks | 4 files |
+| Phase 07-herdar-o-design-system-do-pca P06 | 70min | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -133,6 +134,9 @@ Recent decisions affecting current work:
 - [Phase 07-04]: test_07_cor_runtime.sh captura a porta do banco de ensaio uma única vez e nunca redescobre via ensaio_django.sh porta/subir após um up -d web — garantir_banco() ali faz um único curl sem retry e detona recriação completa se o serviço ainda está subindo
 - [Phase 07-05]: Controle de tema entra dentro do wrapper mt-auto existente (flex-col), não como irmão solto acima dele — evita vão visível por margin-top:auto dividido entre dois irmãos
 - [Phase 07-05]: RE_PREFIXO_HERDADO montado por concatenação em vez de literal — o teste de neutralidade é copiado verbatim para todo sistema gerado e não pode conter o prefixo por extenso
+- [Phase 07-06]: paleta_graficos servido por json_script, derivado de core.tema.familia_marca(COR_PRIMARIA) — rampa sequencial (seq-600/seq-450/seq-300/brand-tint), nos dois temas, mesma função que alimenta o <style> de base.html
+- [Phase 07-06]: chrome de gráfico (eixo/grade/tooltip/borda) lido de getComputedStyle em runtime via lerVarCss() — montarGraficos() faz dispose()+init() e é chamada de novo no evento tema:alterado, reconstruindo os gráficos sem reload de página
+- [Phase 07-06]: json_script:"paleta-graficos" acrescentado a dashboard.html já na Task 1 (TDD), não só na Task 2 — o comportamento 6/6 exigia o HTML renderizado desde a GREEN da própria Task 1
 
 ### Pending Todos
 
@@ -162,6 +166,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-23T19:25:54.657Z
+Last session: 2026-08-23T19:44:02.633Z
 Stopped at: Completed 07-05-PLAN.md
 Resume file: None

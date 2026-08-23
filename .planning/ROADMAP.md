@@ -316,7 +316,7 @@ REL-01, QA-03
 inteira ainda não chegou a nenhum sistema, porque o Copier lê a última tag e não o HEAD.
 Esta fase deve terminar com uma tag nova (`v0.2.0`), que entrega Fase 6 e Fase 7 juntas.
 
-**Plans:** 5/8 plans executed
+**Plans:** 6/8 plans executed
 
 Plans:
 **Wave 1**
@@ -341,7 +341,7 @@ Plans:
 
 **Wave 6** *(blocked on Wave 5 completion)*
 
-- [ ] 07-06-PLAN.md — Gráficos sem hex, paleta servida pelo Django e elevação no app exemplo
+- [x] 07-06-PLAN.md — Gráficos sem hex, paleta servida pelo Django e elevação no app exemplo
 
 **Wave 7** *(blocked on Wave 6 completion)*
 
@@ -364,4 +364,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Templatização Copier | 7/7 | Complete    | 2006-08-18 |
 | 5. Verificação e Documentação | 3/3 | Complete   | 2006-08-18 |
 | 6. Customização Visual e Persistência de Dados | 3/3 | Complete   | 2026-08-19 |
-| 7. Herdar o design system do PCA | 5/8 | In Progress|  |
+| 7. Herdar o design system do PCA | 6/8 | In Progress|  |

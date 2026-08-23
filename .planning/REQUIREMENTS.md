@@ -50,7 +50,7 @@ Requisitos da entrega inicial. Cada um mapeia para fases do roadmap.
 - [x] **DS-02**: Sistema gerado tem tema escuro funcional por `[data-tema="escuro"]`, com escolha persistida em `localStorage` e sem flash de tema
 - [x] **DS-03**: Régua física declarada: 3 degraus de superfície com elevação, raio único de 2px, 6 degraus tipográficos com teto de 20px, pilha `system-ui` e `:focus-visible` único em `@layer base`
 - [x] **DS-04**: Vocabulário de componente `.results` `.module` `.form-row` `.btn` (+4 variantes) declarado em `@layer components` e protegido por `safelist`
-- [ ] **DS-05**: Nenhum hex de cor em template ou em JS de template; a paleta do gráfico chega do servidor por `json_script` e o chrome é lido das variáveis CSS em runtime
+- [x] **DS-05**: Nenhum hex de cor em template ou em JS de template; a paleta do gráfico chega do servidor por `json_script` e o chrome é lido das variáveis CSS em runtime
 - [x] **DS-06**: `cor_primaria` continua sendo pergunta do Copier e é a única entrada da família de marca nos dois temas; o derivado nunca edita `tailwind.config.js`
 
 ### Navegação (NAV)
@@ -129,7 +129,7 @@ Quais fases cobrem quais requisitos. Preenchido na criação do roadmap.
 | DS-02 | Phase 7 | Complete |
 | DS-03 | Phase 7 | Complete |
 | DS-04 | Phase 7 | Complete |
-| DS-05 | Phase 7 | Pending |
+| DS-05 | Phase 7 | Complete |
 | DS-06 | Phase 7 | Complete |
 | NAV-01 | Phase 7 | Complete |
 | NAV-02 | Phase 7 | Complete |
