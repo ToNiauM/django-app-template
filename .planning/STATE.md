@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 07-01-PLAN.md
-last_updated: "2026-08-23T17:53:20.739Z"
+stopped_at: Completed 07-02-PLAN.md
+last_updated: "2026-08-23T18:08:58.531Z"
 last_activity: 2026-08-23
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 32
-  completed_plans: 25
-  percent: 78
+  completed_plans: 26
+  percent: 81
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-17)
 ## Current Position
 
 Phase: 07 (herdar-o-design-system-do-pca) — EXECUTING
-Plan: 2 of 8
+Plan: 3 of 8
 Status: Ready to execute
 Last activity: 2026-08-23
 
-Progress: [████████░░] 78%
+Progress: [████████░░] 81%
 
 ## Performance Metrics
 
@@ -73,6 +73,7 @@ Progress: [████████░░] 78%
 | Phase 06 P02 | 9min | 3 tasks | 6 files |
 | Phase 06 P03 | 4min | 3 tasks | 4 files |
 | Phase 07 P01 | 18min | 3 tasks | 5 files |
+| Phase 07 P02 | 25min | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -119,6 +120,9 @@ Recent decisions affecting current work:
 - [Phase ?]: [Fase 06-03] Seção única 'Customização de marca' no README gerado absorve a antiga seção de ícones PWA — 5 pontos de marca num só lugar (D-77); PNG não é aceito como logo (contrato nome+extensão SVG fixos)
 - [Phase ?]: [Fase 06-03] Migração named volume → bind mount documentada como passo manual (cp -a /de/. /para/ com stack parada) — nenhum script (D-40); one-liner usa sistema_slug_pgdata interpolado no fonte Jinja
 - [Phase ?]: Guarda anti-v0.1.0 usa grep -E ancorado ('_commit: v0.1.0(,|$)'), não grep -F substring — o describe correto do HEAD ('v0.1.0-48-gHASH') contém 'v0.1.0' como substring e um -F causaria falso positivo em toda execução correta — Rule 1 - bug encontrado durante Task 2/3
+- [Phase 07-02]: input.css vira a fonte física dos tokens de cor (21 claros/18 overrides escuros em hex plano); tailwind.config.js chega verbatim ao sistema gerado, sem sufixo .jinja e sem interpolação
+- [Phase 07-02]: dominio.css nasce como stub _skip_if_exists: o derivado declara os próprios tokens de estado (par --cor-<estado>/-tx), nunca copiados de outro sistema
+- [Phase 07-02]: bg-ink/40, shadow-xs e backdrop-blur-xs corrigidos nos templates do app exemplo: nenhuma das três gera regra no Tailwind 3.4.17 depois da migração de cores para var(--cor-*) (confirmado por build real)
 
 ### Pending Todos
 
@@ -148,6 +152,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-23T17:53:20.699Z
-Stopped at: Completed 07-01-PLAN.md
+Last session: 2026-08-23T18:08:58.469Z
+Stopped at: Completed 07-02-PLAN.md
 Resume file: None

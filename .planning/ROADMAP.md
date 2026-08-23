@@ -316,7 +316,7 @@ REL-01, QA-03
 inteira ainda não chegou a nenhum sistema, porque o Copier lê a última tag e não o HEAD.
 Esta fase deve terminar com uma tag nova (`v0.2.0`), que entrega Fase 6 e Fase 7 juntas.
 
-**Plans:** 1/8 plans executed
+**Plans:** 2/8 plans executed
 
 Plans:
 **Wave 1**
@@ -325,7 +325,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 07-02-PLAN.md — `input.css` vira a fonte física dos tokens; `tailwind.config.js` verbatim; `dominio.css`
+- [x] 07-02-PLAN.md — `input.css` vira a fonte física dos tokens; `tailwind.config.js` verbatim; `dominio.css`
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -364,4 +364,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Templatização Copier | 7/7 | Complete    | 2006-08-18 |
 | 5. Verificação e Documentação | 3/3 | Complete   | 2006-08-18 |
 | 6. Customização Visual e Persistência de Dados | 3/3 | Complete   | 2026-08-19 |
-| 7. Herdar o design system do PCA | 1/8 | In Progress|  |
+| 7. Herdar o design system do PCA | 2/8 | In Progress|  |
