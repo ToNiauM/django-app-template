@@ -1499,9 +1499,17 @@ assert_no_conflict_markers "$DESTINO"
 
 ---
 
-## Questões em Aberto
+## Questões em Aberto (RESOLVIDAS)
 
-1. **A fonte física da marca é `input.css` ou `.env`?**
+> As quatro questões foram fechadas no `/gsd:discuss-phase` de 2026-08-23 e estão travadas
+> em `07-CONTEXT.md`. A seção fica como registro do raciocínio; **nenhum item aqui está
+> pendente**. A resolução de cada um está marcada em linha.
+
+1. **A fonte física da marca é `input.css` ou `.env`?** — **RESOLVIDA por D-79 + D-80:**
+   `input.css` carrega o hex **default**, em texto plano, fora do Jinja; o `.env`
+   (`COR_PRIMARIA`) sobrescreve **em runtime**, com a família derivada em Python no boot
+   (`core/tema.py`). É exatamente a recomendação abaixo. Implementada pelos planos 07-02
+   (default) e 07-04 (override + prova executável em `test_07_cor_runtime.sh`).
    - O que se sabe: o critério 3 diz "a fonte física dos valores é
      `core/static/src/input.css`". O critério 4 diz que `cor_primaria` continua sendo
      pergunta do Copier. O `.env` já carrega `COR_PRIMARIA` e é o contrato de runtime
@@ -1513,7 +1521,7 @@ assert_no_conflict_markers "$DESTINO"
      1). Satisfaz os dois critérios lidos com boa-fé, mantém `input.css` fora do Jinja e
      conserta a mentira do README (Pitfall 18). **Trava isso no `/gsd:discuss-phase`.**
 
-2. **O tema escuro entra também no admin do Django?**
+2. **O tema escuro entra também no admin do Django?** — **RESOLVIDA: fora de escopo,** registrada na seção `<deferred>` de `07-CONTEXT.md` como ideia adiada. Reabrir só se o operador quiser que forçar "claro" no sistema também force claro no admin.
    - O que se sabe: `core/admin_site.py:48-49` injeta `--primary`/`--header-bg`/`--link-fg`
      no `:root` do admin. O Django 5.2 tem tema escuro nativo por
      `prefers-color-scheme`, independente do `data-tema` do sistema.
@@ -1522,11 +1530,11 @@ assert_no_conflict_markers "$DESTINO"
    - Recomendação: **fora de escopo nesta fase**. O admin é ferramenta de superusuário e o
      Django já resolve sozinho. Registrar como ideia adiada.
 
-3. **A rampa do donut precisa ser categórica?**
+3. **A rampa do donut precisa ser categórica?** — **RESOLVIDA por D-84 (decisão delegada ao modelo pelo operador):** não. É a rampa **sequencial** derivada da marca, servida pelo Django via `json_script` (D-85). Implementada pelo plano 07-06, com quatro cores — `StatusChoices` tem quatro valores, não três (`apps/…/exemplo/models.py:18-22`).
    - Ver A3. Depende de o app exemplo querer ensinar "cor por categoria" ou "cor por
      intensidade". Decisão de produto, não técnica.
 
-4. **Elevação: quais elementos do template recebem qual nível?**
+4. **Elevação: quais elementos do template recebem qual nível?** — **RESOLVIDA:** delegada ao planejamento pela seção `Claude's Discretion` de `07-CONTEXT.md`, e o mapeamento elemento a elemento está escrito nas tabelas de `<interfaces>` dos planos 07-05 (consumidores do `core`) e 07-06 (consumidores do app exemplo), além de ficar registrado num `{% comment %}` do próprio `shell.html` para o critério 1 ser conferível.
    - O padrão define os 3 níveis e lista os consumidores **do PCA**. O template tem
      consumidores diferentes (cards de KPI do exemplo, modais HTMX do exemplo, a `<aside>`,
      a tabela de resultado). O mapeamento é mecânico mas precisa ser feito explicitamente

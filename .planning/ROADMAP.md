@@ -306,13 +306,13 @@ REL-01, QA-03
 inteira ainda não chegou a nenhum sistema, porque o Copier lê a última tag e não o HEAD.
 Esta fase deve terminar com uma tag nova (`v0.2.0`), que entrega Fase 6 e Fase 7 juntas.
 
-**Plans:** 8 plans (7 ondas)
+**Plans:** 8 plans (8 ondas — a fase é serial: da onda 2 em diante cada plano muda o estado de build que o gate do seguinte mede)
 
 Plans:
-- [ ] 07-01-PLAN.md — Rede de testes de `.template-tests/` passa a medir o working tree (`--vcs-ref=HEAD`)
+- [ ] 07-01-PLAN.md — Rede de testes mede o working tree (`--vcs-ref=HEAD`) + banco de ensaio `ensaio_django.sh`
 - [ ] 07-02-PLAN.md — `input.css` vira a fonte física dos tokens; `tailwind.config.js` verbatim; `dominio.css`
 - [ ] 07-03-PLAN.md — Encaixe da navegação: `_nav_dominio.html`, `{% item_nav %}` e `_skip_if_exists`
-- [ ] 07-04-PLAN.md — `core/tema.py`: a família de marca deriva de `COR_PRIMARIA` em runtime
+- [ ] 07-04-PLAN.md — `core/tema.py`: a família de marca deriva de `COR_PRIMARIA` em runtime, com prova executável
 - [ ] 07-05-PLAN.md — Tema escuro: script síncrono, controle de 3 estados e elevação no `core`
 - [ ] 07-06-PLAN.md — Gráficos sem hex, paleta servida pelo Django e elevação no app exemplo
 - [ ] 07-07-PLAN.md — Régua tipográfica aplicada ocorrência a ocorrência, com gate executável
