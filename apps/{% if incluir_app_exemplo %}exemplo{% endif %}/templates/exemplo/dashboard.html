@@ -34,28 +34,28 @@
 <!-- Grade de KPIs Executivos -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
   <!-- Total de Itens -->
-  <div class="rounded-sm border border-grid bg-surface p-4 flex flex-col justify-between">
+  <div class="rounded-sm border border-grid bg-surface p-4 flex flex-col justify-between shadow-sm dark:bg-surface-2 dark:shadow-none">
     <span class="text-xs font-semibold uppercase tracking-wider text-muted">Total de Itens</span>
     <span class="text-2xl font-semibold tracking-tight text-ink mt-2 font-mono">{{ kpis.total_itens }}</span>
     <span class="text-xs font-normal text-ink-2 mt-1">Registros ativos no sistema</span>
   </div>
 
   <!-- Valor Acumulado -->
-  <div class="rounded-sm border border-grid bg-surface p-4 flex flex-col justify-between">
+  <div class="rounded-sm border border-grid bg-surface p-4 flex flex-col justify-between shadow-sm dark:bg-surface-2 dark:shadow-none">
     <span class="text-xs font-semibold uppercase tracking-wider text-muted">Valor Acumulado</span>
     <span class="text-2xl font-semibold tracking-tight text-ink mt-2 font-mono">R$ {{ kpis.valor_total|moeda }}</span>
     <span class="text-xs font-normal text-ink-2 mt-1">Soma monetária total</span>
   </div>
 
   <!-- Taxa de Conclusão -->
-  <div class="rounded-sm border border-grid bg-surface p-4 flex flex-col justify-between">
+  <div class="rounded-sm border border-grid bg-surface p-4 flex flex-col justify-between shadow-sm dark:bg-surface-2 dark:shadow-none">
     <span class="text-xs font-semibold uppercase tracking-wider text-muted">Taxa de Conclusão</span>
     <span class="text-2xl font-semibold tracking-tight text-ink mt-2 font-mono">{{ kpis.taxa_conclusao|floatformat:1 }}%</span>
     <span class="text-xs font-normal text-ink-2 mt-1">{{ kpis.concluidos }} de {{ kpis.total_itens }} concluídos</span>
   </div>
 
   <!-- Valor Médio -->
-  <div class="rounded-sm border border-grid bg-surface p-4 flex flex-col justify-between">
+  <div class="rounded-sm border border-grid bg-surface p-4 flex flex-col justify-between shadow-sm dark:bg-surface-2 dark:shadow-none">
     <span class="text-xs font-semibold uppercase tracking-wider text-muted">Valor Médio</span>
     <span class="text-2xl font-semibold tracking-tight text-ink mt-2 font-mono">R$ {{ kpis.valor_medio|moeda }}</span>
     <span class="text-xs font-normal text-ink-2 mt-1">Média por registro ativo</span>
@@ -65,7 +65,7 @@
 <!-- Grade de Gráficos Analíticos -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
   <!-- Gráfico 1: Valor por Categoria (Barras) -->
-  <div class="rounded-sm border border-grid bg-surface p-6 flex flex-col">
+  <div class="rounded-sm border border-grid bg-surface p-6 flex flex-col shadow-sm dark:bg-surface-2 dark:shadow-none">
     <div class="flex items-center justify-between mb-4">
       <div>
         <h2 class="text-base font-semibold text-ink">Valor por Categoria</h2>
@@ -76,7 +76,7 @@
   </div>
 
   <!-- Gráfico 2: Distribuição por Status (Donut) -->
-  <div class="rounded-sm border border-grid bg-surface p-6 flex flex-col">
+  <div class="rounded-sm border border-grid bg-surface p-6 flex flex-col shadow-sm dark:bg-surface-2 dark:shadow-none">
     <div class="flex items-center justify-between mb-4">
       <div>
         <h2 class="text-base font-semibold text-ink">Distribuição por Status</h2>

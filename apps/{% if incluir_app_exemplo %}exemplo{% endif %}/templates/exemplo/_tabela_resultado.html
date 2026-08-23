@@ -123,20 +123,31 @@
 
               <!-- Status -->
               <td class="py-3 px-4 whitespace-nowrap">
+                {% comment %}
+                  Badges de status: paleta NATIVA do Tailwind (bg-emerald-50 etc.),
+                  não hex literal — o gate do critério 3 já passa sem migração.
+                  Nomes de estado são vocabulário de DOMÍNIO (D-92), não do
+                  design system do core; um sistema real declara os próprios
+                  tokens de estado (par fundo + texto) em
+                  core/static/src/dominio.css (arquivo protegido por
+                  _skip_if_exists — nunca semeado por este app descartável).
+                  As variantes dark: abaixo só garantem legibilidade sobre
+                  superfície escura, sem migrar para tokens st-*.
+                {% endcomment %}
                 {% if item.status == 'CONCLUIDO' %}
-                  <span class="inline-flex items-center rounded-sm bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-xs font-semibold text-emerald-800">
+                  <span class="inline-flex items-center rounded-sm bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-xs font-semibold text-emerald-800 dark:bg-emerald-950 dark:border-emerald-800 dark:text-emerald-200">
                     {{ item.get_status_display }}
                   </span>
                 {% elif item.status == 'EM_ANDAMENTO' %}
-                  <span class="inline-flex items-center rounded-sm bg-amber-50 border border-amber-200 px-2 py-0.5 text-xs font-semibold text-amber-800">
+                  <span class="inline-flex items-center rounded-sm bg-amber-50 border border-amber-200 px-2 py-0.5 text-xs font-semibold text-amber-800 dark:bg-amber-950 dark:border-amber-800 dark:text-amber-200">
                     {{ item.get_status_display }}
                   </span>
                 {% elif item.status == 'CANCELADO' %}
-                  <span class="inline-flex items-center rounded-sm bg-red-50 border border-red-200 px-2 py-0.5 text-xs font-semibold text-red-800">
+                  <span class="inline-flex items-center rounded-sm bg-red-50 border border-red-200 px-2 py-0.5 text-xs font-semibold text-red-800 dark:bg-red-950 dark:border-red-800 dark:text-red-200">
                     {{ item.get_status_display }}
                   </span>
                 {% else %}
-                  <span class="inline-flex items-center rounded-sm bg-surface-2 border border-grid px-2 py-0.5 text-xs font-normal text-ink-2">
+                  <span class="inline-flex items-center rounded-sm bg-surface-2 border border-grid px-2 py-0.5 text-xs font-normal text-ink-2 dark:bg-surface-3 dark:text-ink-2">
                     {{ item.get_status_display }}
                   </span>
                 {% endif %}
