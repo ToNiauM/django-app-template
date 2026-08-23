@@ -5,6 +5,16 @@
 
 {% block content %}
 {% comment %}
+  Mapeamento de elevação do tema escuro (critério 1 — "conferível lado a
+  lado"): no escuro, elevação é LUMINOSIDADE, não sombra.
+
+  | Nível      | Receita clara                              | Receita escura                          | Consumidores neste template |
+  |------------|---------------------------------------------|------------------------------------------|------------------------------|
+  | Base       | bg-surface border border-grid, sem sombra    | idem (o token já muda)                    | header mobile fixo; <aside> (bg-page); barra de rodapé da aside |
+  | Elevado    | bg-surface border border-grid shadow-sm      | dark:bg-surface-2 dark:shadow-none        | card de conteúdo do shell abaixo; card do login (core/login.html) |
+  | Flutuante  | bg-surface shadow-lg                         | dark:bg-surface-3 dark:shadow-md          | nenhum consumidor no core; os modais do app exemplo são os únicos |
+{% endcomment %}
+{% comment %}
   Shell autenticado (CORE-04, D-09/D-11): aside fixa no desktop, gaveta
   Alpine no mobile, blocos de página nomeados que as telas de domínio
   estendem (o `apps/exemplo` da Fase 3 é o consumidor de referência).
@@ -27,7 +37,7 @@
   dela assume o papel do hambúrguer — e o overlay escurece o header junto,
   em vez de deixá-lo aceso por cima do véu.
 {% endcomment %}
-<div class="flex min-h-screen" x-data="{ sidebarAberta: false }">
+<div class="flex min-h-screen" x-data="{ sidebarAberta: false, tema: localStorage.getItem('tema') || 'auto' }">
 
   <div class="fixed inset-x-0 top-0 z-30 flex h-14 items-center gap-3 border-b border-grid bg-surface px-3 md:hidden">
     <button type="button" aria-label="Abrir menu" :aria-expanded="sidebarAberta.toString()"
@@ -72,35 +82,61 @@
     {# Navegação é ponto de extensão (D-10) — o partial documenta o contrato de item. #}
     {% include "core/_nav.html" %}
 
-    <div class="mt-auto border-t border-grid pt-3 flex items-center gap-3">
-      {# Logo da entidade discretamente no rodapé (D-69) — presença da identidade "da casa" sem competir com os dados do usuário. Arquivo fixo (D-65): trocar = substituir em core/static/img/ mantendo o nome. #}
-      <img src="{% static 'img/logo-entidade.svg' %}" alt="Logo institucional" class="h-5 w-5 flex-none opacity-60">
-      <div class="w-8 h-8 rounded-full bg-surface-2 border border-grid flex items-center justify-center text-sm font-semibold text-ink-2 flex-none">
-        {{ usuario_atual.email|slice:":2"|upper }}
+    <div class="mt-auto border-t border-grid pt-3 flex flex-col gap-3">
+      {% comment %}
+        Controle de tema de 3 estados (critério 2), imediatamente acima do
+        bloco de usuário — ambos no rodapé (mt-auto) da aside. Nível Base:
+        sem sombra no claro e sem sombra no escuro (o token de fundo já
+        muda sozinho). As classes aplicadas condicionalmente pelo :class
+        do Alpine (bg-brand-tint text-brand-ink / text-ink-2
+        hover:bg-surface-2) aparecem como strings LITERAIS abaixo de
+        propósito: o JIT do Tailwind varre o arquivo-fonte em build-time e
+        não enxerga classe concatenada em runtime.
+      {% endcomment %}
+      <div role="group" aria-label="Tema" class="flex gap-1">
+        <button type="button" @click="tema = 'auto'; aplicarTema('auto')"
+                :aria-pressed="(tema === 'auto').toString()"
+                :class="tema === 'auto' ? 'bg-brand-tint text-brand-ink' : 'text-ink-2 hover:bg-surface-2'"
+                class="flex-1 rounded-sm px-3 py-2 text-sm font-semibold text-center">Automático</button>
+        <button type="button" @click="tema = 'claro'; aplicarTema('claro')"
+                :aria-pressed="(tema === 'claro').toString()"
+                :class="tema === 'claro' ? 'bg-brand-tint text-brand-ink' : 'text-ink-2 hover:bg-surface-2'"
+                class="flex-1 rounded-sm px-3 py-2 text-sm font-semibold text-center">Claro</button>
+        <button type="button" @click="tema = 'escuro'; aplicarTema('escuro')"
+                :aria-pressed="(tema === 'escuro').toString()"
+                :class="tema === 'escuro' ? 'bg-brand-tint text-brand-ink' : 'text-ink-2 hover:bg-surface-2'"
+                class="flex-1 rounded-sm px-3 py-2 text-sm font-semibold text-center">Escuro</button>
       </div>
-      <div class="text-sm leading-tight min-w-0">
-        <div class="truncate">{{ usuario_atual.email }}</div>
-        {% comment %}
-          hx-on::before-request: limpa Cache Storage + histórico htmx ANTES
-          do POST de logout (T-02-11) — a função vive no base.html. Fica no
-          <form> (o elemento hx-post) porque é nele que o htmx dispara o
-          evento before-request.
-        {% endcomment %}
-        <form method="post" action="{% url 'core:logout' %}"
-              hx-post="{% url 'core:logout' %}" hx-target="body" class="inline"
-              hx-on::before-request="limparCachePwa()">
+      <div class="flex items-center gap-3">
+        {# Logo da entidade discretamente no rodapé (D-69) — presença da identidade "da casa" sem competir com os dados do usuário. Arquivo fixo (D-65): trocar = substituir em core/static/img/ mantendo o nome. #}
+        <img src="{% static 'img/logo-entidade.svg' %}" alt="Logo institucional" class="h-5 w-5 flex-none opacity-60">
+        <div class="w-8 h-8 rounded-full bg-surface-2 border border-grid flex items-center justify-center text-sm font-semibold text-ink-2 flex-none">
+          {{ usuario_atual.email|slice:":2"|upper }}
+        </div>
+        <div class="text-sm leading-tight min-w-0">
+          <div class="truncate">{{ usuario_atual.email }}</div>
           {% comment %}
-            `method`/`action` explícitos (CR-01): sem eles o submit nativo
-            viraria GET com o token CSRF na querystring e o logout nunca
-            aconteceria se o htmx falhasse. Junto com o branch não-htmx de
-            `logout_view`, este form é o fallback no-JS real — ver o
-            comentário homólogo em _login_form.html.
+            hx-on::before-request: limpa Cache Storage + histórico htmx ANTES
+            do POST de logout (T-02-11) — a função vive no base.html. Fica no
+            <form> (o elemento hx-post) porque é nele que o htmx dispara o
+            evento before-request.
           {% endcomment %}
-          {% csrf_token %}
-          <button type="submit" class="text-muted hover:text-ink-2 underline text-left">
-            Sair
-          </button>
-        </form>
+          <form method="post" action="{% url 'core:logout' %}"
+                hx-post="{% url 'core:logout' %}" hx-target="body" class="inline"
+                hx-on::before-request="limparCachePwa()">
+            {% comment %}
+              `method`/`action` explícitos (CR-01): sem eles o submit nativo
+              viraria GET com o token CSRF na querystring e o logout nunca
+              aconteceria se o htmx falhasse. Junto com o branch não-htmx de
+              `logout_view`, este form é o fallback no-JS real — ver o
+              comentário homólogo em _login_form.html.
+            {% endcomment %}
+            {% csrf_token %}
+            <button type="submit" class="text-muted hover:text-ink-2 underline text-left">
+              Sair
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </aside>
@@ -113,7 +149,7 @@
     </div>
     {% endblock %}
     {% block conteudo_pagina %}
-    <div class="max-w-xl rounded-sm border border-grid bg-surface p-6">
+    <div class="max-w-xl rounded-sm border border-grid bg-surface shadow-sm dark:bg-surface-2 dark:shadow-none p-6">
       <p class="text-base text-ink-2">
         Bem-vindo(a). Este é o ponto de partida do sistema — os apps de
         domínio estendem este shell pelos blocos de página.
