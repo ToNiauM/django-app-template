@@ -12,7 +12,7 @@
 
     <!-- Cabeçalho do Modal -->
     <div class="flex items-center justify-between border-b border-grid px-6 py-4 bg-surface-2">
-      <h2 id="modal-titulo" class="text-base font-semibold text-ink">
+      <h2 id="modal-titulo" class="text-lg font-semibold text-ink">
         {% if modo == 'editar' %}Editar Item{% else %}Novo Item{% endif %}
       </h2>
       <button type="button"
@@ -128,11 +128,11 @@
       <div class="flex items-center justify-end gap-3 border-t border-grid px-6 py-4 bg-surface-2">
         <button type="button"
                 @click="fechar()"
-                class="rounded-sm border border-grid bg-surface px-4 py-2 text-sm font-semibold text-ink-2 hover:bg-surface hover:text-ink transition-colors">
+                class="rounded-sm border border-grid bg-surface px-4 py-2 text-base font-semibold text-ink-2 hover:bg-surface hover:text-ink transition-colors">
           Cancelar
         </button>
         <button type="submit"
-                class="rounded-sm bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover transition-colors shadow-sm">
+                class="rounded-sm bg-brand px-4 py-2 text-base font-semibold text-white hover:bg-brand-hover transition-colors shadow-sm">
           Salvar item
         </button>
       </div>

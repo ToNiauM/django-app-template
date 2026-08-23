@@ -97,15 +97,15 @@
         <button type="button" @click="tema = 'auto'; aplicarTema('auto')"
                 :aria-pressed="(tema === 'auto').toString()"
                 :class="tema === 'auto' ? 'bg-brand-tint text-brand-ink' : 'text-ink-2 hover:bg-surface-2'"
-                class="flex-1 rounded-sm px-3 py-2 text-sm font-semibold text-center">Automático</button>
+                class="flex-1 rounded-sm px-3 py-2 text-base font-semibold text-center">Automático</button>
         <button type="button" @click="tema = 'claro'; aplicarTema('claro')"
                 :aria-pressed="(tema === 'claro').toString()"
                 :class="tema === 'claro' ? 'bg-brand-tint text-brand-ink' : 'text-ink-2 hover:bg-surface-2'"
-                class="flex-1 rounded-sm px-3 py-2 text-sm font-semibold text-center">Claro</button>
+                class="flex-1 rounded-sm px-3 py-2 text-base font-semibold text-center">Claro</button>
         <button type="button" @click="tema = 'escuro'; aplicarTema('escuro')"
                 :aria-pressed="(tema === 'escuro').toString()"
                 :class="tema === 'escuro' ? 'bg-brand-tint text-brand-ink' : 'text-ink-2 hover:bg-surface-2'"
-                class="flex-1 rounded-sm px-3 py-2 text-sm font-semibold text-center">Escuro</button>
+                class="flex-1 rounded-sm px-3 py-2 text-base font-semibold text-center">Escuro</button>
       </div>
       <div class="flex items-center gap-3">
         {# Logo da entidade discretamente no rodapé (D-69) — presença da identidade "da casa" sem competir com os dados do usuário. Arquivo fixo (D-65): trocar = substituir em core/static/img/ mantendo o nome. #}
