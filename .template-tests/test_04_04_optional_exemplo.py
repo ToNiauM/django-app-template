@@ -15,11 +15,14 @@ COPIER = ROOT / ".venv-template" / "bin" / "copier"
 
 def render(destination: Path, *, incluir_app_exemplo: bool) -> Path:
     """Renderiza uma variante real, com todos os dados não-default explícitos."""
+    # --vcs-ref=HEAD: com uma tag de release no repositório, o Copier copiaria
+    # por padrão a última tag — o teste precisa do estado atual do template.
     subprocess.run(
         [
             str(COPIER),
             "copy",
             "--defaults",
+            "--vcs-ref=HEAD",
             "--data",
             "sistema_nome=Sistema Núcleo",
             "--data",

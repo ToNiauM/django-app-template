@@ -33,11 +33,14 @@ FORBIDDEN_IDENTITY = (
 
 def render(destination: Path, *, color: str) -> Path:
     """Gera uma cópia com respostas explícitas para testar o contrato in-place."""
+    # --vcs-ref=HEAD: com uma tag de release no repositório, o Copier copiaria
+    # por padrão a última tag — o teste precisa do estado atual do template.
     subprocess.run(
         [
             str(COPIER),
             "copy",
             "--defaults",
+            "--vcs-ref=HEAD",
             "--data",
             "sistema_nome=Sistema Aurora",
             "--data",
