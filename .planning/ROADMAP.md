@@ -315,7 +315,7 @@ REL-01, QA-03
 inteira ainda não chegou a nenhum sistema, porque o Copier lê a última tag e não o HEAD.
 Esta fase deve terminar com uma tag nova (`v0.2.0`), que entrega Fase 6 e Fase 7 juntas.
 
-**Plans:** 13/14 plans executed
+**Plans:** 14/14 plans executed
 
 Plans:
 **Wave 1**
@@ -372,7 +372,7 @@ passaram. Os planos abaixo fecham a fresta com prova de **resultado renderizado*
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 07-14-PLAN.md — Inspeção visual restrita aos 4 pontos consertados, regressão completa e `v0.2.0` recriada sobre o commit corrigido
+- [x] 07-14-PLAN.md — Inspeção visual restrita aos 4 pontos consertados, regressão completa e `v0.2.0` recriada sobre o commit corrigido
 
 ## Progress
 
