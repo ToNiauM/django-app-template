@@ -1,10 +1,11 @@
 ---
 phase: 07-herdar-o-design-system-do-pca
 verified: 2026-08-23T23:49:20Z
-status: human_needed
+status: gaps_found
 score: 8/8 must-haves verificados
 overrides_applied: 0
 re_verification: null
+gaps_source: 07-REVIEW.md (revisão de código posterior a esta verificação; os 4 itens foram reconferidos pelo orquestrador)
 human_verification:
   - test: "Decidir se a Fase 7 deve permanecer marcada como `mode: mvp` no ROADMAP.md, ou se a marca deve ser removida/corrigida."
     expected: "Ou o goal da fase é reescrito no formato User Story (`As a …, I want to …, so that ….`), ou a linha `**Mode:** mvp` sai da seção da Phase 7."
@@ -210,6 +211,91 @@ sobre o menu de um derivado específico, fora do contrato desta fase.
 > **Já fechado, não repetir:** a inspeção visual das 4 telas × 2 temas (07-08 Task 2,
 > `ui_safety_gate`) foi executada numa cópia real e **aprovada pelo operador**. Não é
 > reaberta aqui.
+
+## Gaps
+
+**Origem:** `07-REVIEW.md`, produzido DEPOIS desta verificação. Os 8 must-haves
+seguem verificados — os critérios da fase testam *estrutura declarada* (token
+existe, ponto de extensão existe), não *resultado renderizado*, e é nessa fresta
+que os defeitos abaixo passaram. Cada um foi reconferido pelo orquestrador com
+prova própria antes de virar gap.
+
+### G-01 — `{% item_nav %}` marca dois itens como ativos ao mesmo tempo (BLOCKER)
+
+`core/templatetags/navegacao.py:55` faz
+`ativo = caminho == url or bool(prefixo and caminho.startswith(prefixo))`.
+No stub que o próprio núcleo semeia, `exemplo:item_listar` leva
+`prefixo="/exemplo/"` e resolve para `/exemplo/`; `exemplo:dashboard` resolve
+para `/exemplo/dashboard/`. Em `/exemplo/dashboard/` os dois itens recebem
+`aria-current="page"`, filete de 2px e `bg-brand-tint`.
+
+**Prova:** rotas conferidas em `apps/…exemplo…/urls.py`
+(`path("", …, name="item_listar")` e `path("dashboard/", …, name="dashboard")`).
+O defeito é determinístico, não depende de dado.
+
+**Por que o teste não pega:** `test_prefixo_marca_ativo_em_rota_filha` usa
+`rota="core:shell"` com `prefixo="/exemplo/"` — a única combinação em que a
+colisão é impossível.
+
+**Impacto:** viola o critério 5 na prática (o tratamento visual do item ativo
+deixa de ser inequívoco) e é acessibilidade: dois `aria-current="page"` na mesma
+página.
+
+### G-02 — texto branco sobre a marca no tema escuro dá 2,56:1 (BLOCKER, e exige decisão de produto)
+
+`core/tema.py:90` fixa `brand:escuro = com_hsl(cor, 1.00, 0.727)`. Medido com a
+função real: `#1e40af` → 2,56:1; `#003c71` (a cor do próprio PCA) → 1,99:1;
+`#b91c1c` → 2,51:1. Reprova AA (4,5:1) e até o piso de texto grande (3:1).
+
+Sítios com `text-white` sobre `bg-brand`:
+- `core/static/src/input.css:56` — `.btn--primaria` (sem consumidor hoje)
+- `apps/…exemplo…/templates/exemplo/item_listar.html:20` — botão "Novo item"
+- `apps/…exemplo…/templates/exemplo/_form_modal.html:135` — submit do modal
+- `apps/…exemplo…/templates/exemplo/_tabela_resultado.html:215` — selo
+
+**Nuance que muda o conserto:** isto é **herança fiel do PCA**, não invenção.
+`/opt/web/pca/core/static/src/input.css:183` traz `--cor-brand: #74beff` no
+escuro e `:85-87` traz `.btn--primaria { @apply bg-brand text-white … }`
+idêntico. A diferença é que no PCA `.btn--primaria` tem **0 usos** em template —
+o par está dormente lá e vivo aqui, porque o app exemplo aplica
+`bg-brand … text-white` direto.
+
+É regressão **relativa ao template** (que antes não tinha tema escuro, então
+`bg-brand` era sempre o claro a 8,72:1). Corrigi-lo implica **divergir do PCA** —
+decisão do operador, já que a premissa da fase era herdar. O caminho de menor
+divergência é trocar a cor do *texto* no escuro (um token que vire tinta escura
+sobre a marca clara), não mexer em `com_hsl` — mexer no coeficiente quebraria a
+equivalência numérica com o PCA e as asserções de `core/tests/test_tema.py:44-47`.
+
+### G-03 — a 4ª fatia do donut é invisível (BLOCKER)
+
+`apps/…exemplo…/views.py:228` usa `brand-tint` — token de **fundo** — como cor de
+dado. Contra o fundo do card: **1,11:1** no claro (`#edf0f9` sobre `#fcfcfb`) e
+**1,00:1** no escuro (`#192035` sobre `#22211d`, literalmente o mesmo tom).
+
+**Divergência genuína do PCA:** a rampa sequencial de lá tem **3 degraus**
+(`/opt/web/pca/apps/pca/paleta.py:50` — `"rampa_uo": ["#003c71", "#577ea1", "#9eb5c9"]`)
+e nunca usa `brand-tint` como dado. A fase precisou de uma 4ª cor porque
+`StatusChoices` tem 4 valores e pegou o token errado. O conserto é estender a
+rampa com um 4º degrau **de dado** (derivado por `com_hsl`, como os outros três),
+não reaproveitar um token de superfície.
+
+### G-04 — a grade do eixo some no tema escuro (WARNING, mesma família do G-03)
+
+O `splitLine` do gráfico lê `--cor-surface-2`, mas o card **é** `dark:bg-surface-2`
+→ grade em **1,00:1** no escuro (`#22211d` sobre `#22211d`) e 1,09:1 no claro.
+O chrome do gráfico precisa ler o token de borda/grade, não o de superfície.
+
+### G-05 — a guarda da régua tipográfica é cega a `text-[NNpx]` (defeito de guarda, sem violação viva)
+
+`test_07_tokens.py:224` — `re.compile(r"\btext-([a-z0-9]+|\[[^\]]+\])\b")`. O
+`\b` depois de `]` torna o ramo de valor arbitrário inalcançável:
+`'class="text-[13px]"'` → `[]`, enquanto `'class="text-2xl"'` → `['2xl']`.
+
+**Severidade rebaixada em relação ao REVIEW:** grep nos templates não acha
+nenhum `text-[NNpx]` hoje, então não há violação viva — é guarda quebrada e
+risco futuro, não bloqueador de release. As duas provas negativas do 07-07
+exercitaram só o ramo que funciona.
 
 ## Resumo
 
