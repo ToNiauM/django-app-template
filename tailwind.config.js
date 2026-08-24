@@ -59,6 +59,7 @@ module.exports = {
         "brand-ink": "var(--cor-brand-ink)",
         "brand-tint": "var(--cor-brand-tint)",
         "brand-tx": "var(--cor-brand-tx)",
+        "seq-750": "var(--cor-seq-750)",
         "seq-600": "var(--cor-seq-600)",
         "seq-450": "var(--cor-seq-450)",
         "seq-300": "var(--cor-seq-300)",

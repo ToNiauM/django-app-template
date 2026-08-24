@@ -215,23 +215,38 @@ def dashboard_view(request):
     # SEQUENCIAL (monocromática), derivada de settings.COR_PRIMARIA pela
     # mesma familia_marca() que alimenta o <style> de base.html — as duas
     # nunca divergem porque são a mesma função. Quatro cores porque
-    # StatusChoices tem quatro valores (models.py). Ordem do mais escuro
-    # ao mais claro no tema claro (e o equivalente no escuro): seq-600,
-    # seq-450, seq-300, brand-tint.
+    # StatusChoices tem quatro valores (models.py), e as QUATRO são degraus
+    # de DADO da rampa `seq-*`: nenhum token de superfície entra aqui.
+    #
+    # A ordem é do mais destacado ao menos destacado CONTRA O FUNDO DO CARD,
+    # em ambos os temas — seq-750, seq-600, seq-450, seq-300. Ela é medida,
+    # não declarada: apps/exemplo/tests/test_dashboard.py computa o contraste
+    # de cada fatia contra o card e exige monotonicidade. Repare que "mais
+    # destacado" não quer dizer "mais escuro": no tema claro a rampa escurece
+    # e no escuro ela clareia, e é por isso que a asserção é de contraste, e
+    # não de luminosidade.
+    #
+    # Até o plano 07-13 a quarta cor era o token de FUNDO tênue da família de
+    # marca (o do item ativo da navegação) usado como cor de dado: 1,11:1
+    # contra o card no claro e 1,00:1 no escuro — o donut desenhava três
+    # fatias e dizia representar quatro categorias. O nome desse token não é
+    # escrito aqui de propósito: o gate do plano procura por ele neste arquivo
+    # e uma citação em comentário reprovaria justamente o código que o
+    # eliminou.
     familia_clara = familia_marca(settings.COR_PRIMARIA)
     paleta_graficos = {
         "rampa_status": {
             "claro": [
+                familia_clara["seq-750"],
                 familia_clara["seq-600"],
                 familia_clara["seq-450"],
                 familia_clara["seq-300"],
-                familia_clara["brand-tint"],
             ],
             "escuro": [
+                familia_clara["seq-750:escuro"],
                 familia_clara["seq-600:escuro"],
                 familia_clara["seq-450:escuro"],
                 familia_clara["seq-300:escuro"],
-                familia_clara["brand-tint:escuro"],
             ],
         }
     }

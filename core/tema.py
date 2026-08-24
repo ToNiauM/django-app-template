@@ -33,11 +33,17 @@ COR_PAGE_ESCURO = "#0f0e0d"
 
 # Ordem estável das 7 variáveis de marca — usada tanto para montar
 # familia_marca() quanto para gerar css_da_marca() na mesma sequência.
+# Atualização do plano 07-13: são 8 chaves desde que a rampa sequencial
+# ganhou o degrau `seq-750` (as contagens "7" e "14" citadas nos textos
+# acima e abaixo são as de antes desse acréscimo; os comentários herdados
+# ficaram intactos de propósito, para que o diff prove que NENHUM
+# coeficiente do padrão de referência foi tocado).
 _CHAVES_MARCA = (
     "brand",
     "brand-hover",
     "brand-ink",
     "brand-tint",
+    "seq-750",
     "seq-600",
     "seq-450",
     "seq-300",
@@ -82,6 +88,17 @@ def familia_marca(cor: str) -> dict[str, str]:
         "brand-hover": misturar(cor, 255, 0.12),  # tom de hover
         "brand-ink": misturar(cor, 0, 0.18),  # tom pressionado / texto de ênfase
         "brand-tint": misturar(cor, 255, 0.92),  # fundo tênue do item ativo
+        # Quarto degrau da rampa (07-13/G-03). A rampa do padrão de
+        # referência tem TRÊS degraus, mas o donut do app exemplo precisa
+        # de quatro cores de DADO (StatusChoices tem quatro valores) — e a
+        # quarta era `brand-tint`, um token de FUNDO, invisível sobre o
+        # card (1,11:1 no claro, 1,00:1 no escuro). O degrau novo estende a
+        # rampa pelo lado FORTE, não na direção do branco: um quarto tom
+        # ainda mais claro daria ~1,4:1 contra um card quase branco, ou
+        # seja, trocaria um invisível por outro. Daí ser o mais ESCURO no
+        # tema claro e o mais CLARO no escuro — nos dois casos, o de maior
+        # contraste contra o card do respectivo tema.
+        "seq-750": misturar(cor, 0, 0.35),  # degrau MAIS forte da rampa
         "seq-600": cor,  # primeiro degrau da rampa sequencial
         "seq-450": misturar(cor, 255, 0.34),  # segundo degrau da rampa
         "seq-300": misturar(cor, 255, 0.62),  # terceiro degrau da rampa
@@ -91,6 +108,9 @@ def familia_marca(cor: str) -> dict[str, str]:
         "brand-hover:escuro": com_hsl(cor, 1.00, 0.827),
         "brand-ink:escuro": com_hsl(cor, 1.00, 0.627),
         "brand-tint:escuro": com_hsl(cor, 0.50, 0.153),
+        # Contrapartida escura do degrau novo (ver o comentário do claro):
+        # no tema escuro o mais forte é o mais CLARO, acima do `brand`.
+        "seq-750:escuro": com_hsl(cor, 1.00, 0.860),
         "seq-600:escuro": com_hsl(cor, 1.00, 0.727),
         "seq-450:escuro": com_hsl(cor, 0.72, 0.567),
         "seq-300:escuro": com_hsl(cor, 0.55, 0.427),
