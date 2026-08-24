@@ -315,7 +315,7 @@ REL-01, QA-03
 inteira ainda não chegou a nenhum sistema, porque o Copier lê a última tag e não o HEAD.
 Esta fase deve terminar com uma tag nova (`v0.2.0`), que entrega Fase 6 e Fase 7 juntas.
 
-**Plans:** 12/14 plans executed
+**Plans:** 13/14 plans executed
 
 Plans:
 **Wave 1**
@@ -368,7 +368,7 @@ passaram. Os planos abaixo fecham a fresta com prova de **resultado renderizado*
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 07-13-PLAN.md — G-03: `seq-750`, quarto degrau real da rampa sequencial, no lugar do token de fundo `brand-tint`
+- [x] 07-13-PLAN.md — G-03: `seq-750`, quarto degrau real da rampa sequencial, no lugar do token de fundo `brand-tint`
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -387,4 +387,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Templatização Copier | 7/7 | Complete    | 2006-08-18 |
 | 5. Verificação e Documentação | 3/3 | Complete   | 2006-08-18 |
 | 6. Customização Visual e Persistência de Dados | 3/3 | Complete   | 2026-08-19 |
-| 7. Herdar o design system do PCA | 12/14 | In Progress|  |
+| 7. Herdar o design system do PCA | 13/14 | In Progress|  |

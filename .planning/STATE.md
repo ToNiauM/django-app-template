@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: "07-12 concluído — G-04 fechado (grade do eixo lê `--cor-grid`: 1,00:1 → 1,38:1 no escuro, 1,09 → 1,29:1 no claro, medido; borda do donut acompanha o card por tema; tooltip do ECharts escapado); próximo: 07-13 (G-03)"
-stopped_at: Completed 07-12-PLAN.md
-last_updated: "2026-08-24T04:21:42.551Z"
+status: "07-13 concluído — G-03 fechado: a 4ª fatia do donut deixou de ser `brand-tint` (1,11:1 no claro, 1,00:1 no escuro) e virou `seq-750`, degrau de DADO derivado (12,75:1 e 10,31:1, medidos); rampa monotônica nos dois temas; `core/tema.py` por acréscimo puro (20 linhas, 0 remoções); próximo: 07-14 (G-05 e fechamento da fase)"
+stopped_at: Completed 07-13-PLAN.md
+last_updated: "2026-08-24T04:36:15.889Z"
 last_activity: 2026-08-24
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 38
-  completed_plans: 36
+  completed_plans: 37
   percent: 86
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-17)
 ## Current Position
 
 Phase: 07 (herdar-o-design-system-do-pca) — EXECUTING (fechamento de gaps)
-Plan: 12 of 14 (os 8 originais concluídos e verificados; 07-09 a 07-14 fecham G-01..G-05)
-Status: 07-12 concluído — G-04 fechado (grade do eixo lê `--cor-grid`: 1,00:1 → 1,38:1 no escuro, 1,09 → 1,29:1 no claro, medido; borda do donut acompanha o card por tema; tooltip do ECharts escapado); próximo: 07-13 (G-03)
+Plan: 13 of 14 (os 8 originais concluídos e verificados; 07-09 a 07-14 fecham G-01..G-05)
+Status: 07-13 concluído — G-03 fechado: a 4ª fatia do donut deixou de ser `brand-tint` (1,11:1 no claro, 1,00:1 no escuro) e virou `seq-750`, degrau de DADO derivado (12,75:1 e 10,31:1, medidos); rampa monotônica nos dois temas; `core/tema.py` por acréscimo puro (20 linhas, 0 remoções); próximo: 07-14 (G-05 e fechamento da fase)
 Last activity: 2026-08-24
 
-Progress: [██████████] 95%
+Progress: [██████████] 97%
 
 ## Performance Metrics
 
@@ -83,6 +83,7 @@ Progress: [██████████] 95%
 | Phase 07-herdar-o-design-system-do-pca P10 | 18min | 3 tasks | 5 files |
 | Phase 07-herdar-o-design-system-do-pca P11 | 27min | 2 tasks | 7 files |
 | Phase 07-herdar-o-design-system-do-pca P12 | 22min | 3 tasks | 2 files |
+| Phase 07-herdar-o-design-system-do-pca P13 | 16min | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -157,6 +158,11 @@ Recent decisions affecting current work:
 - [Phase 07-12]: Piso de contraste de CROMO fixado em 1,25:1 (não 3:1 nem 4,5:1) — grade e separação de fatia não carregam dado nem texto; um gate em > 1,00 passaria com 1,001:1, e 1,25 reprova --cor-surface-2 no claro (1,09:1), que é a regressão a barrar
 - [Phase 07-12]: esc() aplicada a TODA interpolação dos formatters do ECharts, inclusive as numéricas — regra com exceções obriga o derivado a reclassificar campo a campo ao adaptar o dashboard, e é aí que o escape some
 - [Phase 07-12]: corCard declarada DENTRO de montarGraficos(), não no escopo do DOMContentLoaded — é o que faz o ternário de tema ser reavaliado no evento tema:alterado; fora da função o conserto valeria só para o tema em que a página carregou
+- [Phase ?]: [Phase 07-13]: A rampa sequencial estende pelo lado FORTE (seq-750 = misturar(cor,0,0.35) no claro, com_hsl(cor,1.00,0.860) no escuro) — estender na direção do branco daria ~1,4:1 contra um card quase branco e trocaria um invisível por outro
+- [Phase ?]: [Phase 07-13]: core/tema.py alterado por ACRÉSCIMO PURO (20 linhas, 0 remoções) — os comentários herdados com as contagens antigas ficaram intactos e a atualização entrou como linha NOVA, porque reescrevê-los apagaria a evidência de que nenhum coeficiente do padrão foi tocado
+- [Phase ?]: [Phase 07-13]: Piso de fatia de DADO em 1,5:1 (não 3:1) — o degrau seq-300 herdado vive em 1,95:1 no claro e exigir 3:1 obrigaria a redesenhar a rampa do padrão de referência para consertar um defeito que não está nela
+- [Phase ?]: [Phase 07-13]: seq-750 fixado FORA do dict 'esperado' de test_tema.py — aquele dict é o conjunto de valores MEDIDOS no padrão, cuja rampa tem três degraus; o quarto é extensão deste template, não herança
+- [Phase ?]: [Phase 07-13]: O brand-tint proibido pelo gate é recalculado de settings.COR_PRIMARIA, nunca lido do input.css — o token depende da marca e num derivado com outra cor a comparação passaria por engano, deixando o defeito sobreviver ao próprio teste
 
 ### Pending Todos
 
@@ -186,6 +192,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-24T04:21:32.057Z
-Stopped at: Completed 07-12-PLAN.md
+Last session: 2026-08-24T04:36:04.402Z
+Stopped at: Completed 07-13-PLAN.md
 Resume file: None
