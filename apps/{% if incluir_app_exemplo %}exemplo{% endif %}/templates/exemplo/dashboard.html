@@ -109,7 +109,11 @@ document.addEventListener("DOMContentLoaded", function() {
   // documento (lerVarCss), a mesma fonte que alimenta o <style> de
   // base.html e o data-tema do script de tema — assim o gráfico nunca
   // pode divergir do restante da página.
-  const PALETA = JSON.parse(elPaletaData.textContent);
+  // Fallback igual ao dos outros dois json_script acima. `"{}"` e não `"[]"`
+  // porque a paleta é objeto — e o consumo abaixo degrada para lista vazia se
+  // `rampa_status` não vier. Gráfico sem cor customizada é degradação aceitável;
+  // um SyntaxError que derruba os DOIS gráficos não é.
+  const PALETA = JSON.parse(elPaletaData.textContent || "{}");
 
   function lerVarCss(nome) {
     return getComputedStyle(document.documentElement).getPropertyValue(nome).trim();
@@ -117,6 +121,27 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function temaAtual() {
     return document.documentElement.getAttribute("data-tema") === "escuro" ? "escuro" : "claro";
+  }
+
+  // O retorno do `formatter` do ECharts é inserido como HTML, não como texto.
+  // `categoria` e `rotulo` vêm de `dict(Choices.choices).get(x, x)` em views.py
+  // — com FALLBACK para o valor cru da coluna. `choices` é validação de
+  // formulário, não constraint de banco: um queryset.update(), uma migração de
+  // dados ou uma carga por SQL gravam qualquer string. E este dashboard é o
+  // artefato que todo derivado copia para dados de domínio de verdade, onde o
+  // nome SERÁ entrada de usuário — por isso o escape fica aqui e não some.
+  //
+  // Regra sem exceção: TODA interpolação das template strings de formatter
+  // passa por esc(), inclusive as numéricas. Uma regra com exceções ("só o que
+  // vem de dado") obriga quem adapta o dashboard a reclassificar cada campo, e
+  // é aí que o escape desaparece. Escapar um número não custa nada.
+  function esc(valor) {
+    return String(valor)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
 
   const elCat = document.getElementById("grafico-categoria");
@@ -144,7 +169,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // chrome fixa um nível e passa a contradizer o card assim que ele sobe de
     // elevação (foi exatamente o que aconteceu no G-04).
     const corCard = temaAtual() === "escuro" ? corSurface2 : corSurface;
-    const paletaStatus = PALETA.rampa_status[temaAtual()];
+    const paletaStatus = (PALETA.rampa_status || {})[temaAtual()] || [];
 
     // 1. Gráfico de Barras: Valor por Categoria
     if (elCat) {
@@ -162,7 +187,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (!params || !params.length) return "";
             const p = params[0];
             const valorFormatado = p.value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            return `<strong>${p.name}</strong><br/>Total: R$ ${valorFormatado}<br/>Qtd: ${rawCat[p.dataIndex]?.qtd || 0} itens`;
+            return `<strong>${esc(p.name)}</strong><br/>Total: R$ ${esc(valorFormatado)}<br/>Qtd: ${esc(rawCat[p.dataIndex]?.qtd || 0)} itens`;
           }
         },
         grid: { left: "4%", right: "4%", bottom: "10%", top: "6%", containLabel: true },
@@ -217,7 +242,7 @@ document.addEventListener("DOMContentLoaded", function() {
           textStyle: { color: corInk, fontSize: 12 },
           formatter: function(params) {
             const valorFormatado = (params.data?.totalValor || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            return `<strong>${params.name}</strong><br/>Qtd: ${params.value} itens (${params.percent}%)<br/>Valor: R$ ${valorFormatado}`;
+            return `<strong>${esc(params.name)}</strong><br/>Qtd: ${esc(params.value)} itens (${esc(params.percent)}%)<br/>Valor: R$ ${esc(valorFormatado)}`;
           }
         },
         legend: { bottom: "0", textStyle: { color: corInk2, fontSize: 12 } },
