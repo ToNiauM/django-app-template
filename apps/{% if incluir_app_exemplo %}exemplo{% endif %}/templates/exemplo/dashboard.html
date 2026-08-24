@@ -137,6 +137,13 @@ document.addEventListener("DOMContentLoaded", function() {
     const corInk = lerVarCss("--cor-ink");
     const corInk2 = lerVarCss("--cor-ink-2");
     const corSurface2 = lerVarCss("--cor-surface-2");
+    // `corCard` é o fundo REAL do card em que os gráficos estão montados. Espelha as
+    // classes que os dois cards declaram — `bg-surface` no claro,
+    // `dark:bg-surface-2` no escuro — que é o nível Elevado do mapa de elevação
+    // documentado em core/templates/core/shell.html. Sem este mapeamento, o
+    // chrome fixa um nível e passa a contradizer o card assim que ele sobe de
+    // elevação (foi exatamente o que aconteceu no G-04).
+    const corCard = temaAtual() === "escuro" ? corSurface2 : corSurface;
     const paletaStatus = PALETA.rampa_status[temaAtual()];
 
     // 1. Gráfico de Barras: Valor por Categoria
@@ -167,7 +174,10 @@ document.addEventListener("DOMContentLoaded", function() {
         },
         yAxis: {
           type: "value",
-          splitLine: { lineStyle: { color: corSurface2 } },
+          // A grade é LINHA e lê o token de linha. Ler uma superfície a tornava
+          // invisível quando o card subiu para o nível Elevado: no escuro
+          // --cor-surface-2 é exatamente a cor do card (contraste 1,00:1).
+          splitLine: { lineStyle: { color: corGrid } },
           axisLabel: {
             color: corInk2,
             fontSize: 12,
@@ -217,7 +227,10 @@ document.addEventListener("DOMContentLoaded", function() {
           type: "pie",
           radius: ["45%", "70%"],
           avoidLabelOverlap: true,
-          itemStyle: { borderColor: corSurface, borderWidth: 2 },
+          // A separação entre fatias é um recorte do FUNDO do card, e por isso lê
+          // `corCard`, não um nível fixo: com corSurface cravado, no escuro ela
+          // desenhava linhas mais escuras que o card, inexistentes no tema claro.
+          itemStyle: { borderColor: corCard, borderWidth: 2 },
           label: { show: false },
           data: rawStatus.map(d => ({
             name: d.rotulo,
