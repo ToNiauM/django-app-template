@@ -33,12 +33,23 @@ Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de ex
 - ✓ Persistência do PostgreSQL por bind mount configurável (`PGDATA_DIR`, default `./dados/pg`), sobrevivendo a `docker compose down -v`, com `.gitignore` gerado e runbook de migração de named volume — Fase 6
 - ✓ `core/` — pontos únicos de customização de marca por arquivo fixo: `logo-entidade.svg` e `logo-subsistema.svg` nos templates via `{% static %}`, favicon via ícone PWA, regressão de contrato em `test_logos.py` — Fase 6
 - ✓ Seção única "Customização de marca" documentando os 5 pontos (logos, ícones/nome PWA, cor primária, nome/sigla) nos 4 documentos do template — Fase 6
+- ✓ Design system do PCA inteiro no sistema gerado: 21 tokens de cor em variáveis CSS (`input.css` como fonte física), 18 overrides de tema escuro, 3 degraus de superfície com elevação mapeada, raio único de 2px, régua tipográfica de 6 degraus com teto em 20px e focus-ring único — Fase 7 (DS-01, DS-02, DS-03)
+- ✓ Tema escuro real com controle de 3 estados (Automático/Claro/Escuro) na aside, zero flash no recarregamento e sobrevivência da escolha ao logout/login — Fase 7 (DS-04)
+- ✓ Paleta de gráfico derivada de `COR_PRIMARIA` em runtime (`core/tema.py` → `familia_marca`), servida por `json_script` e reconstruída no evento `tema:alterado` sem recarregar a página; zero hex de cor em template ou JS de template — Fase 7 (DS-05, DS-06)
+- ✓ Ponto de extensão da navegação: o derivado põe os próprios itens criando só `_nav_dominio.html`, com a inclusion tag `{% item_nav %}` entregando o tratamento visual por construção — provado por sha256 de toda a subárvore `core/` — Fase 7 (NAV-01, NAV-02, NAV-03)
+- ✓ `copier update` de v0.1.0 para v0.2.0 sem resolução manual em arquivo não tocado: exit 0, zero marcador de conflito, zero `.rej` — Fase 7 (REL-01, QA-03)
 
 ### Ativos
 
 <!-- Escopo atual. Construindo em direção a estes. -->
 
-- Nenhum — Fase 6 (Customização Visual e Persistência de Dados) concluída em 2026-08-19; roadmap atual 100% executado. Próximo escopo será definido em novo planejamento.
+- Nenhum — o marco v0.2.0 fecha as 7 fases do roadmap. Próximo escopo será definido em novo planejamento (`/gsd-new-milestone`).
+
+**Encaminhamentos conhecidos, ainda sem fase:**
+
+- Publicar a tag `v0.2.0` (`git push origin v0.2.0`) — decisão do operador, deliberadamente não executada no fecho do marco
+- Rodar o `copier update` desta versão no DividaAtiva; a Fase 8 de lá encolheu para "adaptar o que é do domínio da dívida", já que o design system chega pelo update
+- Construir o Orçamento — primeiro uso real do template, em projeto próprio
 
 ### Fora de Escopo
 
@@ -55,6 +66,7 @@ Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de ex
 - O CFC terá uma família de sistemas web de apoio à tomada de decisão do presidente e da gestão. Quatro sistemas principais, cada um em seu subdomínio: PCA (`pca.dominio`, em produção), Orçamento (`orcamento.dominio`, primeiro derivado do template), Financeiro (`financeiro.dominio`), Dívida Ativa (`dividaativa.dominio`).
 - A PCA já separa boilerplate de domínio: `config/` + `core/` + `compose.yml` + `Dockerfile` + `entrypoint.sh` + `ops/` são replicáveis; o domínio vive só em `apps/`. O template formaliza essa fronteira — o que a PCA provou em produção vira o template.
 - O app `exemplo` serve de documentação viva: quem gera um sistema novo o estuda, copia o padrão para seus apps de domínio e o remove.
+- **Estado no fecho da v0.2.0 (2026-08-24):** ~7.100 linhas entre Python, templates, JS, CSS e shell; 282 commits; 7 fases, 38 planos. Regressão em três camadas: 13 suítes em `.template-tests/` mais os testes Django do core e do app exemplo, rodando dentro de uma cópia Copier real (`ensaio_django.sh`). A tag `v0.2.0` existe local sobre `01ced83` e **não foi publicada** — o Copier lê a última tag, então publicar é o que entrega as Fases 6 e 7 aos derivados.
 
 ### Invariantes herdadas da PCA (valem para todo sistema gerado)
 
@@ -80,6 +92,11 @@ Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de ex
 | PCA não será alterada | É a fonte da extração, provada em produção; segue em `/opt/web/pca`; migração é decisão futura | — Pendente |
 | Autenticação independente por sistema | Cada sistema tem seus usuários e login; SSO é evolução futura; usuário customizado desde a primeira migração evita acoplamento que inviabilize SSO | — Pendente |
 | Stack fechada idêntica à da PCA | Mesma cara, mesma stack, mesma operação em toda a família de sistemas | — Pendente |
+| Herdar o design system direto do PCA, não do DividaAtiva | O PCA é anterior ao template e é a fonte real do padrão; o DividaAtiva tem só um recorte dele. Herdar do filho implicaria implementar o mesmo sistema duas vezes e conflitar com o próprio trabalho dele no `copier update` seguinte | ✓ Bom — Fase 7 |
+| `input.css` é a fonte física dos tokens; `tailwind.config.js` chega verbatim | Um único lugar para os valores, e o derivado nunca precisa editar o config do Tailwind. A marca é derivada em runtime por `core/tema.py` a partir de `COR_PRIMARIA` no `.env` | ✓ Bom — trocar a cor e recriar só o `web`, sem rebuild, muda a paleta nos 2 temas |
+| Ponto de extensão da nav por `_nav_dominio.html` + `{% item_nav %}` | O `_nav.html` era o pior conflito aberto da família — 79 linhas reescritas pelo DividaAtiva dentro de arquivo upstream. Resolver antes da v0.2.0 é o que torna o `copier update` dos derivados viável | ✓ Bom — teste tira sha256 da subárvore `core/` inteira e exige que o único caminho divergente seja o arquivo do derivado |
+| O item "Início" do núcleo permanece no `_nav.html` | Decisão do operador em 2026-08-24: o DividaAtiva aceita exibi-lo. Dar-lhe um jeito de escondê-lo reabriria, só para esse item, o conflito de upstream que a fase eliminou | — Pendente de uso real no primeiro `copier update` de derivado |
+| Marco GSD alinhado ao esquema de tag do repositório (v0.2.0, não v1.0) | Duas numerações no mesmo repositório confundiriam quem for procurar a release; a tag é o que o Copier lê | ✓ Bom — marco e release passam a ser o mesmo nome |
 
 ## Evolução
 
@@ -99,4 +116,4 @@ Este documento evolui nas transições de fase e nos marcos do projeto.
 4. Atualizar Contexto com o estado atual
 
 ---
-*Última atualização: 2026-08-19 após conclusão da Fase 6 (Customização Visual e Persistência de Dados) — última fase do roadmap atual*
+*Última atualização: 2026-08-24 após o marco v0.2.0 — Design system herdado do PCA*

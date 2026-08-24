@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v0.2.0
 milestone_name: Design system herdado do PCA
-status: "07-14 concluído — Fase 07 fechada: operador aprovou os 4 consertos em cópia real, regressão das 7 etapas verde (394s; 39 testes de .template-tests/, 169 Django na cópia gerada), v0.2.0 recriada sobre 01ced83 (era 367dd9a) e NÃO publicada — git push continua sendo decisão do operador"
-stopped_at: Completed 07-14-PLAN.md
-last_updated: "2026-08-24T14:56:33.603Z"
-last_activity: 2026-08-24 -- Phase 07 execution started
+status: Awaiting next milestone
+stopped_at: Marco v0.2.0 fechado e arquivado
+last_updated: "2026-08-24T21:31:19.879Z"
+last_activity: 2026-08-24 — Milestone v0.2.0 completed and archived
 progress:
   total_phases: 7
   completed_phases: 7
@@ -18,19 +18,17 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-08-17)
+See: .planning/PROJECT.md (atualizado 2026-08-24 após o marco v0.2.0)
 
 **Core value:** Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de exemplo, Docker, backup) em minutos — restando ao time apenas modelar o domínio em `apps/`.
-**Current focus:** Phase 07 — herdar-o-design-system-do-pca
+**Current focus:** Nenhum — as 7 fases do marco v0.2.0 estão fechadas. Próximo escopo em `/gsd-new-milestone`.
 
 ## Current Position
 
-Phase: 07 (herdar-o-design-system-do-pca) — PLANOS CONCLUÍDOS (aguarda verificação de fase)
-Plan: 14 of 14
-Status: 07-14 concluído — Fase 07 fechada: operador aprovou os 4 consertos em cópia real, regressão das 7 etapas verde (394s; 39 testes de .template-tests/, 169 Django na cópia gerada), v0.2.0 recriada sobre 01ced83 (era 367dd9a) e NÃO publicada — git push continua sendo decisão do operador
-Last activity: 2026-08-24 -- 07-14 concluído; tag v0.2.0 local sobre 01ced83, não publicada
-
-Progress: [██████████] 100%
+Phase: Milestone v0.2.0 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-08-24 — Milestone v0.2.0 completed and archived
 
 ## Performance Metrics
 
@@ -186,12 +184,19 @@ None yet.
 
 Items acknowledged and carried forward from previous milestone close:
 
-| Category | Item | Status | Deferred At |
-|----------|------|--------|-------------|
-| *(none)* | | | |
+| Categoria | Item | Situação | Diferido em |
+|-----------|------|----------|-------------|
+| uat | Fase 03 — inspeção humana direta de foco no primeiro campo do modal, resize da janela e drill-down por clique no dashboard | Fechado por cobertura (testes de 422/HX-Trigger + gate visual da 07-08), por decisão do operador; os 3 comportamentos seguem sem inspeção visual direta | 2026-08-24 |
+| release | Publicar a tag `v0.2.0` (`git push origin v0.2.0`) — sem isso os derivados seguem presos na v0.1.0, porque o Copier lê a última tag | Decisão do operador, deliberadamente não executada | 2026-08-24 |
+| ferramenta | `gsd-sdk query audit-open` reporta os 5 quick tasks como incompletos: lê `.planning/quick/<dir>/SUMMARY.md`, mas o `/gsd-quick` grava `<dir>/<id>-SUMMARY.md` | Bug do GSD, não do projeto — os 5 têm PLAN, SUMMARY e commit | 2026-08-24 |
 
 ## Session Continuity
 
-Last session: 2026-08-24T04:36:04.402Z
-Stopped at: Completed 07-13-PLAN.md
+Last session: 2026-08-24
+Stopped at: Marco v0.2.0 fechado e arquivado
 Resume file: None
+
+## Operator Next Steps
+
+- Decidir sobre publicar a tag `v0.2.0` (`git push origin v0.2.0`) — é o que entrega as Fases 6 e 7 aos derivados
+- Abrir o próximo escopo com `/gsd-new-milestone`
