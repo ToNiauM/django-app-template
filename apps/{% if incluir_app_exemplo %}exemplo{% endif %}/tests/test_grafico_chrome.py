@@ -13,9 +13,15 @@ elemento em que o gráfico está montado.
 
 O defeito, em número: os dois cards de gráfico são `bg-surface … dark:bg-surface-2`.
 No escuro o card É `--cor-surface-2`; o `splitLine` lia exatamente esse token,
-então a grade do eixo Y desenhava `#22211d` sobre `#22211d` — contraste
-**1,00:1**, ou seja, ausência de grade. No claro o mesmo erro era discreto
-(1,09:1) e por isso passou na inspeção visual.
+então a grade do eixo Y desenhava `--cor-surface-2` sobre `--cor-surface-2` —
+o MESMO tom, contraste **1,00:1**, ou seja, ausência de grade. No claro o mesmo
+erro era discreto (1,09:1) e por isso passou na inspeção visual.
+
+Nenhum hex aparece neste arquivo, nem em prosa: os valores saem sempre de
+`tokens_do_input_css()` e reaparecem nas mensagens de falha. Um hex citado num
+comentário é uma cópia da fonte que envelhece calada — a mesma classe de
+divergência que o helper de 07-09 existe para impedir (e `#RRGGBB` em
+`core/templates/` ou `apps/` é violação de DS-05 no gate da fase).
 
 ## O piso é 1,25:1, e não 3:1 nem 4,5:1 — a justificativa
 
