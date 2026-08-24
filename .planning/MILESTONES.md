@@ -11,10 +11,13 @@ dos derivados indolor.
 **Escopo:** 7 fases · 38 planos · 77 tasks · 282 commits · ~7.100 linhas
 (Python, templates, JS, CSS, shell) · 2026-08-17 → 2026-08-24
 
-**Tag:** `v0.2.0` → `01ced83`, anotada, **local e não publicada**. O Copier lê a
-última tag do repositório, não o HEAD: enquanto a tag não for publicada
-(`git push origin v0.2.0`), nenhum sistema derivado recebe as Fases 6 e 7.
-Publicar é decisão do operador.
+**Tag:** `v0.2.0` → `01ced83`, anotada e **publicada** em
+`git@github.com:ToNiauM/sistema-base.git` (objeto `6c7bc99`, idêntico ao local).
+Aponta para o commit posterior aos quatro consertos da rodada de gap closure —
+a tag anterior, sobre `367dd9a`, ainda continha os bloqueadores e foi apagada e
+recriada antes de sair da máquina. Como o Copier lê a última tag do repositório
+e não o HEAD, é esta publicação que entrega as Fases 6 e 7 aos derivados.
+A tag está publicada: pela regra do README, não se move mais.
 
 ### Principais entregas
 
@@ -79,8 +82,9 @@ Publicar é decisão do operador.
 
 ### Itens conhecidos no fecho
 
-- **A `v0.2.0` não foi publicada.** Enquanto não for, os derivados seguem
-  presos na `v0.1.0` e sem as Fases 6 e 7.
+- **Commits de planejamento à frente da tag.** A `v0.2.0` está publicada em
+  `01ced83`; `main` segue com commits posteriores que são só de `.planning/`,
+  diretório excluído pelo `copier.yml`. Nenhum sistema gerado é afetado por eles.
 - **Inspeção humana parcial na Fase 3.** Três comportamentos dos roteiros de
   UAT originais — foco automático no primeiro campo do modal, redimensionamento
   da janela e drill-down por clique no dashboard — nunca tiveram inspeção

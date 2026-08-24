@@ -47,7 +47,8 @@
 - **Uma tag foi criada sobre um commit com bloqueadores.** A `v0.2.0` original
   apontava para `367dd9a`, que ainda continha os quatro defeitos que a revisão de
   código encontrou. Precisou ser apagada e recriada sobre `01ced83`. Só não virou
-  incidente porque nunca foi publicada.
+  incidente porque a recriação aconteceu antes da publicação — a tag que foi ao
+  ar (`6c7bc99` sobre `01ced83`) é a correta.
 - **Os critérios de fase testavam estrutura declarada, não resultado
   renderizado.** "O token existe", "o ponto de extensão existe" — e foi nessa
   fresta que passaram cinco defeitos de contraste e de estado ativo: texto branco

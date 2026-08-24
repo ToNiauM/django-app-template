@@ -47,7 +47,7 @@ Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de ex
 
 **Encaminhamentos conhecidos, ainda sem fase:**
 
-- Publicar a tag `v0.2.0` (`git push origin v0.2.0`) — decisão do operador, deliberadamente não executada no fecho do marco
+- Nada pendente de release: a `v0.2.0` já está publicada em `origin` sobre `01ced83`, o commit posterior aos quatro consertos. Os derivados já podem puxá-la.
 - Rodar o `copier update` desta versão no DividaAtiva; a Fase 8 de lá encolheu para "adaptar o que é do domínio da dívida", já que o design system chega pelo update
 - Construir o Orçamento — primeiro uso real do template, em projeto próprio
 
@@ -66,7 +66,7 @@ Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de ex
 - O CFC terá uma família de sistemas web de apoio à tomada de decisão do presidente e da gestão. Quatro sistemas principais, cada um em seu subdomínio: PCA (`pca.dominio`, em produção), Orçamento (`orcamento.dominio`, primeiro derivado do template), Financeiro (`financeiro.dominio`), Dívida Ativa (`dividaativa.dominio`).
 - A PCA já separa boilerplate de domínio: `config/` + `core/` + `compose.yml` + `Dockerfile` + `entrypoint.sh` + `ops/` são replicáveis; o domínio vive só em `apps/`. O template formaliza essa fronteira — o que a PCA provou em produção vira o template.
 - O app `exemplo` serve de documentação viva: quem gera um sistema novo o estuda, copia o padrão para seus apps de domínio e o remove.
-- **Estado no fecho da v0.2.0 (2026-08-24):** ~7.100 linhas entre Python, templates, JS, CSS e shell; 282 commits; 7 fases, 38 planos. Regressão em três camadas: 13 suítes em `.template-tests/` mais os testes Django do core e do app exemplo, rodando dentro de uma cópia Copier real (`ensaio_django.sh`). A tag `v0.2.0` existe local sobre `01ced83` e **não foi publicada** — o Copier lê a última tag, então publicar é o que entrega as Fases 6 e 7 aos derivados.
+- **Estado no fecho da v0.2.0 (2026-08-24):** ~7.100 linhas entre Python, templates, JS, CSS e shell; 282 commits; 7 fases, 38 planos. Regressão em três camadas: 13 suítes em `.template-tests/` mais os testes Django do core e do app exemplo, rodando dentro de uma cópia Copier real (`ensaio_django.sh`). A tag `v0.2.0` está publicada em `origin` sobre `01ced83` (objeto `6c7bc99`), o commit posterior aos quatro consertos da rodada de gap closure — o Copier lê a última tag, então é ela que entrega as Fases 6 e 7 aos derivados. Os commits de `main` posteriores a ela são só de `.planning/`, excluído pelo `copier.yml`.
 
 ### Invariantes herdadas da PCA (valem para todo sistema gerado)
 

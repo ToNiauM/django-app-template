@@ -187,7 +187,7 @@ Items acknowledged and carried forward from previous milestone close:
 | Categoria | Item | Situação | Diferido em |
 |-----------|------|----------|-------------|
 | uat | Fase 03 — inspeção humana direta de foco no primeiro campo do modal, resize da janela e drill-down por clique no dashboard | Fechado por cobertura (testes de 422/HX-Trigger + gate visual da 07-08), por decisão do operador; os 3 comportamentos seguem sem inspeção visual direta | 2026-08-24 |
-| release | Publicar a tag `v0.2.0` (`git push origin v0.2.0`) — sem isso os derivados seguem presos na v0.1.0, porque o Copier lê a última tag | Decisão do operador, deliberadamente não executada | 2026-08-24 |
+| release | Publicar a tag `v0.2.0` | **Já publicada** — confirmado por `git ls-remote --tags origin` em 2026-08-24: objeto `6c7bc99` sobre `01ced83`, idêntico ao local. O registro do plano 07-14 ("não publicada") está desatualizado | — |
 | ferramenta | `gsd-sdk query audit-open` reporta os 5 quick tasks como incompletos: lê `.planning/quick/<dir>/SUMMARY.md`, mas o `/gsd-quick` grava `<dir>/<id>-SUMMARY.md` | Bug do GSD, não do projeto — os 5 têm PLAN, SUMMARY e commit | 2026-08-24 |
 
 ## Session Continuity
@@ -198,5 +198,6 @@ Resume file: None
 
 ## Operator Next Steps
 
-- Decidir sobre publicar a tag `v0.2.0` (`git push origin v0.2.0`) — é o que entrega as Fases 6 e 7 aos derivados
+- Decidir sobre publicar os 3 commits locais de `.planning/` (`git push origin main`) — não afetam nenhum sistema gerado, já que o `copier.yml` exclui `.planning`
+- A release já está no ar: a `v0.2.0` está publicada em `origin` sobre `01ced83`
 - Abrir o próximo escopo com `/gsd-new-milestone`
