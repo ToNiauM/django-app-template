@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 07-11-PLAN.md
-last_updated: "2026-08-24T04:20:00.000Z"
+status: "07-12 concluído — G-04 fechado (grade do eixo lê `--cor-grid`: 1,00:1 → 1,38:1 no escuro, 1,09 → 1,29:1 no claro, medido; borda do donut acompanha o card por tema; tooltip do ECharts escapado); próximo: 07-13 (G-03)"
+stopped_at: Completed 07-12-PLAN.md
+last_updated: "2026-08-24T04:21:42.551Z"
 last_activity: 2026-08-24
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 38
-  completed_plans: 35
-  percent: 92
+  completed_plans: 36
+  percent: 86
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-17)
 ## Current Position
 
 Phase: 07 (herdar-o-design-system-do-pca) — EXECUTING (fechamento de gaps)
-Plan: 11 of 14 (os 8 originais concluídos e verificados; 07-09 a 07-14 fecham G-01..G-05)
-Status: 07-11 concluído — G-02 fechado (`--cor-brand-tx` inverte com o tema; par da marca ≥ 4,5:1 medido para 3 COR_PRIMARIA); próximo: 07-12 (G-04)
+Plan: 12 of 14 (os 8 originais concluídos e verificados; 07-09 a 07-14 fecham G-01..G-05)
+Status: 07-12 concluído — G-04 fechado (grade do eixo lê `--cor-grid`: 1,00:1 → 1,38:1 no escuro, 1,09 → 1,29:1 no claro, medido; borda do donut acompanha o card por tema; tooltip do ECharts escapado); próximo: 07-13 (G-03)
 Last activity: 2026-08-24
 
-Progress: [█████████░] 92%
+Progress: [██████████] 95%
 
 ## Performance Metrics
 
@@ -82,6 +82,7 @@ Progress: [█████████░] 92%
 | Phase 07-herdar-o-design-system-do-pca P09 | 13min | 3 tasks | 4 files |
 | Phase 07-herdar-o-design-system-do-pca P10 | 18min | 3 tasks | 5 files |
 | Phase 07-herdar-o-design-system-do-pca P11 | 27min | 2 tasks | 7 files |
+| Phase 07-herdar-o-design-system-do-pca P12 | 22min | 3 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -153,6 +154,9 @@ Recent decisions affecting current work:
 - [Phase ?]: [Phase 07-10]: excecoes entra no FIM da assinatura de item_nav (posicional-compatível) e a correspondência exata nunca é anulada por ela — exato vence prefixo, e a exceção é declarada no sítio da chamada porque uma inclusion_tag não enxerga os irmãos
 - [Phase ?]: [Phase 07-10]: nav_dominio (simple_tag tolerante) substitui o include literal em _nav.html — o arquivo é do derivado, apagá-lo é estado previsto e o Django não tem ignore missing; degrada para menu vazio, nunca 500 (WR-10)
 - [Phase ?]: [Phase 07-10]: a topologia pai/filho da nav é exercitada na suíte do core contra um urlconf sintético do próprio módulo (override_settings ROOT_URLCONF=__name__) — a prova com o stub REAL vive em apps/exemplo/tests/test_nav_ativo.py, onde as rotas exemplo:* existem por construção
+- [Phase 07-12]: Piso de contraste de CROMO fixado em 1,25:1 (não 3:1 nem 4,5:1) — grade e separação de fatia não carregam dado nem texto; um gate em > 1,00 passaria com 1,001:1, e 1,25 reprova --cor-surface-2 no claro (1,09:1), que é a regressão a barrar
+- [Phase 07-12]: esc() aplicada a TODA interpolação dos formatters do ECharts, inclusive as numéricas — regra com exceções obriga o derivado a reclassificar campo a campo ao adaptar o dashboard, e é aí que o escape some
+- [Phase 07-12]: corCard declarada DENTRO de montarGraficos(), não no escopo do DOMContentLoaded — é o que faz o ternário de tema ser reavaliado no evento tema:alterado; fora da função o conserto valeria só para o tema em que a página carregou
 
 ### Pending Todos
 
@@ -182,6 +186,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-24T04:20:00.000Z
-Stopped at: Completed 07-11-PLAN.md
+Last session: 2026-08-24T04:21:32.057Z
+Stopped at: Completed 07-12-PLAN.md
 Resume file: None
