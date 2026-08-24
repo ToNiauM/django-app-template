@@ -58,6 +58,56 @@ O diretório `.venv-template/` é ignorado pelo Git. Não substitua a versão
 pinada sem uma nova avaliação de procedência e uma atualização explícita deste
 contrato.
 
+## Estrutura do repositório do template
+
+Três regras explicam qualquer arquivo desta árvore:
+
+- **Sufixo `.jinja` = renderizado.** `_templates_suffix: .jinja` no
+  `copier.yml`. O arquivo `compose.yml.jinja` vira `compose.yml` no sistema
+  gerado, com as respostas interpoladas. `_envops.undefined` é
+  `jinja2.StrictUndefined`: uma variável não declarada aborta a renderização
+  em vez de virar string vazia silenciosa.
+- **Sem sufixo = verbatim.** `tailwind.config.js`, `core/tema.py`,
+  `core/templatetags/navegacao.py` e todo o `core/` chegam byte a byte ao
+  sistema gerado. É o que torna o `copier update` previsível: o derivado não
+  edita esses arquivos, logo eles nunca conflitam.
+- **`_exclude` = não sai daqui.** `.planning/`, `.template-tests/`,
+  `copier.yml`, `CLAUDE.md`, `IDEIA.md` e `REVIEW.md` são do template e não
+  existem no sistema gerado. `README.md` é exceção estudada: `README.md.jinja`
+  renderiza e substitui este arquivo durante a cópia, porque o `_exclude` do
+  Copier se aplica ao caminho de **destino**.
+
+| Caminho | Papel |
+| --- | --- |
+| `copier.yml` | Perguntas, validators, `_exclude` e `_skip_if_exists`. Não sai do template. |
+| `config/settings/*.py.jinja` | Settings por ambiente; `base.py.jinja` valida `COR_PRIMARIA` no boot. |
+| `core/` | Kernel verbatim: usuário customizado, shell, login, tema, templatetags, testes. |
+| `core/static/src/input.css` | **Fonte física de toda cor.** Verbatim. |
+| `core/static/src/dominio.css` | Stub enviado uma vez; a partir daí é do derivado (`_skip_if_exists`). |
+| `core/templates/core/_nav.html` | Navegação do núcleo. Verbatim — nunca editar no derivado. |
+| `core/templates/core/_nav_dominio.html.jinja` | Stub dos itens do domínio; vira propriedade do derivado (`_skip_if_exists`). |
+| `tailwind.config.js` | Verbatim, sem nenhum valor de cor — só aponta para `var(--cor-*)`. |
+| `apps/` | App exemplo, renderizado apenas quando `incluir_app_exemplo` é `true`. |
+| `ops/` | Runbook de migração, vhost Nginx e gerador de ícones PWA. |
+| `.template-tests/` | Regressão do template. **Não** existe no sistema gerado. |
+
+### Os dois arquivos que passam a ser do derivado
+
+`_skip_if_exists` no `copier.yml` lista exatamente dois caminhos:
+
+```yaml
+_skip_if_exists:
+  - core/templates/core/_nav_dominio.html
+  - core/static/src/dominio.css
+```
+
+Depois da primeira cópia, o `copier update` **nunca** reescreve esses dois
+arquivos — nem quando o template muda o próprio conteúdo padrão deles. É o
+mecanismo que permite ao derivado ter menu e tokens de estado próprios sem
+jamais tocar em arquivo upstream. A lista não é decorativa: sem ela, o
+primeiro `copier update` que mude a resposta correspondente grava
+`<<<<<<< before updating` dentro do arquivo do derivado.
+
 ## Nascimento local de um sistema
 
 A sequência abaixo leva do template a um sistema navegável sem editar código.
@@ -79,11 +129,25 @@ oculta após a cópia: cada passo é consciente e auditável.
    /caminho/para/template/.venv-template/bin/copier copy /caminho/para/template /caminho/para/novo-sistema
    ```
 
-4. **Responda as oito perguntas:** nome, slug, hostname, porta, banco, sigla,
-   cor primária e inclusão do app exemplo. Os validators recusam valores fora
-   do contrato antes de renderizar arquivos. Segredos nunca são respostas
-   Copier: as respostas ficam em `.copier-answers.yml`, arquivo sem
-   credenciais que será versionado no repositório do sistema.
+4. **Responda as oito perguntas.** Os validators recusam valores fora do
+   contrato **antes** de renderizar qualquer arquivo:
+
+   | Pergunta | Tipo | Default | O que o validator exige |
+   | --- | --- | --- | --- |
+   | `sistema_nome` | str | — | não vazio |
+   | `sistema_slug` | str | nome em minúsculas, sem espaços | só `[a-z0-9]`, sem separadores |
+   | `sistema_hostname` | str | `<slug>.exemplo.gov.br` | hostname DNS completo, sem esquema, caminho ou porta |
+   | `sistema_porta` | int | `8000` | entre 1024 e 65535 |
+   | `sistema_banco` | str | `<slug>` | só `[a-z0-9]`, sem separadores |
+   | `sistema_sigla` | str | iniciais do nome, em maiúsculas | não vazia |
+   | `cor_primaria` | str | `#1e40af` | formato `#RRGGBB` |
+   | `incluir_app_exemplo` | bool | `true` | — |
+
+   Segredos nunca são respostas Copier: as respostas ficam em
+   `.copier-answers.yml`, arquivo sem credenciais que será versionado no
+   repositório do sistema. `cor_primaria` é a única resposta que vira
+   comportamento de runtime — veja
+   [O design system herdado](#o-design-system-herdado).
 
 5. **Entre no projeto gerado e crie o ambiente local:**
 
@@ -205,6 +269,262 @@ Mantenha uma alocação documentada para evitar colisões no host:
 
 O Compose continua ligado a `127.0.0.1`; o proxy do host é a única fronteira
 de exposição externa.
+
+## O design system herdado
+
+Um sistema recém-nascido já vem com o padrão visual inteiro da família — não
+há passo de reskin. Esta seção existe para que o derivado saiba **onde** cada
+peça mora e, principalmente, o que ele não deve editar.
+
+### A fonte física das cores
+
+`core/static/src/input.css` é o único arquivo com valores de cor. Ele declara
+**23** variáveis em `:root` (tema claro) e sobrescreve **20** delas no bloco
+`[data-tema="escuro"]` — os tokens do escuro são um subconjunto estrito dos
+do claro, nunca um vocabulário paralelo. Os três que **não** invertem são
+`--cor-baseline`, `--cor-destructive` e `--cor-secundaria`: linha de base de
+gráfico, vermelho de ação destrutiva e dourado institucional funcionam nos
+dois temas com o mesmo valor.
+
+O `tailwind.config.js` não contém nenhum valor: cada cor nomeada aponta para
+`var(--cor-*)`.
+
+```js
+colors: {
+  page: "var(--cor-page)",
+  surface: "var(--cor-surface)",
+  // ... nenhum literal, em nenhuma entrada
+}
+```
+
+A consequência é o que torna o tema escuro barato: os utilitários que o
+Tailwind gera (`bg-page`, `text-ink`, `border-grid`) resolvem em **runtime**,
+nos dois temas, com uma única regra CSS cada. Trocar de tema não recompila
+nada.
+
+Nunca escreva hex em template ou em JS de template. A regressão falha se
+algum aparecer.
+
+### `COR_PRIMARIA` resolve em runtime, sem rebuild
+
+A cor de marca é a única resposta Copier que vira comportamento de runtime.
+O caminho completo:
+
+```
+.env → settings.COR_PRIMARIA → core.tema.css_da_marca() → <style> em base.html
+```
+
+`config/settings/base.py` valida o valor contra `#RRGGBB` com `re.fullmatch`
+no boot e levanta `ImproperlyConfigured` se não bater — a cor é interpolada
+em CSS, e essa validação é a barreira contra injeção via `.env`.
+
+`core/tema.py` deriva a família inteira de uma única cor com `colorsys`:
+
+| Chave | Papel |
+| --- | --- |
+| `brand` | a cor respondida, sem alteração |
+| `brand-hover` | tom de hover |
+| `brand-ink` | tom pressionado / texto de ênfase |
+| `brand-tint` | fundo tênue do item ativo |
+| `seq-750` `seq-600` `seq-450` `seq-300` | rampa sequencial de gráfico, do mais forte ao mais fraco |
+
+São as **8** chaves de `_CHAVES_MARCA`, derivadas nos dois temas — 16
+variáveis geradas por `css_da_marca()` a partir de um único hex. Trocar
+`COR_PRIMARIA` no `.env` e reiniciar o container muda a marca inteira,
+**sem** rebuild do CSS. `.template-tests/test_07_cor_runtime.sh` prova
+exatamente isso.
+
+**`--cor-brand-tx` é a exceção, e é deliberada.** É a cor do **texto** sobre
+o fundo da marca, e **não** é derivada de `COR_PRIMARIA`: são dois hex planos
+no `input.css` — `#ffffff` no claro e `#0f0e0d` no escuro, este último
+idêntico ao `--cor-page` do tema escuro. Ele é fixo porque o texto sobre a
+marca só tem duas respostas possíveis (claro ou escuro), e derivá-lo da cor
+introduziria uma variável onde a decisão é binária.
+
+Botão primário usa `bg-brand text-brand-tx`, nunca `text-white`: no tema
+escuro o fundo da marca é claro, e `text-white` fica ilegível — com o hover,
+que clareia ainda mais o fundo, como pior caso.
+
+### Tema escuro
+
+```js
+darkMode: ["selector", '[data-tema="escuro"]']
+```
+
+O atributo vive em `<html>`. A preferência é persistida em `localStorage`
+(chave `tema`, valores `claro`, `escuro` e `auto`; o default é `auto`, que
+segue o sistema operacional) — **nunca** em cookie, porque uma navegação
+servida pelo cache do navegador não passaria pelo servidor a tempo. O
+`base.html` aplica o atributo antes de qualquer CSS pintar, o que elimina o
+flash de tema errado no recarregamento, e dispara `tema:alterado` para que os
+gráficos se repintem sem reload.
+
+### Elevação, raio, régua e fonte
+
+**Elevação** — no tema escuro, elevação é **luminosidade**, não sombra. O
+mapa dos três níveis está escrito em `core/templates/core/shell.html`:
+
+| Nível | Receita clara | Receita escura |
+| --- | --- | --- |
+| Base | `bg-surface border border-grid`, sem sombra | idem (o token já muda) |
+| Elevado | `bg-surface border border-grid shadow-sm` | `dark:bg-surface-2 dark:shadow-none` |
+| Flutuante | `bg-surface shadow-lg` | `dark:bg-surface-3 dark:shadow-md` |
+
+**Raio** — único, de 2px, com as seis chaves colapsadas (`DEFAULT`, `sm`,
+`md`, `lg`, `xl`, `2xl`). `rounded-lg` e `rounded-sm` produzem o mesmo
+resultado por construção: não há como um template desalinhar o raio.
+
+**Régua tipográfica** — seis degraus, com teto real em 20px:
+
+| Classe | Tamanho | Uso típico |
+| --- | --- | --- |
+| `text-xs` | 11px | metadados |
+| `text-sm` | 12px | apoio |
+| `text-base` | 13px | corpo e botões |
+| `text-md` | 14px | ênfase de corpo |
+| `text-lg` | 16px | título de seção e de card |
+| `text-xl` | 20px | título de página |
+
+`fontSize` fica em `theme`, **não** em `theme.extend`. A diferença importa:
+`extend` somaria à escala default do Tailwind e `text-2xl`…`text-9xl`
+continuariam gerando regra, furando o teto. Em `theme`, a escala é
+substituída e o teto de 20px passa a ser propriedade da build.
+
+**Fonte** — pilha `system-ui`, sem webfont e sem requisição de rede.
+
+**Anel de foco** — regra única em `@layer base`: outline sólido de 2px na cor
+da marca, com offset, em qualquer elemento focável. Não há declaração de foco
+espalhada por template.
+
+### Classes de componente
+
+O `@layer components` do `input.css` entrega oito classes: `.results`,
+`.module`, `.form-row`, `.btn` e as quatro variações `.btn--primaria`,
+`.btn--secundaria`, `.btn--neutro`, `.btn--destrutiva`.
+
+As oito estão na `safelist` do `tailwind.config.js` por necessidade, não por
+excesso de zelo: o JIT do Tailwind poda qualquer seletor que não apareça
+literalmente no conteúdo varrido, e uma classe usada só via `data-*` ou só
+pelo derivado desapareceria do CSS.
+
+### Paleta de gráfico
+
+Os gráficos não têm cor cravada no JS. A view monta `paleta_graficos` a
+partir de `core.tema.familia_marca(settings.COR_PRIMARIA)`, com listas
+separadas para claro e escuro, e entrega ao template por
+`json_script:"paleta-graficos"`. O JS lê o JSON e, no evento
+`tema:alterado`, refaz `dispose()` + `init()` — os gráficos repintam sem
+recarregar a página.
+
+O cromo do gráfico (eixo, grade, tooltip, borda de fatia) **não** vem do
+JSON: é lido de `getComputedStyle` em runtime, para acompanhar o tema pelo
+mesmo caminho que o resto da página.
+
+A rampa sequencial tem quatro degraus (`seq-750`, `seq-600`, `seq-450`,
+`seq-300`), todos derivados da marca e todos degraus de **dado** — nenhum
+deles é token de fundo. O donut do app exemplo consome os quatro.
+
+### Tokens de estado do domínio
+
+`core/static/src/dominio.css` é o lugar — e o único lugar — dos tokens de
+estado do seu sistema ("concluído", "atrasado", "em análise"). O template
+envia um stub comentado uma única vez e nunca mais toca no arquivo.
+
+O contrato, resumido (a versão completa está nos comentários do próprio
+stub):
+
+1. Cada estado declara um **par**: `--cor-<estado>` (o matiz) e
+   `--cor-<estado>-tx` (o par de texto). No tema escuro, normalmente só a
+   variante `-tx` precisa de um par clareado.
+2. A ponte entre dado e cor fica **fora** de qualquer `@layer` — dentro dele
+   o Tailwind poda a regra, porque `data-*` só resolve em runtime.
+3. Piso de contraste nos dois temas: 4,5:1 para texto, 3:1 para elemento
+   gráfico. Valide também para daltonismo antes de fixar os matizes.
+
+Nenhum nome de estado concreto sobe do template: os pares de status do padrão
+de referência da família são vocabulário do domínio **dele**. O que sobe é a
+mecânica do par e a disciplina.
+
+### A guarda de contraste que o derivado herda
+
+`core/tests/contraste.py` viaja **dentro** do sistema gerado — não é helper
+de template. Ele é a fonte única da fórmula WCAG (`luminancia_relativa`,
+`contraste`, `tokens_do_input_css`) e alimenta os testes de contraste que
+nascem junto com o sistema. Quando o derivado trocar `COR_PRIMARIA` ou
+acrescentar tokens em `dominio.css`, a suíte do próprio sistema é quem
+reprova um par ilegível.
+
+## Ponto de extensão da navegação
+
+O derivado põe os próprios itens no menu **sem editar um único arquivo do
+núcleo**. São três peças.
+
+### 1. `_nav.html` — do núcleo, nunca editar
+
+```django
+<nav aria-label="Navegação principal" class="flex flex-col gap-1">
+  {% item_nav "core:shell" "Início" "casa" %}
+  {% nav_dominio %}
+</nav>
+```
+
+Toda edição aqui vira conflito no próximo `copier update`. O arquivo tem um
+item só — "Início", a rota `core:shell` que todo sistema gerado possui — e a
+tag de extensão.
+
+### 2. `{% nav_dominio %}` — a inserção tolerante
+
+Não é `{% include %}`. O `{% include %}` do Django com string literal levanta
+`TemplateDoesNotExist` quando o arquivo some, e derrubaria com 500 **toda**
+página que estende `shell.html`. O Django não tem `ignore missing` — isso é
+Jinja2.
+
+Como `_nav_dominio.html` pertence ao derivado, apagá-lo é um estado previsto:
+o resultado tem que ser menu sem itens de domínio, nunca erro.
+
+### 3. `_nav_dominio.html` — do derivado, uma linha por item
+
+```django
+{% item_nav "app:rota" "Rótulo" "icone" "prefixo-opcional" "excecoes-opcionais" %}
+```
+
+| Argumento | Obrigatório | O que faz |
+| --- | --- | --- |
+| `rota` | sim | **Nome** da rota (`app:nome`), não a URL. Rota inexistente → o item não aparece, sem erro. |
+| `rotulo` | sim | Texto do item. |
+| `icone` | não | Nome de um ícone embutido. Disponíveis: `casa`, `grafico`, `lista`. |
+| `prefixo` | não | Acende o item também nas rotas-filhas (ex.: `"/clientes/"`). |
+| `excecoes` | não | Caminhos sob `prefixo`, separados por espaço, que **não** devem acender este item. |
+
+O estado ativo vem por construção: fundo `bg-brand-tint`, texto
+`text-brand-ink`, filete vertical de 2px à esquerda e `aria-current="page"`.
+Nenhum derivado reescreve essa string de classes.
+
+**Sobre `excecoes`.** Sem ela, um item com `prefixo="/clientes/"` acende
+junto com o item de `/clientes/relatorio/`, e a página passa a ter dois
+`aria-current="page"`. A exceção é **declarada no sítio da chamada**, não
+inferida: uma `inclusion_tag` renderiza um item por vez, sem enxergar os
+irmãos, e qualquer desempate automático dependeria da ordem das linhas no
+arquivo — frágil exatamente no arquivo que pertence ao derivado.
+
+A correspondência **exata** nunca é anulada por `excecoes`: um item continua
+ativo na própria URL, aconteça o que acontecer. É o que impede que uma
+exceção mal escrita apague o estado ativo do item dono da rota.
+
+Exemplo real, o que o app exemplo renderiza:
+
+```django
+{% item_nav "exemplo:dashboard" "Dashboard" "grafico" %}
+{% item_nav "exemplo:item_listar" "Itens (CRUD)" "lista" "/exemplo/" "/exemplo/dashboard/" %}
+```
+
+Sem `request` no contexto (`render_to_string()` sem `request=`, template de
+e-mail, geração de PDF, comando de management) não há caminho atual: o item
+renderiza inativo em vez de derrubar o render.
+
+`.template-tests/test_07_nav_extensao.py` prova o contrato inteiro — inclusive
+que remover os itens do app exemplo não toca em nenhum arquivo do `core`,
+conferido por sha256 de toda a subárvore.
 
 ## Publicação com proxy, TLS e DNS
 
@@ -348,6 +668,20 @@ anterior dispute containers, portas ou espaço com as suítes seguintes; o
 segundo repete a limpeza porque `test_07_cor_runtime.sh` recria o banco para
 provar a resolução da cor em runtime.
 
+> **Orçamento de tempo.** Rode **cada** etapa com timeout próprio de 600 s;
+> não encadeie as sete num único comando de timeout curto. As etapas 2, 3, 5
+> e 7 fazem gerações completas de sistema, e a 7 sobe Compose, migra e roda a
+> suíte Django inteira dentro da cópia. Com cache Docker frio, a primeira
+> criação pode passar de 600 s sozinha — nesse caso repita a mesma etapa em
+> background com polling e espere o código de saída real. Só reprova a
+> regressão uma etapa que **terminou** com código diferente de zero.
+
+Antes de qualquer rodada, confirme que o host está limpo com
+`docker compose ls -a`: nenhum projeto de ensaio ou nascimento pode estar de
+pé. Uma cópia retida por `--keep` de uma sessão anterior é pior que inútil —
+a credencial efêmera dela morreu junto com a sessão que a gerou, e ela ainda
+disputa portas e espaço com a regressão nova.
+
 - `.template-tests/test_copier_copy.sh` cria somente destinos temporários,
   exercita as variantes com e sem o app exemplo, rejeita respostas inválidas e
   audita a árvore renderizada. A auditoria procura identificadores legados
@@ -360,6 +694,14 @@ provar a resolução da cor em runtime.
 - Os contratos Python `test_04_*.py` fixam identidade, app exemplo opcional,
   backup, scripts de operação e o ambiente de `collectstatic` nas variantes
   renderizadas.
+- `.template-tests/test_06_persistencia.py` fixa o contrato de persistência:
+  `compose.yml` usa bind mount e não named volume, `.env.example` documenta
+  `PGDATA_DIR`, o `.gitignore` do template ignora `dados/` e o
+  `.gitignore.jinja` renderizado protege `.env` e `/dados/` no sistema
+  gerado.
+- `.template-tests/test_quick_comentarios_template.py` varre os templates
+  atrás de comentário `{# #}` multilinha inline — o padrão que vazava texto
+  de comentário para a tela.
 - `.template-tests/test_07_tokens.py` prova o contrato dos tokens de design:
   a fonte `system-ui`, a régua tipográfica com teto de 20px e a ausência de
   classes mortas da paleta antiga.
@@ -440,6 +782,39 @@ cai no HEAD com uma versão sintética como `0.0.0.postN.dev0+hash` e, se a
 commitadas na cópia — nunca gere um sistema real nesse estado. A opção
 `--vcs-ref=HEAD` existe apenas para ensaio e depuração do template, nunca
 para nascimento de produção.
+
+### Tag publicada não se move
+
+Enquanto uma tag existe **apenas localmente**, corrigi-la é barato: apagar e
+recriar sobre o commit certo não afeta ninguém, porque nenhum sistema
+derivado a consumiu. Basta conferir antes que ela realmente não saiu da
+máquina:
+
+```bash
+git ls-remote --tags origin | grep v0.2.0
+# sem saída: a tag nunca foi publicada, recriar é seguro
+
+git tag -d v0.2.0
+git tag -a v0.2.0 -m "descrição da release"
+```
+
+**Depois do `git push`, a regra inverte e não tem exceção: tag publicada não
+se move.** Se um defeito aparecer numa release já publicada, a resposta é uma
+**versão nova** — `v0.2.1` —, nunca a mesma tag apontando para outro commit.
+
+O motivo é o Copier. Ele resolve `--vcs-ref v0.2.0` no momento da cópia ou do
+update: mover a tag reescreveria, sob os pés de todo derivado que já
+atualizou, o que "v0.2.0" significa. Dois sistemas com o mesmo
+`_commit: v0.2.0` no `.copier-answers.yml` passariam a ter árvores
+diferentes, e o `copier update` seguinte de cada um partiria de uma base que
+não corresponde ao que ele realmente recebeu — um diff impossível de
+auditar.
+
+Por isso a verificação de publicação é **pré-condição bloqueante** de
+qualquer recriação de tag, não uma formalidade: é a única coisa que separa
+uma correção barata de um estrago irreversível na família inteira.
+
+### Atualizando um sistema derivado
 
 Faça `copier update` exclusivamente com o Git limpo:
 
