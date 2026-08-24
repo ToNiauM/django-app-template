@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 07-07-PLAN.md
-last_updated: "2026-08-23T20:12:14.826Z"
-last_activity: 2026-08-23
+stopped_at: Completed 07-09-PLAN.md
+last_updated: "2026-08-24T03:34:06.166Z"
+last_activity: 2026-08-24
 progress:
   total_phases: 7
   completed_phases: 6
-  total_plans: 32
-  completed_plans: 31
-  percent: 86
+  total_plans: 38
+  completed_plans: 33
+  percent: 87
 ---
 
 # Project State
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-08-17)
 
 ## Current Position
 
-Phase: 07 (herdar-o-design-system-do-pca) — EXECUTING
-Plan: 8 of 8
-Status: Checkpoint pendente — Task 1 concluída; Task 2 (inspeção visual, gate="blocking") aguardando aprovação do operador antes da Task 3 (regressão final + tag v0.2.0)
-Last activity: 2026-08-23
+Phase: 07 (herdar-o-design-system-do-pca) — EXECUTING (fechamento de gaps)
+Plan: 09 of 14 (os 8 originais concluídos e verificados; 07-09 a 07-14 fecham G-01..G-05)
+Status: 07-09 concluído — guardas executáveis de pé; próximo: 07-10 (G-01)
+Last activity: 2026-08-24
 
-Progress: [██████████] 97%
+Progress: [█████████░] 87%
 
 ## Performance Metrics
 
@@ -79,6 +79,7 @@ Progress: [██████████] 97%
 | Phase 07-herdar-o-design-system-do-pca P05 | 40min | 3 tasks | 4 files |
 | Phase 07-herdar-o-design-system-do-pca P06 | 70min | 3 tasks | 7 files |
 | Phase 07-herdar-o-design-system-do-pca P07 | 45min | 3 tasks | 6 files |
+| Phase 07-herdar-o-design-system-do-pca P09 | 13min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -141,6 +142,9 @@ Recent decisions affecting current work:
 - [Phase ?]: [Phase 07-07]: Regex de leitura de fontSize (herdado de 07-02) corrigido para casar chaves entre aspas ('"2xl":') — bug pré-existente revelado pela prova negativa exigida pela Task 2, sem o qual o gate da régua tipográfica passaria em falso positivo silencioso
 - [Phase ?]: [Phase 07-07]: Botão adota text-base (13px), não text-sm — paridade com o vocabulário .btn (text-[13px]) do input.css; aplicado a 6 sítios (Gerenciar itens, Novo item, Cancelar/Salvar item, Cancelar/Sim-excluir, 3 botões de tema do shell)
 - [Phase ?]: [Phase 07-07]: Título de seção (h2) que ficava do mesmo tamanho do corpo em 13px promovido a text-lg (16px) — aplicado aos 2 títulos de gráfico do dashboard e aos 2 títulos de modal
+- [Phase 07-09]: core/tests/contraste.py é a fonte única da fórmula WCAG e vive DENTRO do sistema gerado — .template-tests está em _exclude do copier.yml, um helper lá deixaria todo derivado sem a guarda de contraste
+- [Phase 07-09]: Teto tipográfico vira propriedade da build: fontSize sai de theme.extend (que SOMA ao default, mantendo text-2xl…text-9xl gerando regra) para theme (que SUBSTITUI) — provado com Tailwind real, text-2xl passa de 1 regra para 0
+- [Phase 07-09]: TEXT_CLASS_RE troca o \b final por lookahead (?![\w-]): além de ressuscitar o ramo de valor arbitrário do G-05, passa a recusar text-ink-2, que o \b antigo casava indevidamente como text-ink
 
 ### Pending Todos
 
@@ -170,6 +174,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-23T20:12:14.787Z
-Stopped at: Completed 07-07-PLAN.md
+Last session: 2026-08-24T03:34:00.000Z
+Stopped at: Completed 07-09-PLAN.md
 Resume file: None

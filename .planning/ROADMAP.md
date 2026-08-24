@@ -315,7 +315,7 @@ REL-01, QA-03
 inteira ainda não chegou a nenhum sistema, porque o Copier lê a última tag e não o HEAD.
 Esta fase deve terminar com uma tag nova (`v0.2.0`), que entrega Fase 6 e Fase 7 juntas.
 
-**Plans:** 8/8 plans complete + 6 planos de fechamento de gap (07-09 a 07-14), 0/6 concluídos
+**Plans:** 8/8 plans complete + 6 planos de fechamento de gap (07-09 a 07-14), 1/6 concluídos
 
 Plans:
 **Wave 1**
@@ -358,7 +358,7 @@ passaram. Os planos abaixo fecham a fresta com prova de **resultado renderizado*
 
 **Wave 1**
 
-- [ ] 07-09-PLAN.md — As guardas que não guardavam: helper WCAG único, gate da régua enxergando `text-[NNpx]` (G-05), gate do dourado completo e teto de 20px na build
+- [x] 07-09-PLAN.md — As guardas que não guardavam: helper WCAG único, gate da régua enxergando `text-[NNpx]` (G-05), gate do dourado completo e teto de 20px na build
 - [ ] 07-10-PLAN.md — G-01: um único `aria-current="page"` por página, `{% nav_dominio %}` tolerante e `request` opcional
 
 **Wave 2** *(blocked on Wave 1 completion)*
