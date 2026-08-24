@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 07-10-PLAN.md
-last_updated: "2026-08-24T03:50:10.646Z"
+stopped_at: Completed 07-11-PLAN.md
+last_updated: "2026-08-24T04:20:00.000Z"
 last_activity: 2026-08-24
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 38
-  completed_plans: 34
-  percent: 89
+  completed_plans: 35
+  percent: 92
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-17)
 ## Current Position
 
 Phase: 07 (herdar-o-design-system-do-pca) — EXECUTING (fechamento de gaps)
-Plan: 10 of 14 (os 8 originais concluídos e verificados; 07-09 a 07-14 fecham G-01..G-05)
-Status: 07-10 concluído — G-01 fechado (um item ativo por página); próximo: 07-11 (G-02)
+Plan: 11 of 14 (os 8 originais concluídos e verificados; 07-09 a 07-14 fecham G-01..G-05)
+Status: 07-11 concluído — G-02 fechado (`--cor-brand-tx` inverte com o tema; par da marca ≥ 4,5:1 medido para 3 COR_PRIMARIA); próximo: 07-12 (G-04)
 Last activity: 2026-08-24
 
-Progress: [█████████░] 89%
+Progress: [█████████░] 92%
 
 ## Performance Metrics
 
@@ -81,6 +81,7 @@ Progress: [█████████░] 89%
 | Phase 07-herdar-o-design-system-do-pca P07 | 45min | 3 tasks | 6 files |
 | Phase 07-herdar-o-design-system-do-pca P09 | 13min | 3 tasks | 4 files |
 | Phase 07-herdar-o-design-system-do-pca P10 | 18min | 3 tasks | 5 files |
+| Phase 07-herdar-o-design-system-do-pca P11 | 27min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -103,6 +104,9 @@ Recent decisions affecting current work:
 - Init: `Usuario` customizado desde a primeira migração (preserva viabilidade de SSO futuro)
 - Init: PCA em `/opt/web/pca` não será alterada
 - Init: Toda documentação e artefatos de planejamento em pt-BR
+- [Phase 07-11]: G-02 consertado pela cor do TEXTO (`--cor-brand-tx`), nunca pelo token de fundo — `core/tema.py` e `core/tests/test_tema.py` ficam intocados e a equivalência numérica com o padrão de referência sobrevive byte a byte
+- [Phase 07-11]: `--cor-brand-tx` do escuro é hex plano igual a `--cor-page` do escuro (nunca `var(--cor-page)`), com asserção de igualdade lida do arquivo — `getComputedStyle` não resolve função de cor dentro de custom property
+- [Phase 07-11]: Varredura estrutural do par da marca vem SEMPRE em par (negativa: sem `text-white`; positiva: com `text-brand-tx`), porque a negativa sozinha fecharia apagando a classe e deixando o botão herdar `text-ink`
 - [Phase 01-01]: Reproduzida literalmente a topologia de settings/middleware/axes/CSRF da PCA, generalizada e sem menção a domínio
 - [Phase 01-01]: requirements.txt restrito às 9 dependências desta fase — sem django-simple-history (Fase 2) e sem openpyxl/freezegun
 - [Phase 01-02]: Kernel do app core (Usuario/UsuarioManager, axes_lockout, HtmxRedirectMiddleware, context processor, healthz, base.html com CSRF/htmx) reproduzido verbatim da PCA, sem PcaAdminConfig/login/logout (esses são CORE-03/Fase 2 e Plan 01-04)
@@ -178,6 +182,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-24T03:50:10.598Z
-Stopped at: Completed 07-10-PLAN.md
+Last session: 2026-08-24T04:20:00.000Z
+Stopped at: Completed 07-11-PLAN.md
 Resume file: None
