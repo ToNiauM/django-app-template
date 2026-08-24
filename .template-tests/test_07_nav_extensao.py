@@ -77,34 +77,87 @@ def impressao_subarvore(raiz: Path) -> dict[str, str]:
 
 
 class ExtensaoDeNavegacaoTests(unittest.TestCase):
-    def test_derivado_adiciona_itens_sem_tocar_o_nav_do_nucleo(self) -> None:
-        """Critério 5: o único arquivo que o derivado cria/edita é
-        _nav_dominio.html; _nav.html permanece byte a byte intocado."""
-        with tempfile.TemporaryDirectory() as tmp:
-            destino = render(Path(tmp) / "sis", incluir_app_exemplo=False)
-            nav = destino / "core/templates/core/_nav.html"
-            antes = nav.read_bytes()
+    def test_nav_do_nucleo_e_identico_nas_duas_variantes(self) -> None:
+        """Critério 5: `_nav.html` é do núcleo e estático — nada nele depende
+        de `incluir_app_exemplo`, e por isso o derivado nunca precisa editá-lo.
 
-            dominio = destino / "core/templates/core/_nav_dominio.html"
-            dominio.write_text(
-                '{% load navegacao %}\n{% item_nav "core:shell" "Painel" "casa" %}\n',
-                encoding="utf-8",
-            )
+        A comparação é ENTRE as duas variantes geradas, não de um arquivo
+        consigo mesmo. A versão anterior deste teste lia os bytes de
+        `_nav.html`, escrevia em OUTRO arquivo (`_nav_dominio.html`) e depois
+        assere que `_nav.html` não mudou — nenhum código tocava `_nav.html`
+        entre as duas leituras, então a asserção não podia falhar nem se o
+        ponto de extensão inteiro fosse removido (WR-07). Esta pode: devolver
+        um `{% if incluir_app_exemplo %}` para dentro do `_nav.html` a quebra.
+        """
+        with tempfile.TemporaryDirectory() as tmp:
+            raiz = Path(tmp)
+            sem_exemplo = render(raiz / "sem-exemplo", incluir_app_exemplo=False)
+            com_exemplo = render(raiz / "com-exemplo", incluir_app_exemplo=True)
+
+            nav_sem = (sem_exemplo / "core/templates/core/_nav.html").read_bytes()
+            nav_com = (com_exemplo / "core/templates/core/_nav.html").read_bytes()
 
             self.assertEqual(
-                antes,
-                nav.read_bytes(),
-                "_nav.html foi modificado ao adicionar itens no derivado",
+                nav_com,
+                nav_sem,
+                "_nav.html divergiu entre as variantes — deixou de ser do "
+                "núcleo e passou a depender de incluir_app_exemplo",
             )
+
             # _nav.html não referencia nenhuma rota fora de core: — não há
             # necessidade de editá-lo para acomodar um domínio.
-            texto = antes.decode("utf-8")
+            texto = nav_sem.decode("utf-8")
             rotas = re.findall(r'item_nav\s+"([a-z0-9_]+):', texto)
             self.assertTrue(rotas, "_nav.html não chamou item_nav nenhuma vez")
             self.assertTrue(
                 all(app == "core" for app in rotas),
                 f"_nav.html referencia rota fora de core: {rotas}",
             )
+            self.assertNotIn("exemplo:", texto)
+
+            # WR-10: a inserção do arquivo do derivado é tolerante. Um
+            # {% include %} literal levantaria TemplateDoesNotExist e daria 500
+            # em toda página autenticada quando o mantenedor apagasse o arquivo
+            # que é dele.
+            self.assertIn("{% nav_dominio %}", texto)
+            self.assertNotIn("{% include", texto)
+
+    def test_stub_semeado_declara_a_excecao_que_evita_dois_itens_ativos(self) -> None:
+        """G-01: sem a exceção, `/exemplo/dashboard/` acende DOIS itens — o
+        Dashboard por correspondência exata e o Itens (CRUD) pelo prefixo
+        `/exemplo/`. Este gate impede que um `copier update` futuro reintroduza
+        a colisão pela porta do stub que o próprio núcleo semeia."""
+        with tempfile.TemporaryDirectory() as tmp:
+            destino = render(Path(tmp) / "sis", incluir_app_exemplo=True)
+            conteudo = (
+                destino / "core/templates/core/_nav_dominio.html"
+            ).read_text(encoding="utf-8")
+
+            linhas = [
+                linha
+                for linha in conteudo.splitlines()
+                if 'item_nav "exemplo:item_listar"' in linha
+            ]
+            self.assertEqual(
+                len(linhas), 1, f"esperava um item_listar no stub, achei {linhas}"
+            )
+            self.assertIn(
+                '"/exemplo/"',
+                linhas[0],
+                "o prefixo sumiu do stub — rota-filha sem item próprio deixaria "
+                "de acender nenhum item",
+            )
+            self.assertIn(
+                '"/exemplo/dashboard/"',
+                linhas[0],
+                "o item do prefixo não excetua /exemplo/dashboard/: dois itens "
+                "acendem juntos no dashboard",
+            )
+
+            # O contrato do topo é o que ensina o parâmetro a todo mantenedor
+            # de derivado que for criar um item — é por onde o conserto se
+            # propaga para os sistemas gerados.
+            self.assertIn("excecoes", conteudo)
 
     def test_remover_itens_do_exemplo_nao_toca_nenhum_arquivo_do_nucleo(self) -> None:
         """Critério 6, prova literal: apagar os dois itens do exemplo de
