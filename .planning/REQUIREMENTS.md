@@ -116,12 +116,12 @@ Quais fases cobrem quais requisitos. Preenchido na criação do roadmap.
 | EX-02 | Phase 3 | Complete |
 | EX-03 | Phase 3 | Complete |
 | EX-04 | Phase 3 | Complete |
-| TPL-01 | Phase 4 | Pending |
-| TPL-02 | Phase 4 | Pending |
-| TPL-03 | Phase 4 | Pending |
-| TPL-04 | Phase 4 | Pending |
-| INF-03 | Phase 4 | Pending |
-| INF-04 | Phase 4 | Pending |
+| TPL-01 | Phase 4 | Complete |
+| TPL-02 | Phase 4 | Complete |
+| TPL-03 | Phase 4 | Complete |
+| TPL-04 | Phase 4 | Complete |
+| INF-03 | Phase 4 | Complete |
+| INF-04 | Phase 4 | Complete |
 | QA-01 | Phase 5 | Complete |
 | QA-02 | Phase 5 | Complete |
 | DOC-01 | Phase 5 | Complete |
@@ -145,4 +145,4 @@ Quais fases cobrem quais requisitos. Preenchido na criação do roadmap.
 
 ---
 *Requisitos definidos em: 2026-08-17*
-*Última atualização: 2026-08-23 — famílias DS, NAV e REL acrescentadas no planejamento da Fase 7*
+*Última atualização: 2026-08-24 — TPL-01..04 e INF-03/04 passaram de `Pending` a `Complete` na rastreabilidade; a Fase 4 fechou verificada (`04-VERIFICATION.md`, status `passed`, 5/5) e as seis linhas estavam obsoletas*

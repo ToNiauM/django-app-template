@@ -1,14 +1,14 @@
 ---
-status: partial
+status: complete
 phase: 07-herdar-o-design-system-do-pca
 source: [07-VERIFICATION.md]
 started: 2026-08-23T23:49:20Z
-updated: 2026-08-23T23:49:20Z
+updated: 2026-08-24
 ---
 
 ## Current Test
 
-2. O item "Início" do núcleo na migração do DividaAtiva — aguardando decisão do operador
+Nenhum — os 2 cenários foram decididos pelo operador.
 
 ## Tests
 
@@ -18,14 +18,14 @@ result: passed — o operador delegou a escolha; a linha `**Mode:** mvp` foi rem
 
 ### 2. O item "Início" do núcleo na migração do DividaAtiva para a v0.2.0
 expected: Ou o DividaAtiva aceita exibir o item "Início" (rota `core:shell`), ou fica registrado que ele precisará editar `_nav.html` — reabrindo, só para esse item, o conflito de upstream que a fase eliminou para todo o resto.
-result: [pending]
+result: passed — o operador decidiu em 2026-08-24 que **o DividaAtiva aceita exibir o item "Início"** (rota `core:shell`, a raiz `""` que todo sistema gerado tem). Consequência: nenhum derivado precisa editar `_nav.html`, e o conflito de upstream que a Fase 7 eliminou permanece eliminado por inteiro — o roteiro do README (`git checkout --theirs` no `_nav.html` + itens próprios em `_nav_dominio.html`) vale sem exceção.
 
 ## Summary
 
 total: 2
-passed: 1
+passed: 2
 issues: 0
-pending: 1
+pending: 0
 skipped: 0
 blocked: 0
 

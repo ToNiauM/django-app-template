@@ -1,6 +1,7 @@
 ---
 phase: quick-260818-n9k
 plan: 01
+status: complete
 subsystem: templates
 tags: [django, templates, comment-leak, security, regression-tests]
 requires: []

@@ -1,6 +1,7 @@
 ---
 phase: quick-260818-qoy
 plan: 01
+status: complete
 subsystem: docs
 tags: [readme, documentacao, copier, template]
 requires: []

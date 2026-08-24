@@ -1,11 +1,15 @@
 ---
 phase: 07-herdar-o-design-system-do-pca
 verified: 2026-08-23T23:49:20Z
-status: gaps_found
+status: passed
 score: 8/8 must-haves verificados
 overrides_applied: 0
 re_verification: null
-gaps_source: 07-REVIEW.md (revisão de código posterior a esta verificação; os 4 itens foram reconferidos pelo orquestrador)
+gaps_source: 07-REVIEW.md (revisão de código posterior a esta verificação; os itens foram reconferidos pelo orquestrador)
+gaps_resolved: 2026-08-24
+gaps_resolution: "Os 5 gaps foram fechados na rodada de gap closure dos planos 07-09 a 07-14, e a inspeção visual dos consertos numa cópia real foi aprovada pelo operador em 2026-08-24 (07-14 Task 1, checkpoint bloqueante). Regressão das 7 etapas verde em 394s somados (39 testes de .template-tests/, 169 Django na cópia gerada). Consertos conferidos na árvore em 2026-08-24: G-01 → `excecoes` em core/templatetags/navegacao.py (5 ocorrências, plano 07-10); G-02 → `--cor-brand-tx` em core/static/src/input.css (2 ocorrências, plano 07-11); G-03 → `seq-750` em tailwind.config.js (1 ocorrência, plano 07-13); G-04 → `cor-grid` consumido pelo dashboard do app exemplo (plano 07-12/13); G-05 → TEXT_CLASS_RE com lookahead `(?![\\w-])` em .template-tests/test_07_tokens.py:57 (plano 07-09). A v0.2.0 foi recriada sobre 01ced83 porque a tag anterior apontava para 367dd9a, commit que ainda continha os bloqueadores."
+human_verification_resolved: 2026-08-24
+human_verification_resolution: "Os 2 itens foram decididos pelo operador e estão registrados em 07-HUMAN-UAT.md (2/2 passed). Item 1 — a linha `**Mode:** mvp` foi removida da Phase 7 do ROADMAP.md em 2026-08-23. Item 2 — em 2026-08-24 o operador decidiu que o DividaAtiva aceita exibir o item \"Início\" do núcleo, de modo que nenhum derivado precisa editar `_nav.html` e o conflito de upstream eliminado pela fase permanece eliminado por inteiro."
 human_verification:
   - test: "Decidir se a Fase 7 deve permanecer marcada como `mode: mvp` no ROADMAP.md, ou se a marca deve ser removida/corrigida."
     expected: "Ou o goal da fase é reescrito no formato User Story (`As a …, I want to …, so that ….`), ou a linha `**Mode:** mvp` sai da seção da Phase 7."
@@ -22,7 +26,7 @@ Sistema CFC inteiro — mesmos tokens, mesma elevação, mesmos tipos de gráfic
 derivado põe os próprios itens no menu **sem editar um único arquivo do `core`**.
 
 **Verificado em:** 2026-08-23T23:49:20Z
-**Status:** human_needed
+**Status:** passed (gaps fechados nos planos 07-09..07-14; 2 decisões do operador registradas em 07-HUMAN-UAT.md)
 **Re-verificação:** Não — verificação inicial
 
 ## Método
@@ -337,3 +341,17 @@ o alcance da meta.
 
 _Verificado em: 2026-08-23T23:49:20Z_
 _Verificador: Claude (gsd-verifier)_
+
+---
+
+## Fecho dos gaps — 2026-08-24
+
+Os 5 gaps acima foram consertados pelos planos 07-09 a 07-13 e o fecho da rodada
+foi o plano 07-14: o operador aprovou a inspeção visual dos consertos numa cópia
+real (checkpoint bloqueante), a regressão das 7 etapas passou verde, e a tag
+`v0.2.0` foi recriada sobre `01ced83` — a anterior apontava para `367dd9a`, que
+ainda continha os bloqueadores. A `v0.2.0` é local e **não foi publicada**;
+`git push` segue sendo decisão do operador.
+
+As duas decisões humanas pendentes foram resolvidas e estão em `07-HUMAN-UAT.md`
+(2/2 `passed`). O status desta verificação passa de `gaps_found` a `passed`.

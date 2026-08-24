@@ -1,9 +1,11 @@
 ---
 phase: 03-app-exemplo
 verified: 2026-08-18T13:20:00Z
-status: human_needed
+status: passed
 score: 4/4 must-haves verified
 overrides_applied: 0
+human_verification_resolved: 2026-08-24
+human_verification_resolution: "Fechado por cobertura já existente, decisão do operador em 2026-08-24 durante o pré-fecho do marco v0.2.0. Duas fontes: (a) automatizada — apps/exemplo/tests/test_crud.py, 11 testes cobrindo HTTP 422 em formulário inválido e HX-Trigger: itemSalvo em sucesso; (b) inspeção humana — o gate visual bloqueante da 07-08 Task 2 foi aprovado pelo operador sobre as MESMAS 4 telas (login, shell, CRUD /exemplo/, dashboard /exemplo/dashboard/) nos 2 temas, cobrindo a opacidade do véu dos modais de criação e exclusão e a repintura dos gráficos ao trocar de tema sem recarregar. LIMITE CONHECIDO E ACEITO: três comportamentos dos roteiros originais não foram exercitados por inspeção humana direta — foco automático no primeiro campo do modal, redimensionamento da janela e drill-down por clique em barra/setor do dashboard."
 human_verification:
   - test: "Acessar '/exemplo/' no navegador e testar abertura de modal 'Novo item', validação de formulário (HTTP 422) e salvamento com atualização automática da tabela via evento 'itemSalvo'."
     expected: "Modal abre com foco no primeiro campo, submissão inválida exibe erros inline em vermelho sem fechar o modal, submissão válida fecha o modal e atualiza a tabela via HTMX sem recarregar a página."
@@ -17,7 +19,7 @@ human_verification:
 
 **Phase Goal:** `apps/exemplo/` demonstra o padrão de referência da casa — CRUD completo com tabela paginada server-side, filtros e modais HTMX, mais dashboard ECharts com agregações via ORM — e é removível sem quebrar o sistema.
 **Verified:** 2026-08-18T13:20:00Z
-**Status:** human_needed
+**Status:** passed (2 itens de verificação humana fechados por cobertura em 2026-08-24)
 **Re-verification:** No — initial verification
 
 ## Goal Achievement

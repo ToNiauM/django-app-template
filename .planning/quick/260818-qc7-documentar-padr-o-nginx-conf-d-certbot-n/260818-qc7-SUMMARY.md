@@ -1,6 +1,7 @@
 ---
 phase: quick-260818-qc7
 plan: 01
+status: complete
 subsystem: docs
 tags: [readme, nginx, certbot, tls, publicacao]
 requires: []

@@ -1,14 +1,14 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
+milestone: v0.2.0
+milestone_name: Design system herdado do PCA
 status: "07-14 concluído — Fase 07 fechada: operador aprovou os 4 consertos em cópia real, regressão das 7 etapas verde (394s; 39 testes de .template-tests/, 169 Django na cópia gerada), v0.2.0 recriada sobre 01ced83 (era 367dd9a) e NÃO publicada — git push continua sendo decisão do operador"
 stopped_at: Completed 07-14-PLAN.md
 last_updated: "2026-08-24T14:56:33.603Z"
 last_activity: 2026-08-24 -- Phase 07 execution started
 progress:
   total_phases: 7
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 38
   completed_plans: 38
   percent: 100
