@@ -204,6 +204,40 @@ class TokensFonteTests(unittest.TestCase):
         for match in re.finditer(r':\s*"([^"]+)"', border_radius_block):
             self.assertEqual(match.group(1), "2px")
 
+    def test_fontsize_substitui_o_default_em_vez_de_estender(self) -> None:
+        """A metade ESTRUTURAL do par que guarda a régua tipográfica.
+
+        A outra metade é `test_fontsize_e_borderradius_tem_as_chaves_do_contrato`,
+        que garante QUAIS chaves existem. Este garante que elas SUBSTITUEM o
+        default do Tailwind em vez de somar a ele: dentro de `theme.extend` a
+        régua acrescenta, `text-2xl` … `text-9xl` continuam gerando regra e o
+        teto de 20px existe só na promessa do gate; declarada em `theme`, irmã
+        de `extend`, o Tailwind troca o mapa inteiro e o teto vira propriedade
+        da BUILD (WR-14). Sem este teste a mudança é reversível por descuido —
+        mover a chave de volta para dentro do `extend` não quebraria nenhuma
+        outra asserção do arquivo.
+
+        Asserção sobre o TEXTO de propósito: `tailwind.config.js` chega
+        verbatim ao sistema gerado e nunca passa por um parser JS neste
+        repositório. A contagem de ocorrência única é o que amarra a ordem —
+        e é também por isso que o comentário de cabeçalho do arquivo fala em
+        "régua de tamanhos de fonte" em vez de repetir o nome da chave.
+        """
+        config = TAILWIND_CONFIG.read_text(encoding="utf-8")
+
+        self.assertEqual(
+            config.count("fontSize"),
+            1,
+            "a régua tem que aparecer uma única vez no config — mais de uma "
+            "ocorrência significa que ela voltou a coexistir com o default",
+        )
+        self.assertLess(
+            config.index("fontSize:"),
+            config.index("extend:"),
+            "a régua está DENTRO de theme.extend: o Tailwind vai somá-la ao "
+            "default e text-2xl…text-9xl voltam a gerar regra",
+        )
+
     def test_safelist_bate_com_as_classes_declaradas_em_input_css(self) -> None:
         config = TAILWIND_CONFIG.read_text(encoding="utf-8")
         safelist_block = _extract_array_block(config, "safelist:")

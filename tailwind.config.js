@@ -7,6 +7,15 @@
 // interpolação, nenhuma derivação em JS — a cor institucional entra só pela
 // variável de ambiente correspondente no .env (core/tema.py resolve em
 // runtime).
+//
+// A régua de tamanhos de fonte é a ÚNICA chave declarada fora do `extend`, e
+// isso é deliberado: dentro do `extend` ela ACRESCENTA ao default do Tailwind,
+// então `text-2xl` … `text-9xl` continuariam existindo e gerando regra, com o
+// gate de teste como única barreira. Fora do `extend` o Tailwind SUBSTITUI o
+// mapa e simplesmente não gera nada além dos 6 degraus — o teto de 20px passa
+// a ser propriedade da build. `colors`, `borderRadius` e `fontFamily` seguem
+// no `extend` de propósito: precisam SOMAR ao default (`text-white`,
+// `bg-red-600`, `rounded-full` e afins continuam em uso nos templates).
 module.exports = {
   darkMode: ["selector", '[data-tema="escuro"]'],
   content: ["./core/templates/**/*.html", "./apps/**/*.html"],
@@ -21,6 +30,14 @@ module.exports = {
     "btn--destrutiva",
   ],
   theme: {
+    fontSize: {
+      xs: ["11px", { lineHeight: "1.4" }],
+      sm: ["12px", { lineHeight: "1.4" }],
+      base: ["13px", { lineHeight: "1.5" }],
+      md: ["14px", { lineHeight: "1.5" }],
+      lg: ["16px", { lineHeight: "1.4" }],
+      xl: ["20px", { lineHeight: "1.3" }],
+    },
     extend: {
       colors: {
         page: "var(--cor-page)",
@@ -52,14 +69,6 @@ module.exports = {
         lg: "2px",
         xl: "2px",
         "2xl": "2px",
-      },
-      fontSize: {
-        xs: ["11px", { lineHeight: "1.4" }],
-        sm: ["12px", { lineHeight: "1.4" }],
-        base: ["13px", { lineHeight: "1.5" }],
-        md: ["14px", { lineHeight: "1.5" }],
-        lg: ["16px", { lineHeight: "1.4" }],
-        xl: ["20px", { lineHeight: "1.3" }],
       },
       fontFamily: {
         sans: ["system-ui", "-apple-system", '"Segoe UI"', "sans-serif"],
