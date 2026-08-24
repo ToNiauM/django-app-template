@@ -23,7 +23,7 @@ HEX_TOKEN_RE = re.compile(r"--cor-([a-z0-9-]+):\s*(#[0-9a-fA-F]{6})\s*;")
 # de opacidade (`/NN`): o Tailwind não gera regra para var() com alpha.
 MIGRATED_TOKENS = (
     "page|surface|surface-2|surface-3|ink|ink-2|muted|grid|baseline|brand|"
-    "brand-hover|brand-ink|brand-tint|destructive|danger-tint|warn-bg|"
+    "brand-hover|brand-ink|brand-tint|brand-tx|destructive|danger-tint|warn-bg|"
     "warn-tx|secundaria|seq-600|seq-450|seq-300"
 )
 OPACITY_MODIFIER_RE = re.compile(
@@ -137,15 +137,15 @@ class TokensFonteTests(unittest.TestCase):
         self.assertEqual(primeira_linha, '@import "./dominio.css";')
         self.assertTrue(DOMINIO_CSS.is_file())
 
-    def test_root_declara_21_tokens_e_escuro_declara_18_overrides(self) -> None:
+    def test_root_declara_22_tokens_e_escuro_declara_19_overrides(self) -> None:
         root_block = _extract_block(self.css, ":root")
         escuro_block = _extract_block(self.css, r'\[data-tema="escuro"\]')
 
         root_tokens = _tokens_in_block(root_block)
         escuro_tokens = _tokens_in_block(escuro_block)
 
-        self.assertEqual(len(root_tokens), 21, root_tokens)
-        self.assertEqual(len(escuro_tokens), 18, escuro_tokens)
+        self.assertEqual(len(root_tokens), 22, root_tokens)
+        self.assertEqual(len(escuro_tokens), 19, escuro_tokens)
 
         # baseline, destructive e secundaria herdam do claro — não redeclarados
         for herda in ("baseline", "destructive", "secundaria"):

@@ -53,7 +53,7 @@
   }
 
   .btn--primaria {
-    @apply bg-brand text-white hover:bg-brand-hover;
+    @apply bg-brand text-brand-tx hover:bg-brand-hover;
   }
 
   .btn--secundaria {
@@ -118,6 +118,16 @@
   --cor-brand-hover: #3957b9;
   --cor-brand-ink: #193490;
   --cor-brand-tint: #edf0f9;
+  /* Par de TEXTO do fundo da marca. Existe porque no escuro `--cor-brand` é
+     SEMPRE uma cor clara — a derivação fixa a luminosidade em 72,7% (ver
+     core/tema.py) — e branco por cima reprova AA para qualquer COR_PRIMARIA
+     (2,56:1 com o default; 1,99:1 com #003c71; 1,76:1 no hover). É token, e
+     não `text-white` cravado, justamente para poder inverter com o tema.
+     No claro o piso depende da COR_PRIMARIA escolhida por quem gera o
+     sistema: uma cor muito clara reprova com branco por cima, e nenhum token
+     conserta isso — é escolha do derivado, não defeito daqui. O gate de
+     core/tests/test_contraste_marca.py mede três cores de referência. */
+  --cor-brand-tx: #ffffff;
   --cor-seq-600: #1e40af;
   --cor-seq-450: #6b81ca;
   --cor-seq-300: #aab6e1;
@@ -145,6 +155,12 @@
   --cor-brand-hover: #b4c2f2;
   --cor-brand-ink: #5d7ce3;
   --cor-brand-tint: #192035;
+  /* Tinta escura sobre a marca clara — é o MESMO valor de `--cor-page` do
+     escuro, e há asserção de igualdade entre os dois em
+     core/tests/test_contraste_marca.py para que não divirjam em silêncio se
+     alguém ajustar a página. Hex plano, nunca `var(--cor-page)`: ver a nota
+     sobre getComputedStyle no cabeçalho desta seção. */
+  --cor-brand-tx: #0f0e0d;
   --cor-seq-600: #889feb;
   --cor-seq-450: #5873c9;
   --cor-seq-300: #435697;

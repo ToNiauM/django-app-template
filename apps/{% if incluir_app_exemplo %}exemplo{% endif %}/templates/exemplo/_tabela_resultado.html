@@ -212,7 +212,7 @@
 
           {% for num in pagina.paginator.page_range %}
             {% if num == pagina.number %}
-              <span class="rounded-sm bg-brand px-2.5 py-1 text-xs font-semibold text-white">
+              <span class="rounded-sm bg-brand px-2.5 py-1 text-xs font-semibold text-brand-tx">
                 {{ num }}
               </span>
             {% elif num > pagina.number|add:"-3" and num < pagina.number|add:"3" %}
