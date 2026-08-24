@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Templatização Copier** - Sistema-modelo vira template parametrizado com `copier copy`/`copier update` e ops de produção (completed 2006-08-18)
 - [x] **Phase 5: Verificação e Documentação** - Fluxo de nascimento validado ponta a ponta e README completo (completed 2006-08-18)
 - [x] **Phase 6: Customização Visual e Persistência de Dados** - Pontos de customização de marca no `core` (logo da entidade, logo do subsistema, logo/nome do PWA) e dados do banco persistidos no host sobrevivendo a `docker compose down -v` (completed 2026-08-19)
-- [ ] **Phase 7: Herdar o design system do PCA** - O padrão visual do Sistema CFC (tokens em variáveis CSS, tema escuro, elevação, paleta de gráfico servida pelo servidor, classes de componente) sai do PCA e passa a nascer com todo sistema gerado, e a navegação ganha o ponto de extensão que hoje obriga cada derivado a reescrever o `_nav.html`
+- [x] **Phase 7: Herdar o design system do PCA** - O padrão visual do Sistema CFC (tokens em variáveis CSS, tema escuro, elevação, paleta de gráfico servida pelo servidor, classes de componente) sai do PCA e passa a nascer com todo sistema gerado, e a navegação ganha o ponto de extensão que hoje obriga cada derivado a reescrever o `_nav.html` (completed 2026-08-23)
 
 ## Phase Details
 
@@ -222,7 +222,6 @@ Plans:
 **Goal**: Um sistema recém-nascido do template já vem com o design system do Sistema
 CFC inteiro — mesmos tokens, mesma elevação, mesmos tipos de gráfico do PCA — e o
 derivado põe os próprios itens no menu **sem editar um único arquivo do `core`**.
-**Mode:** mvp
 **Depends on:** Phase 6
 
 **Fonte do padrão**: `/opt/web/pca` — que não é derivado do template, é anterior a ele.
@@ -316,7 +315,7 @@ REL-01, QA-03
 inteira ainda não chegou a nenhum sistema, porque o Copier lê a última tag e não o HEAD.
 Esta fase deve terminar com uma tag nova (`v0.2.0`), que entrega Fase 6 e Fase 7 juntas.
 
-**Plans:** 7/8 plans executed
+**Plans:** 8/8 plans complete
 
 Plans:
 **Wave 1**
@@ -349,7 +348,7 @@ Plans:
 
 **Wave 8** *(blocked on Wave 7 completion)*
 
-- [ ] 07-08-PLAN.md — Regressão completa, roteiro de atualização dos derivados, inspeção visual e tag `v0.2.0`
+- [x] 07-08-PLAN.md — Regressão completa, roteiro de atualização dos derivados, inspeção visual e tag `v0.2.0`
 
 ## Progress
 
@@ -364,4 +363,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Templatização Copier | 7/7 | Complete    | 2006-08-18 |
 | 5. Verificação e Documentação | 3/3 | Complete   | 2006-08-18 |
 | 6. Customização Visual e Persistência de Dados | 3/3 | Complete   | 2026-08-19 |
-| 7. Herdar o design system do PCA | 7/8 | In Progress|  |
+| 7. Herdar o design system do PCA | 8/8 | Complete   | 2026-08-23 |
