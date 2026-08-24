@@ -73,13 +73,23 @@ class FamiliaMarcaTests(SimpleTestCase):
             "seq-300:escuro": "#3171a9",
         }
         familia = tema.familia_marca("#003c71")
-        self.assertEqual(len(familia), 14)
+        self.assertEqual(len(familia), 16)
         for chave, valor in esperado.items():
             self.assertEqual(familia[chave], valor, msg=f"chave {chave!r}")
         # A divergência conhecida: 2 pontos em um canal, não um erro de
         # fórmula — confirmada aqui para que ninguém "console" um valor
         # cravado por cima da derivação.
         self.assertEqual(familia["brand-tint:escuro"], "#14283b")
+
+        # `seq-750` fica FORA do dict `esperado` de propósito: aquele dict é o
+        # conjunto de valores MEDIDOS no padrão de referência, e a rampa de lá
+        # tem três degraus — o quarto é extensão deste template (plano 07-13,
+        # G-03), não herança. Misturá-lo ali diria que o padrão publica um
+        # valor que ele não publica. Aqui embaixo ele é fixado do mesmo jeito,
+        # com o mesmo efeito prático: mexer nos coeficientes `misturar(cor, 0,
+        # 0.35)` / `com_hsl(cor, 1.00, 0.860)` reprova.
+        self.assertEqual(familia["seq-750"], "#002749")
+        self.assertEqual(familia["seq-750:escuro"], "#b8deff")
 
     def test_familia_marca_do_default_do_copier_igual_ao_input_css(self):
         # familia_marca("#1e40af") tem que ser IGUAL ao par de blocos de
@@ -92,6 +102,7 @@ class FamiliaMarcaTests(SimpleTestCase):
             "brand-hover",
             "brand-ink",
             "brand-tint",
+            "seq-750",
             "seq-600",
             "seq-450",
             "seq-300",
@@ -117,7 +128,7 @@ class CssDaMarcaTests(SimpleTestCase):
         self.assertEqual(seletores, [":root", '[data-tema="escuro"]'])
 
         linhas_decl = [linha for linha in css.splitlines() if linha.strip().startswith("--cor-")]
-        self.assertEqual(len(linhas_decl), 14)
+        self.assertEqual(len(linhas_decl), 16)
         for linha in linhas_decl:
             self.assertRegex(linha.strip(), r"^--cor-[a-z0-9-]+: #[0-9a-f]{6};$")
 
