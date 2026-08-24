@@ -4,7 +4,9 @@ compilado (Pitfall 4: `dark:` compila para `:where(...)`, forma variável).
 
 from __future__ import annotations
 
+import importlib.util
 import re
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -28,6 +30,32 @@ OPACITY_MODIFIER_RE = re.compile(
     rf"(?:bg|text|border|ring|from|to|via)-(?:{MIGRATED_TOKENS})/[0-9]+"
 )
 
+# Todo sufixo de tamanho que o Tailwind reconhece nativamente — usado só para
+# decidir se um match de `text-<sufixo>` é candidato a tamanho de fonte (e
+# portanto tem que estar na régua) ou é uma classe de outro vocabulário (cor,
+# alinhamento) e deve ser ignorada.
+TAMANHOS_TAILWIND_CONHECIDOS = {
+    "xs", "sm", "base", "md", "lg", "xl",
+    "2xl", "3xl", "4xl", "5xl", "6xl", "7xl", "8xl", "9xl",
+}
+
+# Duas correções em relação ao padrão original (G-05 / CR-04), que era
+# `r"\btext-([a-z0-9]+|\[[^\]]+\])\b"`:
+#
+# (a) a alternativa de valor arbitrário vem PRIMEIRO. O `re` tenta as
+#     alternativas na ordem escrita e para na primeira que serve; com
+#     `[a-z0-9]+` na frente, `text-[13px]` nem chegava ao segundo ramo.
+# (b) o `\b` final virou lookahead negativo `(?![\w-])`. `\b` exige transição
+#     entre caractere de palavra e não-palavra, e `]` JÁ é não-palavra: seguido
+#     de `"` ou espaço não há transição nenhuma, então o ramo de colchete era
+#     inalcançável e `class="text-[13px]"` devolvia lista vazia.
+#
+# O lookahead também recusa `text-ink-2` (o hífen continua a classe — é cor,
+# não tamanho), que o `\b` deixava passar como `text-ink`. Efeito colateral
+# correto: a string artificial `text-[13px]x` deixa de casar; não existe classe
+# assim, o `\b` antigo só casava lá por acidente.
+TEXT_CLASS_RE = re.compile(r"\btext-(\[[^\]]*\]|[a-z0-9]+)(?![\w-])")
+
 TEMPLATE_DIRS = ("core/templates", "apps")
 
 
@@ -37,6 +65,43 @@ def _iter_template_files():
         if not base.exists():
             continue
         yield from base.rglob("*.html")
+
+
+def varrer_classes_de_texto(paths, chaves_da_regua) -> list[str]:
+    """Varre os arquivos recebidos e devolve os ofensores da régua tipográfica.
+
+    Cada ofensor é uma string `"<caminho>:<linha> text-<sufixo>"` — arquivo e
+    linha entram na mensagem porque um gate que só diz "há violação" obriga
+    quem o vê a repetir a busca à mão.
+
+    Um match de `text-<sufixo>` só é candidato quando o sufixo é valor
+    arbitrário (`[24px]`) ou um tamanho que o Tailwind reconhece nativamente;
+    `text-white`, `text-ink-2` e `text-center` são de outros vocabulários e
+    passam. É função de módulo, e não corpo do método de teste, para que o
+    teste da PRÓPRIA guarda possa exercitá-la — uma cópia do algoritmo dentro
+    do teste não provaria nada sobre o gate.
+    """
+    ofensores: list[str] = []
+    for path in paths:
+        texto = path.read_text(encoding="utf-8", errors="ignore")
+        for numero_linha, linha in enumerate(texto.splitlines(), start=1):
+            for match in TEXT_CLASS_RE.finditer(linha):
+                sufixo = match.group(1)
+                e_valor_arbitrario = sufixo.startswith("[")
+                e_tamanho_conhecido = sufixo in TAMANHOS_TAILWIND_CONHECIDOS
+                if not (e_valor_arbitrario or e_tamanho_conhecido):
+                    # cor (ink, ink-2, muted, brand, white, emerald-800…)
+                    # ou alinhamento (left, center) — fora do escopo
+                    continue
+                if sufixo not in chaves_da_regua:
+                    try:
+                        rotulo = path.relative_to(ROOT)
+                    except ValueError:
+                        # caminho de fora do repositório (o teste da guarda
+                        # usa um TemporaryDirectory) — reporta o caminho cru
+                        rotulo = path
+                    ofensores.append(f"{rotulo}:{numero_linha} text-{sufixo}")
+    return ofensores
 
 
 def _extract_block(css: str, selector_pattern: str) -> str:
@@ -180,8 +245,22 @@ class TokensFonteTests(unittest.TestCase):
         self.assertEqual(ocorrencias, [])
 
     def test_gate_dourado_secundaria_e_forma_nunca_texto(self) -> None:
+        """O dourado é FORMA, nunca TINTA (input.css: 3,99:1 sobre as
+        superfícies claras reprova AA de texto).
+
+        Duas asserções com escopos diferentes de propósito. A primeira é o
+        caso explícito de D-86: `text-secundaria` em qualquer template. A
+        segunda audita QUALQUER prefixo utilitário antes de `-secundaria` e
+        reprova todo o que não esteja em `PREFIXOS_DE_FORMA` — antes ela
+        descartava por prefixo tudo o que não fosse `text-`, e era portanto,
+        logicamente, uma cópia da primeira (WR-08). Agora `ring-`, `decoration-`, `divide-`, `caret-`,
+        `placeholder-`, `outline-`, `accent-` e `shadow-secundaria` reprovam
+        junto: todos pintam tinta ou traço fino sobre superfície clara, que é
+        exatamente o uso que o contraste do dourado não sustenta.
+        """
+        PREFIXOS_DE_FORMA = {"bg", "border", "fill"}
         text_secundaria_re = re.compile(r"text-secundaria\b")
-        secundaria_uso_re = re.compile(r"\b((?:bg|border|fill|text)-secundaria)\b")
+        secundaria_uso_re = re.compile(r"\b([a-z-]+)-secundaria\b")
 
         ocorrencias_texto = []
         ocorrencias_fora_do_contrato = []
@@ -190,13 +269,39 @@ class TokensFonteTests(unittest.TestCase):
             if text_secundaria_re.search(texto):
                 ocorrencias_texto.append(str(path.relative_to(ROOT)))
             for match in secundaria_uso_re.finditer(texto):
-                if match.group(1).startswith("text-"):
+                prefixo = match.group(1)
+                if prefixo not in PREFIXOS_DE_FORMA:
                     ocorrencias_fora_do_contrato.append(
-                        f"{path.relative_to(ROOT)}: {match.group(1)}"
+                        f"{path.relative_to(ROOT)}: {prefixo}-secundaria"
                     )
 
         self.assertEqual(ocorrencias_texto, [])
         self.assertEqual(ocorrencias_fora_do_contrato, [])
+
+    def test_o_gate_do_dourado_reprova_prefixo_fora_de_bg_border_fill(self) -> None:
+        """A prova da própria guarda do WR-08: as strings que ela precisa
+        classificar viram asserção, em vez de confiança. Sem este teste, o
+        filtro poderia voltar a olhar só o prefixo `text-` sem que nada
+        acusasse.
+        """
+        secundaria_uso_re = re.compile(r"\b([a-z-]+)-secundaria\b")
+        esperado = {
+            'class="bg-secundaria"': "bg",
+            'class="border-secundaria"': "border",
+            'class="fill-secundaria"': "fill",
+            'class="text-secundaria"': "text",
+            'class="ring-secundaria"': "ring",
+            'class="decoration-secundaria"': "decoration",
+            'class="divide-secundaria"': "divide",
+            'class="caret-secundaria"': "caret",
+            'class="placeholder-secundaria"': "placeholder",
+            'class="outline-secundaria"': "outline",
+            'class="accent-secundaria"': "accent",
+            'class="shadow-secundaria"': "shadow",
+        }
+        for entrada, prefixo in esperado.items():
+            with self.subTest(entrada=entrada):
+                self.assertEqual(secundaria_uso_re.findall(entrada), [prefixo])
 
     def test_templates_so_usam_as_seis_chaves_da_regua_tipografica(self) -> None:
         """A régua tipográfica (07-02) só vale se nenhum template puder
@@ -213,34 +318,72 @@ class TokensFonteTests(unittest.TestCase):
         )
         self.assertEqual(chaves_da_regua, {"xs", "sm", "base", "md", "lg", "xl"})
 
-        # Todo sufixo de tamanho que o Tailwind reconhece nativamente — usado
-        # só para decidir se um match de `text-<sufixo>` é candidato a
-        # tamanho de fonte (e portanto tem que estar na régua) ou é uma
-        # classe de outro vocabulário (cor, alinhamento) e deve ser ignorada.
-        TAMANHOS_TAILWIND_CONHECIDOS = {
-            "xs", "sm", "base", "md", "lg", "xl",
-            "2xl", "3xl", "4xl", "5xl", "6xl", "7xl", "8xl", "9xl",
-        }
-        TEXT_CLASS_RE = re.compile(r"\btext-([a-z0-9]+|\[[^\]]+\])\b")
-
-        ofensores = []
-        for path in _iter_template_files():
-            texto = path.read_text(encoding="utf-8", errors="ignore")
-            for numero_linha, linha in enumerate(texto.splitlines(), start=1):
-                for match in TEXT_CLASS_RE.finditer(linha):
-                    sufixo = match.group(1)
-                    e_valor_arbitrario = sufixo.startswith("[")
-                    e_tamanho_conhecido = sufixo in TAMANHOS_TAILWIND_CONHECIDOS
-                    if not (e_valor_arbitrario or e_tamanho_conhecido):
-                        # cor (ink, ink-2, muted, brand, white, emerald-800…)
-                        # ou alinhamento (left, center) — fora do escopo
-                        continue
-                    if sufixo not in chaves_da_regua:
-                        ofensores.append(
-                            f"{path.relative_to(ROOT)}:{numero_linha} text-{sufixo}"
-                        )
+        ofensores = varrer_classes_de_texto(_iter_template_files(), chaves_da_regua)
 
         self.assertEqual(ofensores, [], "\n".join(ofensores))
+
+    def test_o_gate_da_regua_enxerga_valor_arbitrario(self) -> None:
+        """A prova que faltava (G-05): as strings que o gate precisa detectar
+        viram asserção.
+
+        Com o regex antigo (`\\btext-([a-z0-9]+|\\[[^\\]]+\\])\\b`) as três
+        primeiras linhas desta tabela devolvem `[]` — o `\\b` depois de `]`
+        torna o ramo de valor arbitrário inalcançável. Este teste falha
+        contra aquele regex e passa contra o atual; é essa diferença, e não a
+        existência do teste, que fecha o gap.
+        """
+        esperado = {
+            'class="text-[13px] font-bold"': ["[13px]"],
+            'class="font-bold text-[13px]"': ["[13px]"],
+            "class='text-[20px]'": ["[20px]"],
+            'class="text-2xl"': ["2xl"],
+            # cor, não tamanho: o hífen continua a classe e o lookahead recusa
+            'class="text-ink-2"': [],
+            # casa, mas "white" não é tamanho conhecido → o gate ignora
+            'class="text-white"': ["white"],
+        }
+        for entrada, grupos in esperado.items():
+            with self.subTest(entrada=entrada):
+                self.assertEqual(TEXT_CLASS_RE.findall(entrada), grupos)
+
+    def test_o_gate_da_regua_reporta_arquivo_e_linha_de_um_ofensor(self) -> None:
+        """O ofensor sintético vive num diretório temporário, nunca em
+        `core/templates/`: um `.html` solto dentro da árvore varrida
+        contaminaria os outros gates se a limpeza falhasse.
+        """
+        chaves_da_regua = {"xs", "sm", "base", "md", "lg", "xl"}
+        with tempfile.TemporaryDirectory() as tmp:
+            alvo = Path(tmp) / "x.html"
+            alvo.write_text(
+                '<div>\n<p class="text-[24px]">x</p>\n</div>\n', encoding="utf-8"
+            )
+            ofensores = varrer_classes_de_texto([alvo], chaves_da_regua)
+
+        self.assertEqual(len(ofensores), 1, ofensores)
+        self.assertTrue(
+            ofensores[0].endswith(":2 text-[24px]"),
+            f"esperava arquivo:linha e a classe ofensora, veio {ofensores[0]!r}",
+        )
+
+    def test_o_helper_de_contraste_e_carregavel_desta_suite(self) -> None:
+        """A ponte entre as duas famílias de suíte, provada em wave 1.
+
+        `core/tests/contraste.py` é a implementação ÚNICA da fórmula WCAG do
+        repositório: ele vive dentro do sistema gerado (`.template-tests/`
+        está em `_exclude` do copier.yml e não chega a derivado nenhum) e as
+        suítes daqui o carregam por caminho. Este teste não mede design — ele
+        só garante que a ponte existe e funciona. Se o arquivo for movido ou
+        renomeado, quem descobre é este gate, agora, e não um plano de wave 3
+        que já assume o helper de pé.
+        """
+        caminho = ROOT / "core/tests/contraste.py"
+        self.assertTrue(caminho.exists(), f"helper de contraste ausente: {caminho}")
+
+        spec = importlib.util.spec_from_file_location("contraste_wcag", caminho)
+        modulo = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(modulo)
+
+        self.assertEqual(modulo.contraste("#ffffff", "#000000"), 21.0)
 
 
 if __name__ == "__main__":
