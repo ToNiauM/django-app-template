@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 07-09-PLAN.md
-last_updated: "2026-08-24T03:34:06.166Z"
+stopped_at: Completed 07-10-PLAN.md
+last_updated: "2026-08-24T03:50:10.646Z"
 last_activity: 2026-08-24
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 38
-  completed_plans: 33
-  percent: 87
+  completed_plans: 34
+  percent: 89
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-17)
 ## Current Position
 
 Phase: 07 (herdar-o-design-system-do-pca) — EXECUTING (fechamento de gaps)
-Plan: 09 of 14 (os 8 originais concluídos e verificados; 07-09 a 07-14 fecham G-01..G-05)
-Status: 07-09 concluído — guardas executáveis de pé; próximo: 07-10 (G-01)
+Plan: 10 of 14 (os 8 originais concluídos e verificados; 07-09 a 07-14 fecham G-01..G-05)
+Status: 07-10 concluído — G-01 fechado (um item ativo por página); próximo: 07-11 (G-02)
 Last activity: 2026-08-24
 
-Progress: [█████████░] 87%
+Progress: [█████████░] 89%
 
 ## Performance Metrics
 
@@ -80,6 +80,7 @@ Progress: [█████████░] 87%
 | Phase 07-herdar-o-design-system-do-pca P06 | 70min | 3 tasks | 7 files |
 | Phase 07-herdar-o-design-system-do-pca P07 | 45min | 3 tasks | 6 files |
 | Phase 07-herdar-o-design-system-do-pca P09 | 13min | 3 tasks | 4 files |
+| Phase 07-herdar-o-design-system-do-pca P10 | 18min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -145,6 +146,9 @@ Recent decisions affecting current work:
 - [Phase 07-09]: core/tests/contraste.py é a fonte única da fórmula WCAG e vive DENTRO do sistema gerado — .template-tests está em _exclude do copier.yml, um helper lá deixaria todo derivado sem a guarda de contraste
 - [Phase 07-09]: Teto tipográfico vira propriedade da build: fontSize sai de theme.extend (que SOMA ao default, mantendo text-2xl…text-9xl gerando regra) para theme (que SUBSTITUI) — provado com Tailwind real, text-2xl passa de 1 regra para 0
 - [Phase 07-09]: TEXT_CLASS_RE troca o \b final por lookahead (?![\w-]): além de ressuscitar o ramo de valor arbitrário do G-05, passa a recusar text-ink-2, que o \b antigo casava indevidamente como text-ink
+- [Phase ?]: [Phase 07-10]: excecoes entra no FIM da assinatura de item_nav (posicional-compatível) e a correspondência exata nunca é anulada por ela — exato vence prefixo, e a exceção é declarada no sítio da chamada porque uma inclusion_tag não enxerga os irmãos
+- [Phase ?]: [Phase 07-10]: nav_dominio (simple_tag tolerante) substitui o include literal em _nav.html — o arquivo é do derivado, apagá-lo é estado previsto e o Django não tem ignore missing; degrada para menu vazio, nunca 500 (WR-10)
+- [Phase ?]: [Phase 07-10]: a topologia pai/filho da nav é exercitada na suíte do core contra um urlconf sintético do próprio módulo (override_settings ROOT_URLCONF=__name__) — a prova com o stub REAL vive em apps/exemplo/tests/test_nav_ativo.py, onde as rotas exemplo:* existem por construção
 
 ### Pending Todos
 
@@ -174,6 +178,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-24T03:34:00.000Z
-Stopped at: Completed 07-09-PLAN.md
+Last session: 2026-08-24T03:50:10.598Z
+Stopped at: Completed 07-10-PLAN.md
 Resume file: None

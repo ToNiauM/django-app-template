@@ -315,7 +315,7 @@ REL-01, QA-03
 inteira ainda não chegou a nenhum sistema, porque o Copier lê a última tag e não o HEAD.
 Esta fase deve terminar com uma tag nova (`v0.2.0`), que entrega Fase 6 e Fase 7 juntas.
 
-**Plans:** 8/8 plans complete + 6 planos de fechamento de gap (07-09 a 07-14), 1/6 concluídos
+**Plans:** 10/14 plans executed
 
 Plans:
 **Wave 1**
@@ -359,7 +359,7 @@ passaram. Os planos abaixo fecham a fresta com prova de **resultado renderizado*
 **Wave 1**
 
 - [x] 07-09-PLAN.md — As guardas que não guardavam: helper WCAG único, gate da régua enxergando `text-[NNpx]` (G-05), gate do dourado completo e teto de 20px na build
-- [ ] 07-10-PLAN.md — G-01: um único `aria-current="page"` por página, `{% nav_dominio %}` tolerante e `request` opcional
+- [x] 07-10-PLAN.md — G-01: um único `aria-current="page"` por página, `{% nav_dominio %}` tolerante e `request` opcional
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -387,4 +387,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Templatização Copier | 7/7 | Complete    | 2006-08-18 |
 | 5. Verificação e Documentação | 3/3 | Complete   | 2006-08-18 |
 | 6. Customização Visual e Persistência de Dados | 3/3 | Complete   | 2026-08-19 |
-| 7. Herdar o design system do PCA | 8/8 | Complete   | 2026-08-23 |
+| 7. Herdar o design system do PCA | 10/14 | In Progress|  |
