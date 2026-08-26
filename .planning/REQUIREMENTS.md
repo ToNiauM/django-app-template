@@ -38,7 +38,7 @@ mostrado é real e provado numa cópia gerada.
 
 - [x] **PRV-01**: O código do exemplo completo (fixture em `.template-tests/fixtures/`) instala numa cópia Copier real e passa: migração, testes do app e smoke das telas
 - [ ] **PRV-02**: Toda cerca de código do guia é byte-idêntica ao arquivo correspondente do fixture — provado por teste
-- [ ] **PRV-03**: Teste negativo prova que nenhum código de domínio (`apps/diarias`) chega ao template nem à cópia gerada
+- [x] **PRV-03**: Teste negativo prova que nenhum código de domínio (`apps/diarias`) chega ao template nem à cópia gerada
 
 ### Distribuição e release (DST / REL)
 
