@@ -39,11 +39,15 @@ estas constantes; mudá-las aqui exige mudar o guia junto.
 from __future__ import annotations
 
 import hashlib
+import http.cookiejar
+import re
+import secrets
 import shutil
 import subprocess
 import time
 import unittest
 import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
@@ -76,6 +80,22 @@ LINHAS_NAV = (
     '{% item_nav "diarias:viagem_listar" "Diárias e passagens" "lista"'
     ' "/diarias/" "/diarias/dashboard/" %}\n'
 )
+
+# Usuário do smoke autenticado. A senha é EFÊMERA: gerada por
+# secrets.token_urlsafe a cada execução, redefinida via `set_password` no
+# get_or_create dentro do container e vive só na memória do processo
+# (mitigação T-08-P4-01 — nunca literal no repo, nunca em arquivo).
+USUARIO_SMOKE = "guia@example.invalid"
+
+# As três telas do fixture, todas atrás de @login_required.
+ROTAS_PROTEGIDAS = ("/diarias/", "/diarias/dashboard/", "/diarias/novo/")
+
+
+class _SemRedirecionamento(urllib.request.HTTPRedirectHandler):
+    """Devolve o 302 cru (como HTTPError) em vez de segui-lo."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):  # noqa: D102
+        return None
 
 
 def impressao_subarvore(raiz: Path) -> dict[str, str]:
@@ -397,6 +417,145 @@ class GuiaProvaTests(unittest.TestCase):
             resultado.returncode,
             0,
             f"manage.py test apps.diarias reprovou\n{_diagnostico(resultado)}",
+        )
+
+    # ------------------------------------------------------- smoke HTTP
+
+    def test_smoke_anonimo_302_para_login_nas_tres_telas(self) -> None:
+        """Rota registrada + @login_required: anônimo recebe 302 -> /login/."""
+        abridor = urllib.request.build_opener(_SemRedirecionamento)
+        for rota in ROTAS_PROTEGIDAS:
+            with self.subTest(rota=rota):
+                try:
+                    resposta = abridor.open(f"{self.base}{rota}", timeout=30)
+                except urllib.error.HTTPError as erro:
+                    self.assertEqual(
+                        erro.code,
+                        302,
+                        f"{rota} respondeu {erro.code} para anônimo — esperava 302",
+                    )
+                    local = erro.headers.get("Location", "")
+                    self.assertTrue(
+                        local.startswith("/login/"),
+                        f"{rota} redirecionou anônimo para {local!r} — "
+                        "esperava destino começando com /login/",
+                    )
+                else:
+                    self.fail(
+                        f"{rota} respondeu {resposta.status} para anônimo — "
+                        "esperava 302 para /login/"
+                    )
+
+    def _criar_usuario_smoke(self) -> str:
+        """get_or_create idempotente + set_password com senha efêmera.
+
+        Sempre redefine a senha (a de execuções anteriores morreu com o
+        processo) e garante is_active=True — o gate das telas é is_active;
+        não precisa ser staff. Alternativa robusta da Assumption A3: nada de
+        createsuperuser --noinput (mensagem de duplicata varia com a versão).
+        """
+        senha = secrets.token_urlsafe(16)
+        comando = (
+            "from django.contrib.auth import get_user_model; "
+            "Usuario = get_user_model(); "
+            f"usuario, _ = Usuario.objects.get_or_create(email={USUARIO_SMOKE!r}); "
+            "usuario.is_active = True; "
+            f"usuario.set_password({senha!r}); "
+            "usuario.save()"
+        )
+        resultado = self._compor(
+            "exec", "-T", "web", "python", "manage.py", "shell", "-c", comando
+        )
+        self.assertEqual(
+            resultado.returncode,
+            0,
+            f"criação do usuário de smoke falhou\n{_diagnostico(resultado)}",
+        )
+        return senha
+
+    def test_smoke_autenticado_200_com_danca_real_de_csrf(self) -> None:
+        """Login de verdade (cookie jar + csrfmiddlewaretoken + Referer) e
+        200 autenticado na listagem e no dashboard.
+
+        UMA única tentativa com credencial correta — loop de tentativas
+        erradas alimentaria o lockout do django-axes (T-08-P4-02). Sem seed:
+        as telas respondem 200 com banco vazio (agregações toleram None) e
+        dados semeados persistiriam no banco de ensaio reusado.
+        """
+        senha = self._criar_usuario_smoke()
+
+        jar = http.cookiejar.CookieJar()
+        abridor = urllib.request.build_opener(
+            urllib.request.HTTPCookieProcessor(jar)
+        )
+
+        # 1) GET /login/ para colher o cookie csrftoken + o token do form.
+        corpo_login = abridor.open(f"{self.base}/login/", timeout=30).read().decode(
+            "utf-8"
+        )
+        token = re.search(
+            r'name="csrfmiddlewaretoken" value="([^"]+)"', corpo_login
+        )
+        self.assertIsNotNone(
+            token, "csrfmiddlewaretoken ausente no HTML de /login/"
+        )
+
+        # 2) POST com os campos reais do form (email, password, next) e o
+        #    header Referer — nenhuma proteção desligada (T-08-P4-03).
+        dados = urllib.parse.urlencode(
+            {
+                "csrfmiddlewaretoken": token.group(1),
+                "email": USUARIO_SMOKE,
+                "password": senha,
+                "next": "/diarias/",
+            }
+        ).encode("utf-8")
+        requisicao = urllib.request.Request(
+            f"{self.base}/login/",
+            data=dados,
+            headers={"Referer": f"{self.base}/login/"},
+        )
+        resposta = abridor.open(requisicao, timeout=30)  # segue o redirect
+        corpo_listagem = resposta.read().decode("utf-8")
+        self.assertEqual(resposta.status, 200)
+        self.assertTrue(
+            resposta.geturl().endswith("/diarias/"),
+            f"login não desembocou em /diarias/ (parou em {resposta.geturl()}) "
+            "— credencial rejeitada ou next ignorado",
+        )
+
+        # 3) Listagem autenticada: H1 do contrato do fixture.
+        self.assertIn(
+            "Diárias e passagens",
+            corpo_listagem,
+            "listagem autenticada não contém o H1 'Diárias e passagens'",
+        )
+
+        # 4) Região do <nav>: o {% item_nav %} falha em silêncio quando a
+        #    rota não resolve (o item só não aparece) — apenas esta asserção
+        #    prova que os itens de navegação do critério 4 renderizam.
+        inicio_nav = corpo_listagem.find("<nav")
+        fim_nav = corpo_listagem.find("</nav>", inicio_nav)
+        self.assertGreater(inicio_nav, -1, "listagem autenticada sem <nav>")
+        self.assertGreater(fim_nav, -1, "listagem autenticada sem </nav>")
+        recorte_nav = corpo_listagem[inicio_nav:fim_nav]
+        self.assertIn(
+            'href="/diarias/dashboard/"',
+            recorte_nav,
+            "o link do dashboard não renderizou dentro do <nav> da listagem "
+            "— item_nav não resolveu a rota diarias:dashboard",
+        )
+
+        # 5) Dashboard autenticado: json_script da paleta presente.
+        resposta_dash = abridor.open(
+            f"{self.base}/diarias/dashboard/", timeout=30
+        )
+        corpo_dash = resposta_dash.read().decode("utf-8")
+        self.assertEqual(resposta_dash.status, 200)
+        self.assertIn(
+            'id="paleta-graficos"',
+            corpo_dash,
+            "dashboard autenticado sem o json_script id=\"paleta-graficos\"",
         )
 
 
