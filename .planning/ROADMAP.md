@@ -50,6 +50,7 @@ Resumo do marco: `.planning/MILESTONES.md`
 **Depends on:** —
 
 **Success criteria:**
+
 1. A suíte nova (`test_08_guia*`) gera uma cópia Copier real via `ensaio_django.sh`, instala o fixture como `apps/diarias` e sai verde: migração aplicada, testes do app passando, smoke HTTP das telas respondendo
 2. Teste negativo verde: a cópia gerada recém-nascida NÃO contém `apps/diarias` nem qualquer arquivo do fixture (o domínio não vaza)
 3. A suíte roda junto com as 13 existentes pelo test_command padrão do projeto
@@ -58,9 +59,17 @@ Resumo do marco: `.planning/MILESTONES.md`
 **Plans:** 4 plans
 
 Plans:
+**Wave 1**
+
 - [ ] 08-01-PLAN.md — Backend do fixture apps/diarias (modelo Viagem, admin, forms, views, urls, migração, seed)
 - [ ] 08-02-PLAN.md — Templates (listagem/modais/dashboard ECharts) e testes internos do fixture
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 08-03-PLAN.md — Teste negativo de vazamento (test_08_guia_vazamento.py, PRV-03)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 08-04-PLAN.md — Prova de ponta a ponta na cópia real (test_08_guia_prova.py) + suíte integral
 
 #### Phase 9: Escrita do guia
@@ -72,6 +81,7 @@ Plans:
 **Depends on:** Phase 8
 
 **Success criteria:**
+
 1. Seguindo os capítulos na ordem, o leitor sai do sistema recém-gerado e chega ao app de diárias completo: registros no admin, listagem paginada com filtros, criar/editar em modal, item no menu com estado ativo e painel com gráfico na paleta da marca
 2. Todo capítulo termina com "recarregue e veja" e traz a seção "deu errado?" com os erros reais colhidos na construção do fixture
 3. O capítulo de abertura entrega pré-requisitos, glossário e a regra de dono (`docs/guia/` é do núcleo); orçamento e controle de materiais existem como capítulo resumido no formato fixo; o mapa de receitas e o capítulo final existem
@@ -89,6 +99,7 @@ Plans:
 **Depends on:** Phase 9
 
 **Success criteria:**
+
 1. `copier copy` novo produz um sistema com `docs/guia/` completo dentro
 2. Ensaio de `copier update` v0.2.0 → v0.3.0 sai com exit 0, zero marcador de conflito e zero `.rej`, com a árvore `docs/` coberta pela verificação
 3. `README.md` e `README.md.jinja` linkam o guia numa seção curta, sem duplicar conteúdo dele
