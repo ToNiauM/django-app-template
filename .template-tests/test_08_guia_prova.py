@@ -98,6 +98,21 @@ class _SemRedirecionamento(urllib.request.HTTPRedirectHandler):
         return None
 
 
+class _JarraSemSecure(http.cookiejar.CookieJar):
+    """Descarta o atributo Secure dos cookies APENAS no cliente de teste.
+
+    A cópia mantém a postura de produção (CSRF_COOKIE_SECURE e
+    SESSION_COOKIE_SECURE = True, incondicionais — nenhuma proteção do
+    servidor é tocada), mas o banco de ensaio fala HTTP puro em 127.0.0.1:
+    um jar padrão jamais reenviaria csrftoken/sessionid marcados Secure, e
+    todo POST morreria em 403 sem exercitar a validação real do token.
+    """
+
+    def set_cookie(self, cookie):  # noqa: D102
+        cookie.secure = False
+        super().set_cookie(cookie)
+
+
 def impressao_subarvore(raiz: Path) -> dict[str, str]:
     """sha256 de caminho-relativo + conteúdo de cada arquivo sob `raiz`.
 
@@ -484,7 +499,7 @@ class GuiaProvaTests(unittest.TestCase):
         """
         senha = self._criar_usuario_smoke()
 
-        jar = http.cookiejar.CookieJar()
+        jar = _JarraSemSecure()
         abridor = urllib.request.build_opener(
             urllib.request.HTTPCookieProcessor(jar)
         )
