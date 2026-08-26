@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v0.3.0
 milestone_name: Guia de construção de sistemas
-status: executing
-stopped_at: Phase 8 context gathered
-last_updated: "2026-08-26T12:25:28.799Z"
+status: verifying
+stopped_at: Completed 08-04-PLAN.md
+last_updated: "2026-08-26T12:44:06.753Z"
 last_activity: 2026-08-26
 progress:
   total_phases: 3
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 4
-  completed_plans: 3
-  percent: 0
+  completed_plans: 4
+  percent: 33
 ---
 
 # Project State
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (atualizado 2026-08-25 na abertura do marco v0.3.0)
 
 Phase: 08 (exemplo-provado) — EXECUTING
 Plan: 4 of 4
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-08-26
 
 ## Performance Metrics
@@ -85,6 +85,7 @@ Last activity: 2026-08-26
 | Phase 08 P01 | 5min | 2 tasks | 12 files |
 | Phase 08 P02 | 9min | 3 tasks | 10 files |
 | Phase 08 P03 | 8min | 2 tasks | 1 files |
+| Phase 08 P04 | 14min | 3 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -173,6 +174,9 @@ Recent decisions affecting current work:
 - [Phase 08-02]: Sem drill-down no gráfico mensal — a listagem não filtra por mês; drill-down só no donut de status, onde a rota de destino sabe responder
 - [Phase ?]: [Fase 08-03] Interseção fixture×cópia por sha256 de conteúdo puro, excluindo arquivos de 0 bytes do lado do fixture — __init__.py vazio colide com qualquer __init__.py vazio legítimo da cópia e daria vermelho falso permanente sem carregar byte de domínio
 - [Phase ?]: [Fase 08-03] Guarda simétrica no teste de git ls-files: o fixture precisa estar rastreado (>=10 arquivos) — sem ela, fixture fora do git faria o render --vcs-ref=HEAD passar em vácuo
+- [Phase 08-04]: dados/ excluído do contexto de build Docker (.dockerignore): o bind mount ./dados/pg (uid 999) quebrava todo up -d --build após o primeiro boot com permission denied — conserto de template achado pela prova de ponta a ponta
+- [Phase 08-04]: Smoke autenticado usa jar que descarta o atributo Secure só no cliente: CSRF_COOKIE_SECURE/SESSION_COOKIE_SECURE=True intocados na cópia; a dança real de CSRF continua validada pelo servidor
+- [Phase 08-04]: Banco de ensaio fica com apps/diarias instalado ao final (Pattern 4) — convenção na docstring da suíte; suítes futuras não assumem banco puro
 
 ### Pending Todos
 
@@ -204,8 +208,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-26T12:25:23.600Z
-Stopped at: Phase 8 context gathered
+Last session: 2026-08-26T12:44:06.721Z
+Stopped at: Completed 08-04-PLAN.md
 Resume file: None
 
 ## Operator Next Steps

@@ -37,7 +37,7 @@ Resumo do marco: `.planning/MILESTONES.md`
 
 ### 🚧 v0.3.0 — Guia de construção de sistemas (Fases 8–10)
 
-- [ ] **Phase 8: Exemplo provado** — O app de diárias e passagens existe como fixture, funciona dentro de uma cópia Copier real e as guardas de prova estão armadas
+- [x] **Phase 8: Exemplo provado** — O app de diárias e passagens existe como fixture, funciona dentro de uma cópia Copier real e as guardas de prova estão armadas (completed 2026-08-26)
 - [ ] **Phase 9: Escrita do guia** — Os capítulos do guia existem em `docs/guia/`, em linguagem simples, com todo código extraído do fixture provado
 - [ ] **Phase 10: Distribuição e release** — O guia chega a todo sistema gerado, o `copier update` sai limpo e a tag `v0.3.0` está publicada
 
@@ -56,7 +56,7 @@ Resumo do marco: `.planning/MILESTONES.md`
 3. A suíte roda junto com as 13 existentes pelo test_command padrão do projeto
 4. O fixture cobre tudo que o guia vai ensinar: modelo, admin, listagem paginada com filtros, modal 422/`HX-Trigger`, `_nav_dominio.html` com `{% item_nav %}` e dashboard ECharts com a paleta da marca
 
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 **Wave 1**
@@ -70,7 +70,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 08-04-PLAN.md — Prova de ponta a ponta na cópia real (test_08_guia_prova.py) + suíte integral
+- [x] 08-04-PLAN.md — Prova de ponta a ponta na cópia real (test_08_guia_prova.py) + suíte integral
 
 #### Phase 9: Escrita do guia
 
@@ -118,6 +118,6 @@ Plans:
 | 5. Verificação e Documentação | v0.2.0 | 3/3 | Complete | 2026-08-18 |
 | 6. Customização Visual e Persistência de Dados | v0.2.0 | 3/3 | Complete | 2026-08-19 |
 | 7. Herdar o design system do PCA | v0.2.0 | 14/14 | Complete | 2026-08-24 |
-| 8. Exemplo provado | v0.3.0 | 3/4 | In Progress|  |
+| 8. Exemplo provado | v0.3.0 | 4/4 | Complete   | 2026-08-26 |
 | 9. Escrita do guia | v0.3.0 | 0/? | Not started | — |
 | 10. Distribuição e release | v0.3.0 | 0/? | Not started | — |
