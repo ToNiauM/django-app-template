@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v0.3.0
 milestone_name: Guia de construção de sistemas
-status: verifying
-stopped_at: Completed 08-04-PLAN.md
-last_updated: "2026-08-26T12:44:06.753Z"
+status: ready_to_plan
+stopped_at: Phase 08 complete (4/4) — ready to discuss Phase 09
+last_updated: 2026-08-26T13:04:35.008Z
 last_activity: 2026-08-26
 progress:
   total_phases: 3
@@ -21,20 +21,20 @@ progress:
 See: .planning/PROJECT.md (atualizado 2026-08-25 na abertura do marco v0.3.0)
 
 **Core value:** Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de exemplo, Docker, backup) em minutos — restando ao time apenas modelar o domínio em `apps/`.
-**Current focus:** Phase 08 — exemplo-provado
+**Current focus:** Phase 09 — escrita do guia
 
 ## Current Position
 
-Phase: 08 (exemplo-provado) — EXECUTING
-Plan: 4 of 4
-Status: Phase complete — ready for verification
+Phase: 09
+Plan: Not started
+Status: Ready to plan
 Last activity: 2026-08-26
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 21
+- Total plans completed: 25
 - Average duration: -
 - Total execution time: -
 
@@ -47,6 +47,7 @@ Last activity: 2026-08-26
 | 04 | 7 | - | - |
 | 05 | 3 | - | - |
 | 06 | 3 | - | - |
+| 08 | 4 | - | - |
 
 **Recent Trend:**
 
