@@ -64,24 +64,24 @@ mostrado é real e provado numa cópia gerada.
 
 | REQ-ID | Fase | Status |
 |--------|------|--------|
-| GUIA-01 | — | Pending |
-| GUIA-02 | — | Pending |
-| GUIA-03 | — | Pending |
-| GUIA-04 | — | Pending |
-| GUIA-05 | — | Pending |
-| GUIA-06 | — | Pending |
-| GUIA-07 | — | Pending |
-| GUIA-08 | — | Pending |
-| GUIA-09 | — | Pending |
-| EX-01 | — | Pending |
-| EX-02 | — | Pending |
-| LNG-01 | — | Pending |
-| LNG-02 | — | Pending |
-| LNG-03 | — | Pending |
-| PRV-01 | — | Pending |
-| PRV-02 | — | Pending |
-| PRV-03 | — | Pending |
-| DST-01 | — | Pending |
-| DST-02 | — | Pending |
-| DST-03 | — | Pending |
-| REL-02 | — | Pending |
+| GUIA-01 | Fase 9 | Mapped |
+| GUIA-02 | Fase 9 | Mapped |
+| GUIA-03 | Fase 9 | Mapped |
+| GUIA-04 | Fase 9 | Mapped |
+| GUIA-05 | Fase 9 | Mapped |
+| GUIA-06 | Fase 9 | Mapped |
+| GUIA-07 | Fase 9 | Mapped |
+| GUIA-08 | Fase 9 | Mapped |
+| GUIA-09 | Fase 9 | Mapped |
+| EX-01 | Fase 9 | Mapped |
+| EX-02 | Fase 9 | Mapped |
+| LNG-01 | Fase 9 | Mapped |
+| LNG-02 | Fase 9 | Mapped |
+| LNG-03 | Fase 9 | Mapped |
+| PRV-01 | Fase 8 | Mapped |
+| PRV-02 | Fase 9 | Mapped |
+| PRV-03 | Fase 8 | Mapped |
+| DST-01 | Fase 10 | Mapped |
+| DST-02 | Fase 10 | Mapped |
+| DST-03 | Fase 10 | Mapped |
+| REL-02 | Fase 10 | Mapped |

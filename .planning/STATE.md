@@ -6,7 +6,7 @@ status: planning
 last_updated: "2026-08-26T00:29:36.256Z"
 last_activity: 2026-08-26
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,17 +17,17 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (atualizado 2026-08-24 após o marco v0.2.0)
+See: .planning/PROJECT.md (atualizado 2026-08-25 na abertura do marco v0.3.0)
 
 **Core value:** Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de exemplo, Docker, backup) em minutos — restando ao time apenas modelar o domínio em `apps/`.
-**Current focus:** Nenhum — as 7 fases do marco v0.2.0 estão fechadas. Próximo escopo em `/gsd-new-milestone`.
+**Current focus:** Marco v0.3.0 — Guia de construção de sistemas (Fases 8–10). Próximo passo: planejar a Fase 8.
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 8 — Exemplo provado (not started)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-08-26 — Milestone v0.3.0 started
+Status: Roadmap approved — ready to plan Phase 8
+Last activity: 2026-08-25 — Milestone v0.3.0 opened: requirements defined (21 REQ-IDs), roadmap approved (Fases 8–10)
 
 ## Performance Metrics
 
@@ -86,6 +86,7 @@ Last activity: 2026-08-26 — Milestone v0.3.0 started
 
 ### Roadmap Evolution
 
+- Milestone v0.3.0 opened (2026-08-25): Guia de construção de sistemas — Fases 8 (Exemplo provado), 9 (Escrita do guia), 10 (Distribuição e release); 21 requisitos mapeados, pesquisa inline em .planning/research/
 - Phase 6 added
 - Phase 7 added (2026-08-23): Herdar o design system do PCA — o padrão visual do Sistema CFC passa a nascer com todo sistema gerado. Pedido do operador.
   - **Rota decidida**: o template herda **direto de `/opt/web/pca`**, não do DividaAtiva. Motivo: o PCA é anterior ao template (não tem `.copier-answers.yml`) e é a fonte real do padrão; o DividaAtiva tem só um recorte dele. Herdar do filho implicaria implementar o mesmo sistema duas vezes e conflitar com o próprio trabalho do filho no `copier update` seguinte.
