@@ -8,6 +8,16 @@ Template clonável (via Copier) do qual nascem os sistemas web de apoio à decis
 
 Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de exemplo, Docker, backup) em minutos — restando ao time apenas modelar o domínio em `apps/`.
 
+## Marco Atual: v0.3.0 — Guia de construção de sistemas
+
+**Objetivo:** quem gera um sistema pelo template consegue, seguindo um guia em linguagem simples e acessível, construir seus próprios apps de domínio funcionais e escaláveis em Django — sem precisar decifrar o app exemplo sozinho.
+
+**Entregas-alvo:**
+- Guia em arquivo(s) próprio(s) (ex.: `GUIA.md` ou `docs/guia/`), com link no README
+- O guia chega ao sistema gerado via `copier copy` e sobrevive ao `copier update` sem conflito
+- 1 exemplo completo conduzido passo a passo (diárias e passagens) + 2 resumidos (orçamento, controle de materiais) mostrando só o que muda
+- Código real testado: os trechos do guia são extraídos de um sistema realmente gerado e rodado durante o marco
+
 ## Requisitos
 
 ### Validados
@@ -43,7 +53,7 @@ Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de ex
 
 <!-- Escopo atual. Construindo em direção a estes. -->
 
-- Nenhum — o marco v0.2.0 fecha as 7 fases do roadmap. Próximo escopo será definido em novo planejamento (`/gsd-new-milestone`).
+- Marco v0.3.0 em definição de requisitos: guia de construção de sistemas (formato, exemplos e distribuição descritos no Marco Atual acima). REQ-IDs serão definidos em `.planning/REQUIREMENTS.md`.
 
 **Encaminhamentos conhecidos, ainda sem fase:**
 
@@ -116,4 +126,4 @@ Este documento evolui nas transições de fase e nos marcos do projeto.
 4. Atualizar Contexto com o estado atual
 
 ---
-*Última atualização: 2026-08-24 após o marco v0.2.0 — Design system herdado do PCA*
+*Última atualização: 2026-08-25 — abertura do marco v0.3.0 (Guia de construção de sistemas)*

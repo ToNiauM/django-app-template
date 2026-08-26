@@ -1,17 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v0.2.0
-milestone_name: Design system herdado do PCA
-status: Awaiting next milestone
-stopped_at: Marco v0.2.0 fechado e arquivado
-last_updated: "2026-08-24T21:31:19.879Z"
-last_activity: 2026-08-24 — Milestone v0.2.0 completed and archived
+milestone: v0.3.0
+milestone_name: Guia de construção de sistemas
+status: planning
+last_updated: "2026-08-26T00:29:36.256Z"
+last_activity: 2026-08-26
 progress:
-  total_phases: 7
-  completed_phases: 7
-  total_plans: 38
-  completed_plans: 38
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -25,10 +24,10 @@ See: .planning/PROJECT.md (atualizado 2026-08-24 após o marco v0.2.0)
 
 ## Current Position
 
-Phase: Milestone v0.2.0 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-08-24 — Milestone v0.2.0 completed and archived
+Status: Defining requirements
+Last activity: 2026-08-26 — Milestone v0.3.0 started
 
 ## Performance Metrics
 
