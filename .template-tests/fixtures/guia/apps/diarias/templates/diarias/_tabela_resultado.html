@@ -1,0 +1,285 @@
+<!-- apps/diarias/templates/diarias/_tabela_resultado.html -->
+{% load formatos %}
+
+<div class="rounded-sm border border-grid bg-surface overflow-hidden">
+  {% if pagina.object_list %}
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse text-sm">
+        <thead>
+          <tr class="border-b border-grid bg-surface-2 text-xs font-semibold uppercase tracking-wider text-muted">
+            <!-- Servidor / Motivo -->
+            <th scope="col" class="py-3 px-4">
+              <a href="?ordem={% if ordem_atual == 'servidor' %}-servidor{% else %}servidor{% endif %}{% if querystring_filtros %}&{{ querystring_filtros }}{% endif %}"
+                 hx-get="{% url 'diarias:viagem_listar' %}?ordem={% if ordem_atual == 'servidor' %}-servidor{% else %}servidor{% endif %}{% if querystring_filtros %}&{{ querystring_filtros }}{% endif %}"
+                 hx-target="#tabela-container"
+                 hx-push-url="true"
+                 class="inline-flex items-center gap-1 hover:text-ink transition-colors">
+                <span>Servidor e Motivo</span>
+                {% if ordem_atual == 'servidor' %}
+                  <span class="text-brand">↑</span>
+                {% elif ordem_atual == '-servidor' %}
+                  <span class="text-brand">↓</span>
+                {% else %}
+                  <span class="opacity-40">↕</span>
+                {% endif %}
+              </a>
+            </th>
+
+            <!-- Destino -->
+            <th scope="col" class="py-3 px-4">
+              <a href="?ordem={% if ordem_atual == 'destino' %}-destino{% else %}destino{% endif %}{% if querystring_filtros %}&{{ querystring_filtros }}{% endif %}"
+                 hx-get="{% url 'diarias:viagem_listar' %}?ordem={% if ordem_atual == 'destino' %}-destino{% else %}destino{% endif %}{% if querystring_filtros %}&{{ querystring_filtros }}{% endif %}"
+                 hx-target="#tabela-container"
+                 hx-push-url="true"
+                 class="inline-flex items-center gap-1 hover:text-ink transition-colors">
+                <span>Destino</span>
+                {% if ordem_atual == 'destino' %}
+                  <span class="text-brand">↑</span>
+                {% elif ordem_atual == '-destino' %}
+                  <span class="text-brand">↓</span>
+                {% else %}
+                  <span class="opacity-40">↕</span>
+                {% endif %}
+              </a>
+            </th>
+
+            <!-- Período (ordena pela data de início) -->
+            <th scope="col" class="py-3 px-4">
+              <a href="?ordem={% if ordem_atual == 'data_inicio' %}-data_inicio{% else %}data_inicio{% endif %}{% if querystring_filtros %}&{{ querystring_filtros }}{% endif %}"
+                 hx-get="{% url 'diarias:viagem_listar' %}?ordem={% if ordem_atual == 'data_inicio' %}-data_inicio{% else %}data_inicio{% endif %}{% if querystring_filtros %}&{{ querystring_filtros }}{% endif %}"
+                 hx-target="#tabela-container"
+                 hx-push-url="true"
+                 class="inline-flex items-center gap-1 hover:text-ink transition-colors">
+                <span>Período</span>
+                {% if ordem_atual == 'data_inicio' %}
+                  <span class="text-brand">↑</span>
+                {% elif ordem_atual == '-data_inicio' %}
+                  <span class="text-brand">↓</span>
+                {% else %}
+                  <span class="opacity-40">↕</span>
+                {% endif %}
+              </a>
+            </th>
+
+            <!-- Diárias -->
+            <th scope="col" class="py-3 px-4 text-right">
+              <a href="?ordem={% if ordem_atual == 'valor_diarias' %}-valor_diarias{% else %}valor_diarias{% endif %}{% if querystring_filtros %}&{{ querystring_filtros }}{% endif %}"
+                 hx-get="{% url 'diarias:viagem_listar' %}?ordem={% if ordem_atual == 'valor_diarias' %}-valor_diarias{% else %}valor_diarias{% endif %}{% if querystring_filtros %}&{{ querystring_filtros }}{% endif %}"
+                 hx-target="#tabela-container"
+                 hx-push-url="true"
+                 class="inline-flex items-center justify-end gap-1 hover:text-ink transition-colors w-full">
+                <span>Diárias (R$)</span>
+                {% if ordem_atual == 'valor_diarias' %}
+                  <span class="text-brand">↑</span>
+                {% elif ordem_atual == '-valor_diarias' %}
+                  <span class="text-brand">↓</span>
+                {% else %}
+                  <span class="opacity-40">↕</span>
+                {% endif %}
+              </a>
+            </th>
+
+            <!-- Passagens -->
+            <th scope="col" class="py-3 px-4 text-right">
+              <a href="?ordem={% if ordem_atual == 'valor_passagens' %}-valor_passagens{% else %}valor_passagens{% endif %}{% if querystring_filtros %}&{{ querystring_filtros }}{% endif %}"
+                 hx-get="{% url 'diarias:viagem_listar' %}?ordem={% if ordem_atual == 'valor_passagens' %}-valor_passagens{% else %}valor_passagens{% endif %}{% if querystring_filtros %}&{{ querystring_filtros }}{% endif %}"
+                 hx-target="#tabela-container"
+                 hx-push-url="true"
+                 class="inline-flex items-center justify-end gap-1 hover:text-ink transition-colors w-full">
+                <span>Passagens (R$)</span>
+                {% if ordem_atual == 'valor_passagens' %}
+                  <span class="text-brand">↑</span>
+                {% elif ordem_atual == '-valor_passagens' %}
+                  <span class="text-brand">↓</span>
+                {% else %}
+                  <span class="opacity-40">↕</span>
+                {% endif %}
+              </a>
+            </th>
+
+            <!-- Status -->
+            <th scope="col" class="py-3 px-4">
+              <a href="?ordem={% if ordem_atual == 'status' %}-status{% else %}status{% endif %}{% if querystring_filtros %}&{{ querystring_filtros }}{% endif %}"
+                 hx-get="{% url 'diarias:viagem_listar' %}?ordem={% if ordem_atual == 'status' %}-status{% else %}status{% endif %}{% if querystring_filtros %}&{{ querystring_filtros }}{% endif %}"
+                 hx-target="#tabela-container"
+                 hx-push-url="true"
+                 class="inline-flex items-center gap-1 hover:text-ink transition-colors">
+                <span>Status</span>
+                {% if ordem_atual == 'status' %}
+                  <span class="text-brand">↑</span>
+                {% elif ordem_atual == '-status' %}
+                  <span class="text-brand">↓</span>
+                {% else %}
+                  <span class="opacity-40">↕</span>
+                {% endif %}
+              </a>
+            </th>
+
+            <!-- Ações -->
+            <th scope="col" class="py-3 px-4 text-right">
+              <span class="sr-only">Ações</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-grid">
+          {% for viagem in pagina.object_list %}
+            <tr class="hover:bg-surface-2 transition-colors">
+              <!-- Servidor e Motivo -->
+              <td class="py-3 px-4">
+                <div class="font-semibold text-ink">{{ viagem.servidor }}</div>
+                {% if viagem.motivo %}
+                  <div class="text-xs text-ink-2 truncate max-w-xs sm:max-w-md mt-0.5">{{ viagem.motivo }}</div>
+                {% endif %}
+              </td>
+
+              <!-- Destino -->
+              <td class="py-3 px-4 whitespace-nowrap">
+                <span class="inline-flex items-center rounded-sm bg-surface-2 border border-grid px-2 py-0.5 text-xs font-normal text-ink-2">
+                  {{ viagem.destino }}
+                </span>
+              </td>
+
+              <!-- Período -->
+              <td class="py-3 px-4 whitespace-nowrap text-xs text-ink-2">
+                {{ viagem.data_inicio|date:"d/m/Y" }} – {{ viagem.data_fim|date:"d/m/Y" }}
+              </td>
+
+              <!-- Diárias -->
+              <td class="py-3 px-4 text-right whitespace-nowrap font-mono font-normal text-ink">
+                R$ {{ viagem.valor_diarias|moeda }}
+              </td>
+
+              <!-- Passagens -->
+              <td class="py-3 px-4 text-right whitespace-nowrap font-mono font-normal text-ink">
+                R$ {{ viagem.valor_passagens|moeda }}
+              </td>
+
+              <!-- Status -->
+              <td class="py-3 px-4 whitespace-nowrap">
+                {% comment %}
+                  Badges de status: paleta NATIVA do Tailwind (bg-emerald-50 etc.),
+                  não hex literal — o gate do design system já passa sem migração.
+                  Nomes de estado são vocabulário de DOMÍNIO (D-92), não do
+                  design system do core; um sistema real declara os próprios
+                  tokens de estado (par fundo + texto) em
+                  core/static/src/dominio.css (arquivo protegido por
+                  _skip_if_exists — nunca semeado por este app didático).
+                  As variantes dark: abaixo só garantem legibilidade sobre
+                  superfície escura, sem migrar para tokens st-*.
+                {% endcomment %}
+                {% if viagem.status == 'PAGA' %}
+                  <span class="inline-flex items-center rounded-sm bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-xs font-semibold text-emerald-800 dark:bg-emerald-950 dark:border-emerald-800 dark:text-emerald-200">
+                    {{ viagem.get_status_display }}
+                  </span>
+                {% elif viagem.status == 'APROVADA' %}
+                  <span class="inline-flex items-center rounded-sm bg-amber-50 border border-amber-200 px-2 py-0.5 text-xs font-semibold text-amber-800 dark:bg-amber-950 dark:border-amber-800 dark:text-amber-200">
+                    {{ viagem.get_status_display }}
+                  </span>
+                {% elif viagem.status == 'CANCELADA' %}
+                  <span class="inline-flex items-center rounded-sm bg-red-50 border border-red-200 px-2 py-0.5 text-xs font-semibold text-red-800 dark:bg-red-950 dark:border-red-800 dark:text-red-200">
+                    {{ viagem.get_status_display }}
+                  </span>
+                {% else %}
+                  <span class="inline-flex items-center rounded-sm bg-surface-2 border border-grid px-2 py-0.5 text-xs font-normal text-ink-2 dark:bg-surface-3 dark:text-ink-2">
+                    {{ viagem.get_status_display }}
+                  </span>
+                {% endif %}
+              </td>
+
+              <!-- Ações -->
+              <td class="py-3 px-4 text-right whitespace-nowrap">
+                <div class="flex items-center justify-end gap-2">
+                  <button type="button"
+                          hx-get="{% url 'diarias:viagem_editar' viagem.pk %}"
+                          hx-target="#modal-container"
+                          hx-swap="innerHTML"
+                          class="rounded-sm border border-grid bg-surface px-2.5 py-1 text-xs font-semibold text-ink-2 hover:bg-surface-2 hover:text-ink transition-colors">
+                    Editar
+                  </button>
+                  <button type="button"
+                          hx-get="{% url 'diarias:viagem_excluir' viagem.pk %}"
+                          hx-target="#modal-container"
+                          hx-swap="innerHTML"
+                          class="rounded-sm border border-grid bg-surface px-2.5 py-1 text-xs font-semibold text-red-700 hover:bg-red-50 hover:border-red-200 transition-colors">
+                    Excluir
+                  </button>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Barra de Paginação -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 border-t border-grid bg-surface text-xs text-ink-2">
+      <div>
+        Exibindo <span class="font-semibold text-ink">{{ pagina.start_index }}</span> a <span class="font-semibold text-ink">{{ pagina.end_index }}</span> de <span class="font-semibold text-ink">{{ pagina.paginator.count }}</span> viagens
+      </div>
+
+      {% if pagina.paginator.num_pages > 1 %}
+        <div class="flex items-center gap-1">
+          {% if pagina.has_previous %}
+            <a href="?pagina={{ pagina.previous_page_number }}{% if querystring_filtros %}&{{ querystring_filtros }}{% endif %}{% if ordem_atual %}&ordem={{ ordem_atual }}{% endif %}"
+               hx-get="{% url 'diarias:viagem_listar' %}?pagina={{ pagina.previous_page_number }}{% if querystring_filtros %}&{{ querystring_filtros }}{% endif %}{% if ordem_atual %}&ordem={{ ordem_atual }}{% endif %}"
+               hx-target="#tabela-container"
+               hx-push-url="true"
+               class="rounded-sm border border-grid px-2.5 py-1 text-xs font-semibold text-ink-2 hover:bg-surface-2 transition-colors">
+              Anterior
+            </a>
+          {% endif %}
+
+          {% for num in pagina.paginator.page_range %}
+            {% if num == pagina.number %}
+              <span class="rounded-sm bg-brand px-2.5 py-1 text-xs font-semibold text-brand-tx">
+                {{ num }}
+              </span>
+            {% elif num > pagina.number|add:"-3" and num < pagina.number|add:"3" %}
+              <a href="?pagina={{ num }}{% if querystring_filtros %}&{{ querystring_filtros }}{% endif %}{% if ordem_atual %}&ordem={{ ordem_atual }}{% endif %}"
+                 hx-get="{% url 'diarias:viagem_listar' %}?pagina={{ num }}{% if querystring_filtros %}&{{ querystring_filtros }}{% endif %}{% if ordem_atual %}&ordem={{ ordem_atual }}{% endif %}"
+                 hx-target="#tabela-container"
+                 hx-push-url="true"
+                 class="rounded-sm border border-grid px-2.5 py-1 text-xs font-semibold text-ink-2 hover:bg-surface-2 transition-colors">
+                {{ num }}
+              </a>
+            {% endif %}
+          {% endfor %}
+
+          {% if pagina.has_next %}
+            <a href="?pagina={{ pagina.next_page_number }}{% if querystring_filtros %}&{{ querystring_filtros }}{% endif %}{% if ordem_atual %}&ordem={{ ordem_atual }}{% endif %}"
+               hx-get="{% url 'diarias:viagem_listar' %}?pagina={{ pagina.next_page_number }}{% if querystring_filtros %}&{{ querystring_filtros }}{% endif %}{% if ordem_atual %}&ordem={{ ordem_atual }}{% endif %}"
+               hx-target="#tabela-container"
+               hx-push-url="true"
+               class="rounded-sm border border-grid px-2.5 py-1 text-xs font-semibold text-ink-2 hover:bg-surface-2 transition-colors">
+              Próximo
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+
+  {% else %}
+    <!-- Estado Vazio -->
+    <div class="p-8 text-center flex flex-col items-center justify-center">
+      <div class="w-12 h-12 rounded-full bg-surface-2 flex items-center justify-center text-muted mb-3 border border-grid">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+        </svg>
+      </div>
+      <h3 class="text-base font-semibold text-ink">Nenhuma viagem encontrada</h3>
+      <p class="text-xs text-ink-2 max-w-sm mt-1">
+        Não encontramos nenhum registro com os filtros aplicados. Tente ajustar os termos de busca ou filtros selecionados.
+      </p>
+      {% if q or status_selecionados %}
+        <a href="{% url 'diarias:viagem_listar' %}"
+           hx-get="{% url 'diarias:viagem_listar' %}"
+           hx-target="#tabela-container"
+           hx-swap="innerHTML"
+           hx-push-url="true"
+           class="mt-4 rounded-sm border border-grid bg-surface px-3 py-1.5 text-xs font-semibold text-ink hover:bg-surface-2 transition-colors">
+          Limpar filtros
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>

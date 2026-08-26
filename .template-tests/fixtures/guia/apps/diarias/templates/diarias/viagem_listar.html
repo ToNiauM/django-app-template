@@ -1,0 +1,48 @@
+{% extends "core/shell.html" %}
+{% load static %}
+
+{% block titulo %}Diárias e passagens · {{ sistema_sigla }}{% endblock %}
+{% block titulo_pagina %}Diárias e passagens{% endblock %}
+
+{% block cabecalho_pagina %}
+<div class="mb-6">
+  {% include "core/_breadcrumbs.html" with trilha=trilha %}
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-2">
+    <div>
+      <h1 class="text-xl font-semibold tracking-tight text-ink">Diárias e passagens</h1>
+      <p class="text-sm font-normal text-ink-2 mt-1">Solicitações de viagem com paginação server-side e modais HTMX.</p>
+    </div>
+    <div>
+      <button type="button"
+              hx-get="{% url 'diarias:viagem_criar' %}"
+              hx-target="#modal-container"
+              hx-swap="innerHTML"
+              class="inline-flex items-center justify-center gap-2 rounded-sm bg-brand px-4 py-2 text-base font-semibold text-brand-tx hover:bg-brand-hover transition-colors shadow-sm">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M5 12h14"/><path d="M12 5v14"/>
+        </svg>
+        <span>Nova viagem</span>
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block conteudo_pagina %}
+<div class="flex flex-col gap-4">
+  <!-- Container de Filtros -->
+  {% include "diarias/_filtros.html" %}
+
+  <!-- Container da Tabela com escuta de eventos HTMX -->
+  <div id="tabela-container">
+    {% include "diarias/_tabela_resultado.html" %}
+  </div>
+</div>
+
+<!-- Container do Modal Global com listener para atualizar tabela.
+     O header HX-Trigger "viagemSalva" das views dispara também a forma
+     kebab-case "viagem-salva", que o Alpine escuta aqui. -->
+<div id="modal-container"
+     @viagem-salva.window="htmx.trigger('#form-filtros', 'submit')">
+</div>
+{% endblock %}
