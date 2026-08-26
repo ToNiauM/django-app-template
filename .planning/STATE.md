@@ -4,13 +4,13 @@ milestone: v0.3.0
 milestone_name: Guia de construção de sistemas
 status: executing
 stopped_at: Phase 8 context gathered
-last_updated: "2026-08-26T12:05:55.057Z"
+last_updated: "2026-08-26T12:16:54.149Z"
 last_activity: 2026-08-26
 progress:
   total_phases: 3
   completed_phases: 0
   total_plans: 4
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (atualizado 2026-08-25 na abertura do marco v0.3.0)
 ## Current Position
 
 Phase: 08 (exemplo-provado) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 Status: Ready to execute
 Last activity: 2026-08-26
 
@@ -83,6 +83,7 @@ Last activity: 2026-08-26
 | Phase 07-herdar-o-design-system-do-pca P12 | 22min | 3 tasks | 2 files |
 | Phase 07-herdar-o-design-system-do-pca P13 | 16min | 3 tasks | 7 files |
 | Phase 08 P01 | 5min | 2 tasks | 12 files |
+| Phase 08 P02 | 9min | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -166,6 +167,9 @@ Recent decisions affecting current work:
 - [Phase 08-01]: Viagem sem criado_por — D-01/D-03 vetam FK; autoria de alteração vem do history_user do simple-history
 - [Phase 08-01]: Dashboard do fixture usa série mensal via TruncMonth(data_inicio) no lugar do agrupamento por categoria — modelo único não tem segunda dimensão categórica
 - [Phase 08-01]: Filtro de status validado contra StatusChoices.values antes da query; seed idempotente por chave natural (servidor, destino, data_inicio) sem random
+- [Phase 08-02]: Botão de perigo do fixture usa text-red-50 (par nativo de bg-red-600) — o veto da Fase 7 ao branco puro vale para o fixture mesmo onde o exemplo ainda carrega a classe antiga
+- [Phase 08-02]: Barras mensais do dashboard com duas séries pintadas pelos degraus 0 e 2 da rampa_status do json_script (fallback var(--cor-brand)) — zero hex; rótulo de mês por slice do ISO, nunca new Date()
+- [Phase 08-02]: Sem drill-down no gráfico mensal — a listagem não filtra por mês; drill-down só no donut de status, onde a rota de destino sabe responder
 
 ### Pending Todos
 
@@ -197,7 +201,7 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-26T12:05:19.481Z
+Last session: 2026-08-26T12:16:44.045Z
 Stopped at: Phase 8 context gathered
 Resume file: None
 

@@ -56,13 +56,13 @@ Resumo do marco: `.planning/MILESTONES.md`
 3. A suíte roda junto com as 13 existentes pelo test_command padrão do projeto
 4. O fixture cobre tudo que o guia vai ensinar: modelo, admin, listagem paginada com filtros, modal 422/`HX-Trigger`, `_nav_dominio.html` com `{% item_nav %}` e dashboard ECharts com a paleta da marca
 
-**Plans:** 1/4 plans executed
+**Plans:** 2/4 plans executed
 
 Plans:
 **Wave 1**
 
 - [x] 08-01-PLAN.md — Backend do fixture apps/diarias (modelo Viagem, admin, forms, views, urls, migração, seed)
-- [ ] 08-02-PLAN.md — Templates (listagem/modais/dashboard ECharts) e testes internos do fixture
+- [x] 08-02-PLAN.md — Templates (listagem/modais/dashboard ECharts) e testes internos do fixture
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -118,6 +118,6 @@ Plans:
 | 5. Verificação e Documentação | v0.2.0 | 3/3 | Complete | 2026-08-18 |
 | 6. Customização Visual e Persistência de Dados | v0.2.0 | 3/3 | Complete | 2026-08-19 |
 | 7. Herdar o design system do PCA | v0.2.0 | 14/14 | Complete | 2026-08-24 |
-| 8. Exemplo provado | v0.3.0 | 1/4 | In Progress|  |
+| 8. Exemplo provado | v0.3.0 | 2/4 | In Progress|  |
 | 9. Escrita do guia | v0.3.0 | 0/? | Not started | — |
 | 10. Distribuição e release | v0.3.0 | 0/? | Not started | — |
