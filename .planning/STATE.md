@@ -3,8 +3,9 @@ gsd_state_version: 1.0
 milestone: v0.3.0
 milestone_name: Guia de construção de sistemas
 status: planning
-last_updated: "2026-08-26T00:29:36.256Z"
-last_activity: 2026-08-26
+stopped_at: Phase 8 context gathered
+last_updated: "2026-08-26T11:27:20.356Z"
+last_activity: "2026-08-25 — Milestone v0.3.0 opened: requirements defined (21 REQ-IDs), roadmap approved (Fases 8–10)"
 progress:
   total_phases: 3
   completed_phases: 0
@@ -192,9 +193,9 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-24
-Stopped at: Marco v0.2.0 fechado e arquivado
-Resume file: None
+Last session: 2026-08-26T11:27:20.264Z
+Stopped at: Phase 8 context gathered
+Resume file: .planning/phases/08-exemplo-provado/08-CONTEXT.md
 
 ## Operator Next Steps
 
