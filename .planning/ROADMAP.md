@@ -55,7 +55,13 @@ Resumo do marco: `.planning/MILESTONES.md`
 3. A suíte roda junto com as 13 existentes pelo test_command padrão do projeto
 4. O fixture cobre tudo que o guia vai ensinar: modelo, admin, listagem paginada com filtros, modal 422/`HX-Trigger`, `_nav_dominio.html` com `{% item_nav %}` e dashboard ECharts com a paleta da marca
 
-**Plans:** TBD
+**Plans:** 4 plans
+
+Plans:
+- [ ] 08-01-PLAN.md — Backend do fixture apps/diarias (modelo Viagem, admin, forms, views, urls, migração, seed)
+- [ ] 08-02-PLAN.md — Templates (listagem/modais/dashboard ECharts) e testes internos do fixture
+- [ ] 08-03-PLAN.md — Teste negativo de vazamento (test_08_guia_vazamento.py, PRV-03)
+- [ ] 08-04-PLAN.md — Prova de ponta a ponta na cópia real (test_08_guia_prova.py) + suíte integral
 
 #### Phase 9: Escrita do guia
 
