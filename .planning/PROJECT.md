@@ -48,6 +48,8 @@ Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de ex
 - ✓ Paleta de gráfico derivada de `COR_PRIMARIA` em runtime (`core/tema.py` → `familia_marca`), servida por `json_script` e reconstruída no evento `tema:alterado` sem recarregar a página; zero hex de cor em template ou JS de template — Fase 7 (DS-05, DS-06)
 - ✓ Ponto de extensão da navegação: o derivado põe os próprios itens criando só `_nav_dominio.html`, com a inclusion tag `{% item_nav %}` entregando o tratamento visual por construção — provado por sha256 de toda a subárvore `core/` — Fase 7 (NAV-01, NAV-02, NAV-03)
 - ✓ `copier update` de v0.1.0 para v0.2.0 sem resolução manual em arquivo não tocado: exit 0, zero marcador de conflito, zero `.rej` — Fase 7 (REL-01, QA-03)
+- ✓ `.template-tests/fixtures/guia/apps/diarias/` — app de diárias e passagens completo como fixture, instalado e provado de ponta a ponta numa cópia Copier real (migração, testes in-container, smoke HTTP autenticado) — Fase 8 (PRV-01)
+- ✓ Teste negativo estrutural de vazamento: cópia recém-gerada não contém `apps/diarias` nem bytes do fixture (sha256), nas duas variantes do template — Fase 8 (PRV-03)
 
 ### Ativos
 
@@ -126,4 +128,4 @@ Este documento evolui nas transições de fase e nos marcos do projeto.
 4. Atualizar Contexto com o estado atual
 
 ---
-*Última atualização: 2026-08-25 — abertura do marco v0.3.0 (Guia de construção de sistemas)*
+*Última atualização: 2026-08-26 — Fase 8 (Exemplo provado) concluída: fixture do guia provado de ponta a ponta*
