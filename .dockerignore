@@ -7,3 +7,4 @@ staticfiles/
 core/static/dist/
 .planning/
 *.md
+dados/
