@@ -389,20 +389,20 @@ with tempfile.TemporaryDirectory() as tmp:
 | A2 | Nenhuma suíte futura assumirá banco de ensaio "puro" (sem diarias instalado) | Pattern 4 | Se surgir, precisará de render próprio (como todas as atuais já fazem) — convenção a registrar no cabeçalho da suíte nova |
 | A3 | `createsuperuser --noinput` re-executado com o mesmo e-mail falha com erro identificável ("that email is already taken") — a suíte trata como sucesso idempotente | Pitfall 7 | Mensagem varia com versão do Django; alternativa robusta: `shell -c` com `get_or_create` + `set_password` |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Cobertura da variante `incluir_app_exemplo=false` na prova positiva**
    - What we know: o banco de ensaio usa `incluir_app_exemplo=true` fixo; o negativo pode (e deve, é barato) cobrir as duas variantes por render leve.
    - What's unclear: se a instalação do fixture também deve ser provada numa cópia SEM exemplo (âncora do patch de settings muda).
-   - Recommendation: prova positiva só na variante `true` (a do banco de ensaio — é o cenário do leitor, que nasce com o exemplo como referência); o patch de settings deve ter âncora com fallback (inserir antes de `]` de INSTALLED_APPS se a linha do exemplo não existir), deixando o código pronto para o futuro sem custo extra de Docker.
+   - Recommendation: RESOLVED: prova positiva só na variante `true` (a do banco de ensaio — é o cenário do leitor, que nasce com o exemplo como referência); o patch de settings deve ter âncora com fallback (inserir antes de `]` de INSTALLED_APPS se a linha do exemplo não existir), deixando o código pronto para o futuro sem custo extra de Docker.
 
 2. **Profundidade do smoke autenticado**
    - What we know: 302 → login prova rota; testes in-container provam 200 com force_login; o smoke autenticado por curl é o único que exercita gunicorn+sessão+banco de ponta a ponta.
-   - Recommendation: os três níveis, na ordem barato→caro (302 nas 3 telas; `manage.py test apps.diarias`; curl autenticado em `/diarias/` e `/diarias/dashboard/`). É o que o critério 1 pede sem ambiguidade.
+   - Recommendation: RESOLVED: os três níveis, na ordem barato→caro (302 nas 3 telas; `manage.py test apps.diarias`; curl autenticado em `/diarias/` e `/diarias/dashboard/`). É o que o critério 1 pede sem ambiguidade.
 
 3. **Seed no smoke**
    - What we know: dashboard e listagem funcionam com banco vazio (agregações tratam None — verificado em exemplo/views.py). `seed_diarias` existe para o guia, não para a prova.
-   - Recommendation: smoke NÃO depende de seed (páginas 200 vazias bastam); um teste opcional roda `seed_diarias` e verifica contagem — mas cuidado: dados seedados persistem no banco reusado; o comando deve ser idempotente (get_or_create ou truncate próprio) como `seed_exemplo`.
+   - Recommendation: RESOLVED: smoke NÃO depende de seed (páginas 200 vazias bastam); um teste opcional roda `seed_diarias` e verifica contagem — mas cuidado: dados seedados persistem no banco reusado; o comando deve ser idempotente (get_or_create ou truncate próprio) como `seed_exemplo`.
 
 ## Environment Availability
 
