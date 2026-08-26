@@ -4,13 +4,13 @@ milestone: v0.3.0
 milestone_name: Guia de construção de sistemas
 status: executing
 stopped_at: Phase 8 context gathered
-last_updated: "2026-08-26T11:59:41.849Z"
-last_activity: 2026-08-26 -- Phase 8 planning complete
+last_updated: "2026-08-26T12:05:55.057Z"
+last_activity: 2026-08-26
 progress:
   total_phases: 3
   completed_phases: 0
   total_plans: 4
-  completed_plans: 0
+  completed_plans: 1
   percent: 0
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (atualizado 2026-08-25 na abertura do marco v0.3.0)
 
 **Core value:** Criar um sistema novo funcional (login, layout, CRUD de exemplo, dashboard de exemplo, Docker, backup) em minutos — restando ao time apenas modelar o domínio em `apps/`.
-**Current focus:** Marco v0.3.0 — Guia de construção de sistemas (Fases 8–10). Próximo passo: planejar a Fase 8.
+**Current focus:** Phase 08 — exemplo-provado
 
 ## Current Position
 
-Phase: 8 — Exemplo provado (not started)
-Plan: —
+Phase: 08 (exemplo-provado) — EXECUTING
+Plan: 2 of 4
 Status: Ready to execute
-Last activity: 2026-08-26 -- Phase 8 planning complete
+Last activity: 2026-08-26
 
 ## Performance Metrics
 
@@ -82,6 +82,7 @@ Last activity: 2026-08-26 -- Phase 8 planning complete
 | Phase 07-herdar-o-design-system-do-pca P11 | 27min | 2 tasks | 7 files |
 | Phase 07-herdar-o-design-system-do-pca P12 | 22min | 3 tasks | 2 files |
 | Phase 07-herdar-o-design-system-do-pca P13 | 16min | 3 tasks | 7 files |
+| Phase 08 P01 | 5min | 2 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -162,6 +163,9 @@ Recent decisions affecting current work:
 - [Phase ?]: [Phase 07-13]: Piso de fatia de DADO em 1,5:1 (não 3:1) — o degrau seq-300 herdado vive em 1,95:1 no claro e exigir 3:1 obrigaria a redesenhar a rampa do padrão de referência para consertar um defeito que não está nela
 - [Phase ?]: [Phase 07-13]: seq-750 fixado FORA do dict 'esperado' de test_tema.py — aquele dict é o conjunto de valores MEDIDOS no padrão, cuja rampa tem três degraus; o quarto é extensão deste template, não herança
 - [Phase ?]: [Phase 07-13]: O brand-tint proibido pelo gate é recalculado de settings.COR_PRIMARIA, nunca lido do input.css — o token depende da marca e num derivado com outra cor a comparação passaria por engano, deixando o defeito sobreviver ao próprio teste
+- [Phase 08-01]: Viagem sem criado_por — D-01/D-03 vetam FK; autoria de alteração vem do history_user do simple-history
+- [Phase 08-01]: Dashboard do fixture usa série mensal via TruncMonth(data_inicio) no lugar do agrupamento por categoria — modelo único não tem segunda dimensão categórica
+- [Phase 08-01]: Filtro de status validado contra StatusChoices.values antes da query; seed idempotente por chave natural (servidor, destino, data_inicio) sem random
 
 ### Pending Todos
 
@@ -193,9 +197,9 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-26T11:27:20.264Z
+Last session: 2026-08-26T12:05:19.481Z
 Stopped at: Phase 8 context gathered
-Resume file: .planning/phases/08-exemplo-provado/08-CONTEXT.md
+Resume file: None
 
 ## Operator Next Steps
 
