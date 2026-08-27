@@ -23,6 +23,13 @@
     outline: 2px solid theme("colors.brand");
     outline-offset: 2px;
   }
+
+  /* Títulos com quebra de linha balanceada (`text-wrap: balance`): o
+     navegador distribui as palavras entre as linhas em vez de deixar uma
+     órfã na última. Progressivo — sem suporte, quebra normal. */
+  h1 {
+    text-wrap: balance;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -33,6 +40,10 @@
 @layer components {
   .results {
     @apply bg-surface border border-grid rounded overflow-x-auto;
+    /* Números tabulares (`font-variant-numeric`): todos os algarismos com a
+       mesma largura, para colunas numéricas alinharem verticalmente sem
+       trocar de fonte. */
+    font-variant-numeric: tabular-nums;
   }
 
   .module {
@@ -95,6 +106,18 @@
    especificidade — a ordem de declaração é o que faz o escuro vencer, e quem
    não tem override aqui herda o claro. */
 :root {
+  /* Widgets nativos (date picker, select, scrollbar padrão) acompanham o
+     tema sem CSS por controle — técnica `color-scheme`: o navegador pinta
+     os controles de formulário no esquema declarado. O par escuro está em
+     [data-tema="escuro"] abaixo. Declaração simples de propósito: os testes
+     de tokens capturam este bloco por regex até a primeira chave de
+     fechamento, então nada de regra aninhada aqui dentro. */
+  color-scheme: light;
+  /* Checkbox/radio/progress na cor da marca sem estilização manual —
+     técnica `accent-color`: herda para todo controle, e como o valor é
+     var(--cor-brand), o override de runtime da COR_PRIMARIA (base.html) e o
+     tema escuro atualizam tudo sozinhos. */
+  accent-color: var(--cor-brand);
   /* Superfícies */
   --cor-page: #f9f9f7;
   --cor-surface: #fcfcfb;
@@ -140,6 +163,9 @@
 }
 
 [data-tema="escuro"] {
+  /* Par do `color-scheme: light` do :root: no escuro os widgets nativos
+     (date picker, select, scrollbar) escurecem junto com o tema. */
+  color-scheme: dark;
   /* Superfícies */
   --cor-page: #0f0e0d;
   --cor-surface: #181614;
@@ -188,5 +214,81 @@
 @media (max-width: 767px) {
   [x-cloak] {
     display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Modernização da camada compartilhada — regras SOLTAS de propósito:
+   seletores de elemento/id/pseudo não são classes utilitárias, e dentro de
+   @layer o purge do Tailwind as podaria (mesmo padrão da paleta e do
+   [x-cloak] acima). Nenhum hex novo: só var(--cor-*) e valores neutros. */
+
+/* Selecionar texto pinta o fundo com a tinta da marca (`::selection`).
+   SEM declarar `color`: a tinta do texto corrente já passa AA sobre a tint
+   nos dois temas — fixar uma cor aqui quebraria essa garantia. */
+::selection {
+  background-color: var(--cor-brand-tint);
+}
+
+/* Scrollbar fina e tokenizada — `scrollbar-color` é herdada, então declarar
+   no html cobre todo elemento rolável do documento, e var(--cor-grid)
+   resolve por tema sozinha (claro e escuro têm valores próprios). */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--cor-grid) transparent;
+}
+
+/* Linha sob o cursor nas tabelas .results — regra FLAT (o build é
+   tailwindcss puro, sem plugin de nesting) e zero mudança de markup: o
+   seletor alcança qualquer tabela já renderizada dentro de .results. */
+.results tbody tr:hover {
+  background-color: var(--cor-surface-2);
+}
+
+/* Botão afunda 1px ao pressionar (`:active` + transform) — feedback tátil.
+   Fica FORA do media query de movimento abaixo: transform instantâneo, sem
+   transição, não anima nada — inofensivo com prefers-reduced-motion. */
+.btn:active {
+  transform: translateY(1px);
+}
+
+/* Movimento só para quem NÃO pediu redução: com prefers-reduced-motion:
+   reduce, nada deste bloco existe — nenhuma animação ou transição nova
+   dispara. */
+@media (prefers-reduced-motion: no-preference) {
+  /* Navegação cross-document contínua (View Transitions API declarativa).
+     Progressivo: navegador sem suporte ignora a at-rule e navega como
+     sempre. */
+  @view-transition {
+    navigation: auto;
+  }
+
+  /* Entrada dos modais HTMX: fade + deslize sutil de 150ms. O id
+     #modal-container já existe no app exemplo e no fixture do guia —
+     zero markup novo, a regra solta encontra o alvo onde ele existir. */
+  @keyframes surgir-modal {
+    from {
+      opacity: 0;
+      transform: translateY(6px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  #modal-container > * {
+    animation: surgir-modal 150ms ease-out;
+  }
+
+  /* Interativos transicionam cores em ~150ms. Propriedades EXPLÍCITAS,
+     nunca `transition: all` — `all` animaria também layout e transform,
+     produzindo movimento que ninguém pediu. */
+  a,
+  button,
+  .btn,
+  .form-row {
+    transition-property: color, background-color, border-color, box-shadow;
+    transition-duration: 150ms;
   }
 }
