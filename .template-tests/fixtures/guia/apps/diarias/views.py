@@ -34,7 +34,8 @@ COLUNAS_ORDENACAO_PERMITIDAS = {
 }
 
 
-def extrair_querystring_filtros(params, excluir=("pagina",)):
+# ordem é reanexada explicitamente pelos templates e nunca deve viajar dentro da querystring de filtros.
+def extrair_querystring_filtros(params, excluir=("pagina", "ordem")):
     """Preserva os filtros na querystring excluindo parâmetros transitórios como a página atual."""
     qdict = params.copy()
     for chave in excluir:
