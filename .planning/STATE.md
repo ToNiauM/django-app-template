@@ -196,6 +196,7 @@ None yet.
 | 260818-qc7 | Documentar padrão nginx conf.d + certbot --nginx na seção de publicação do README | 2026-08-18 | 8a52155 | [260818-qc7-documentar-padr-o-nginx-conf-d-certbot-n](./quick/260818-qc7-documentar-padr-o-nginx-conf-d-certbot-n/) |
 | 260818-qoy | Adicionar seção 'Os três ciclos de trabalho' ao README do template | 2026-08-18 | f910787 | [260818-qoy-adicionar-se-o-os-tr-s-ciclos-de-trabalh](./quick/260818-qoy-adicionar-se-o-os-tr-s-ciclos-de-trabalh/) |
 | 260818-qwd | Documentar criação da tag de release + seção Resumo executável (exemplo financeiro:12010) no README | 2026-08-18 | 44ae507 | [260818-qwd-documentar-cria-o-da-tag-de-release-e-re](./quick/260818-qwd-documentar-cria-o-da-tag-de-release-e-re/) |
+| 260827-m04 | Modernizar o frontend na camada compartilhada: color-scheme, accent-color, ::selection, scrollbar tokenizada, tabular-nums, text-wrap balance, view transitions e micro-animações com reduced-motion em input.css; backdrop-blur-sm no overlay da gaveta | 2026-08-27 | 5f2f79a, 51731b2 | [260827-m04-modernizar-o-frontend-na-camada-comparti](./quick/260827-m04-modernizar-o-frontend-na-camada-comparti/) |
 
 ## Deferred Items
 
