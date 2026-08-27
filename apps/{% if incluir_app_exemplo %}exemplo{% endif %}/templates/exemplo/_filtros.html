@@ -5,6 +5,7 @@
         hx-target="#tabela-container"
         hx-swap="innerHTML"
         hx-push-url="true"
+        hx-trigger="submit, input changed delay:300ms from:find input[name='q'], change from:find select[name='categoria'], change from:find select[name='status']"
         class="flex flex-col gap-4">
 
     <!-- Preserva ordenação ativa -->
@@ -25,7 +26,6 @@
                  name="q"
                  value="{{ q }}"
                  placeholder="Buscar por título ou descrição..."
-                 hx-trigger="input changed delay:300ms, search"
                  class="w-full rounded-sm border border-grid bg-surface pl-9 pr-3 py-2 text-sm text-ink placeholder:text-muted focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand">
         </div>
       </div>
@@ -35,7 +35,6 @@
         <label for="filtro-categoria" class="sr-only">Categoria</label>
         <select id="filtro-categoria"
                 name="categoria"
-                hx-trigger="change"
                 class="w-full rounded-sm border border-grid bg-surface px-3 py-2 text-sm text-ink focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand">
           <option value="">Todas as categorias</option>
           {% for val, rotulo in opcoes_categoria %}
@@ -49,7 +48,6 @@
         <label for="filtro-status" class="sr-only">Status</label>
         <select id="filtro-status"
                 name="status"
-                hx-trigger="change"
                 class="w-full rounded-sm border border-grid bg-surface px-3 py-2 text-sm text-ink focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand">
           <option value="">Todos os status</option>
           {% for val, rotulo in opcoes_status %}
