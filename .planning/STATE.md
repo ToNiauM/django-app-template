@@ -4,8 +4,8 @@ milestone: v0.3.0
 milestone_name: Guia de construção de sistemas
 status: ready_to_plan
 stopped_at: Phase 08 complete (4/4) — ready to discuss Phase 09
-last_updated: 2026-08-26T13:04:35.008Z
-last_activity: 2026-08-26
+last_updated: 2026-08-27T19:20:24.000Z
+last_activity: 2026-08-27
 progress:
   total_phases: 3
   completed_phases: 1
@@ -197,6 +197,7 @@ None yet.
 | 260818-qoy | Adicionar seção 'Os três ciclos de trabalho' ao README do template | 2026-08-18 | f910787 | [260818-qoy-adicionar-se-o-os-tr-s-ciclos-de-trabalh](./quick/260818-qoy-adicionar-se-o-os-tr-s-ciclos-de-trabalh/) |
 | 260818-qwd | Documentar criação da tag de release + seção Resumo executável (exemplo financeiro:12010) no README | 2026-08-18 | 44ae507 | [260818-qwd-documentar-cria-o-da-tag-de-release-e-re](./quick/260818-qwd-documentar-cria-o-da-tag-de-release-e-re/) |
 | 260827-m04 | Modernizar o frontend na camada compartilhada: color-scheme, accent-color, ::selection, scrollbar tokenizada, tabular-nums, text-wrap balance, view transitions e micro-animações com reduced-motion em input.css; backdrop-blur-sm no overlay da gaveta | 2026-08-27 | 5f2f79a, 51731b2 | [260827-m04-modernizar-o-frontend-na-camada-comparti](./quick/260827-m04-modernizar-o-frontend-na-camada-comparti/) |
+| 260827-mhr | Corrigir CR-01 (ordem duplicada na querystring de filtros) e CR-02 (hx-trigger naked no-op) do 08-REVIEW em espelho no app exemplo e no fixture diarias; suíte integral de 48 testes verde | 2026-08-27 | 9ff84eb, 42e5653 | [260827-mhr-corrigir-cr-01-e-cr-02-do-08-review-em-e](./quick/260827-mhr-corrigir-cr-01-e-cr-02-do-08-review-em-e/) |
 
 ## Deferred Items
 
@@ -210,8 +211,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-26T12:44:06.721Z
-Stopped at: Completed 08-04-PLAN.md
+Last session: 2026-08-27T19:20:24Z
+Stopped at: Completed quick task 260827-mhr (CR-01 e CR-02 do 08-REVIEW)
 Resume file: None
 
 ## Operator Next Steps
